@@ -14,11 +14,12 @@ namespace NimbusChat
             if (string.IsNullOrWhiteSpace(EmailBox.Text) || string.IsNullOrWhiteSpace(PasswordBox.Password))
             {
                 MessageBox.Show("Please enter email and password");
+                return;
             }
-            else
-            {
-                MessageBox.Show("Welcome!");
-            }
+
+            DashboardWindow dashboard = new DashboardWindow();
+            dashboard.Show();
+            this.Close();
         }
     }
 }
