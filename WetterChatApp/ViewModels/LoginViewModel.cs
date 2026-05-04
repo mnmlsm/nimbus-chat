@@ -3,9 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using NimbusChat.WetterChatApp.Infrastructure;
-using NimbusChat.WetterChatApp.Models;
+using System.Windows;
 using System.Windows.Input;
+using NimbusChat.WetterChatApp.Data;
+using NimbusChat.WetterChatApp.Infrastructure;
+using System.Linq;
+using System.Windows;
+using System.Windows.Input;
+using NimbusChat.WetterChatApp.Infrastructure;
 
 namespace NimbusChat.WetterChatApp.ViewModels
 {
@@ -17,54 +22,63 @@ namespace NimbusChat.WetterChatApp.ViewModels
 
         public string Email
         {
-            get { return _email; }
-            set
-            {
-                _email = value;
-                OnPropertyChanged();
-            }
+            get => _email;
+            set => SetProperty(ref _email, value);
         }
 
         public string Password
         {
-            get { return _password; }
-            set
-            {
-                _password = value;
-                OnPropertyChanged();
-            }
+            get => _password;
+            set => SetProperty(ref _password, value);
         }
 
         public string ErrorMessage
         {
-            get { return _errorMessage; }
-            set
-            {
-                _errorMessage = value;
-                OnPropertyChanged();
-            }
+            get => _errorMessage;
+            set => SetProperty(ref _errorMessage, value);
         }
 
-        public ICommand LoginCommand { get; private set; }
+        public ICommand LoginCommand { get; }
 
         public LoginViewModel()
         {
-            LoginCommand = new RelayCommand(Login);
+            // Command ist immer verfügbar (Woche 1)
+            LoginCommand = new RelayCommand(_ => ExecuteLogin(), _ => CanExecuteLogin());
         }
 
-        private void Login(object parameter)
+        private bool CanExecuteLogin()
         {
-            // Woche 1: nur einfache Validierung, noch kein DB-Check
-            if (string.IsNullOrWhiteSpace(Email) || string.IsNullOrWhiteSpace(Password))
+            // Wenn du absolut jede Eingabe zulassen willst:
+            return true;
+
+            // Wenn du nur nicht-leere Felder zulassen willst:
+            // return !string.IsNullOrWhiteSpace(Email) &&
+            //        !string.IsNullOrWhiteSpace(Password);
+        }
+
+        private void ExecuteLogin()
+        {
+            // Woche 1: jedes Login als erfolgreich behandeln,
+            // solange E-Mail und Passwort nicht leer sind
+            if (!string.IsNullOrWhiteSpace(Email) && !string.IsNullOrWhiteSpace(Password))
             {
-                ErrorMessage = "Please enter email and password";
-                return;
+                ErrorMessage = string.Empty;
+
+                // Dashboard öffnen (dein vorhandenes DashboardWindow)
+                var dashboard = new DashboardWindow();
+                dashboard.Show();
+
+                // Login-Fenster (MainWindow) schließen
+                var loginWindow = Application.Current.Windows
+                    .OfType<Window>()
+                    .FirstOrDefault(w => w is MainWindow);
+
+                loginWindow?.Close();
             }
-
-            ErrorMessage = string.Empty;
-
-            // Woche 1: Noch kein Dashboard-Öffnen im ViewModel
-            // (Fenster-Logik bleibt im MainWindow-Code-Behind)
+            else
+            {
+                ErrorMessage = "Bitte E-Mail und Passwort eingeben.";
+            }
         }
     }
 }

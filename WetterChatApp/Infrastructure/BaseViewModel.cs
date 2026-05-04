@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
 namespace NimbusChat.WetterChatApp.Infrastructure
 {
@@ -14,9 +14,17 @@ namespace NimbusChat.WetterChatApp.Infrastructure
 
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
-            var handler = PropertyChanged;
-            if (handler != null)
-                handler(this, new PropertyChangedEventArgs(propertyName));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        protected bool SetProperty<T>(ref T field, T value, [CallerMemberName] string propertyName = null)
+        {
+            if (Equals(field, value))
+                return false;
+
+            field = value;
+            OnPropertyChanged(propertyName);
+            return true;
         }
     }
 }

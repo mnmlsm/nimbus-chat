@@ -1,4 +1,6 @@
 ﻿using System.Windows;
+using System.Windows.Controls;
+using NimbusChat.WetterChatApp.ViewModels;
 
 namespace NimbusChat
 {
@@ -9,17 +11,13 @@ namespace NimbusChat
             InitializeComponent();
         }
 
-        private void Login_Click(object sender, RoutedEventArgs e)
+        // Wird vom PasswordBox.PasswordChanged im XAML aufgerufen
+        private void PasswordBox_PasswordChanged(object sender, RoutedEventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(EmailBox.Text) || string.IsNullOrWhiteSpace(PasswordBox.Password))
+            if (DataContext is LoginViewModel vm && sender is PasswordBox pb)
             {
-                MessageBox.Show("Please enter email and password");
-                return;
+                vm.Password = pb.Password;
             }
-
-            DashboardWindow dashboard = new DashboardWindow();
-            dashboard.Show();
-            this.Close();
         }
     }
 }

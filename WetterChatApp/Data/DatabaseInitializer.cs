@@ -4,13 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
-using System.Data.SQLite; 
+using System.Data.SQLite;
 
 namespace NimbusChat.WetterChatApp.Data
 {
     public static class DatabaseInitializer
     {
-        private const string DatabaseFile = "wetterchat.db";
+        private const string DatabaseFile = "C:\\Users\\Memo\\Documents\\GitHub\\nimbus-chat\\Files\\WetterchatDatabaseLibrary.db";
 
         public static void Initialize()
         {

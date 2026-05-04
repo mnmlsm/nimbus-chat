@@ -14,20 +14,13 @@ namespace NimbusChat.WetterChatApp.Infrastructure
 
         public RelayCommand(Action<object> execute, Predicate<object> canExecute = null)
         {
-            if (execute == null) throw new ArgumentNullException("execute");
-            _execute = execute;
+            _execute = execute ?? throw new ArgumentNullException(nameof(execute));
             _canExecute = canExecute;
         }
 
-        public bool CanExecute(object parameter)
-        {
-            return _canExecute == null || _canExecute(parameter);
-        }
+        public bool CanExecute(object parameter) => _canExecute == null || _canExecute(parameter);
 
-        public void Execute(object parameter)
-        {
-            _execute(parameter);
-        }
+        public void Execute(object parameter) => _execute(parameter);
 
         public event EventHandler CanExecuteChanged
         {

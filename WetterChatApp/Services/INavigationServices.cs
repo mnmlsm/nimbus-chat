@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using NimbusChat.WetterChatApp.Infrastructure;
+using System.Windows;
 
 namespace NimbusChat.WetterChatApp.Services
 {
-    public interface INavigationService
+    public interface INavigationServices
     {
-        void NavigateTo(BaseViewModel viewModel);
+        void ShowWindow(Window window);
+        void CloseWindow(Window window);
     }
 }
