@@ -73,8 +73,13 @@
     <Compile Include="WetterChatApp\Models\Message.cs" />
     <Compile Include="WetterChatApp\Models\User.cs" />
     <Compile Include="WetterChatApp\Models\WeatherData.cs" />
+    <Compile Include="WetterChatApp\Repositories\UserRepository.cs" />
     <Compile Include="WetterChatApp\Services\INavigationServices.cs" />
     <Compile Include="WetterChatApp\ViewModels\LoginViewModel.cs" />
+    <Compile Include="WetterChatApp\ViewModels\RegisterViewModel.cs" />
+    <Compile Include="WetterChatApp\Views\RegisterView.xaml.cs">
+      <DependentUpon>RegisterView.xaml</DependentUpon>
+    </Compile>
     <Page Include="DashboardWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -99,6 +104,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="WeatherWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="WetterChatApp\Views\RegisterView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

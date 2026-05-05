@@ -5,17 +5,16 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using NimbusChat.WetterChatApp.Infrastructure;
 using NimbusChat.WetterChatApp.Data;
-using NimbusChat.WetterChatApp.Infrastructure;
-using System.Linq;
-using System.Windows;
-using System.Windows.Input;
-using NimbusChat.WetterChatApp.Infrastructure;
+using NimbusChat.WetterChatApp.Repositories;
 
 namespace NimbusChat.WetterChatApp.ViewModels
 {
     public class LoginViewModel : BaseViewModel
     {
+        private readonly UserRepository _userRepository;
+
         private string _email;
         private string _password;
         private string _errorMessage;
@@ -42,43 +41,49 @@ namespace NimbusChat.WetterChatApp.ViewModels
 
         public LoginViewModel()
         {
-            // Command ist immer verfügbar (Woche 1)
+            // DB vorbereiten
+            DatabaseInitializer.Initialize();
+
+            _userRepository = new UserRepository();
+
             LoginCommand = new RelayCommand(_ => ExecuteLogin(), _ => CanExecuteLogin());
         }
 
         private bool CanExecuteLogin()
         {
-            // Wenn du absolut jede Eingabe zulassen willst:
-            return true;
-
-            // Wenn du nur nicht-leere Felder zulassen willst:
-            // return !string.IsNullOrWhiteSpace(Email) &&
-            //        !string.IsNullOrWhiteSpace(Password);
+            // für Woche 2: sinnvolle minimale Validierung
+            return !string.IsNullOrWhiteSpace(Email) &&
+                   !string.IsNullOrWhiteSpace(Password);
         }
 
         private void ExecuteLogin()
         {
-            // Woche 1: jedes Login als erfolgreich behandeln,
-            // solange E-Mail und Passwort nicht leer sind
-            if (!string.IsNullOrWhiteSpace(Email) && !string.IsNullOrWhiteSpace(Password))
+            ErrorMessage = string.Empty;
+
+            var user = _userRepository.GetByEmail(Email);
+
+            if (user == null)
             {
-                ErrorMessage = string.Empty;
-
-                // Dashboard öffnen (dein vorhandenes DashboardWindow)
-                var dashboard = new DashboardWindow();
-                dashboard.Show();
-
-                // Login-Fenster (MainWindow) schließen
-                var loginWindow = Application.Current.Windows
-                    .OfType<Window>()
-                    .FirstOrDefault(w => w is MainWindow);
-
-                loginWindow?.Close();
+                ErrorMessage = "Benutzer nicht gefunden.";
+                return;
             }
-            else
+
+            // Einfacher Vergleich – später Hashen
+            if (user.PasswordHash != Password)
             {
-                ErrorMessage = "Bitte E-Mail und Passwort eingeben.";
+                ErrorMessage = "Ungültiges Passwort.";
+                return;
             }
+
+            // Login erfolgreich -> Dashboard
+            var dashboard = new DashboardWindow();
+            dashboard.Show();
+
+            var loginWindow = Application.Current.Windows
+                .OfType<Window>()
+                .FirstOrDefault(w => w is MainWindow);
+
+            loginWindow?.Close();
         }
     }
 }

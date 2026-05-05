@@ -1,6 +1,7 @@
-﻿using System.Windows;
+﻿using NimbusChat.WetterChatApp.ViewModels;
+using NimbusChat.WetterChatApp.Views;
+using System.Windows;
 using System.Windows.Controls;
-using NimbusChat.WetterChatApp.ViewModels;
 
 namespace NimbusChat
 {
@@ -18,6 +19,12 @@ namespace NimbusChat
             {
                 vm.Password = pb.Password;
             }
+        }
+
+        private void RegisterButton_Click(object sender, RoutedEventArgs e)
+        {
+            var registerView = new RegisterView();
+            registerView.Show();
         }
     }
 }

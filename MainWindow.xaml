@@ -37,6 +37,11 @@
             <Button Content="Login"
                     Height="35"
                     Command="{Binding LoginCommand}" />
+            
+            <Button Content="Registrieren"
+                    Height="30"
+                    Margin="0,10,0,0"
+                    Click="RegisterButton_Click"/>
 
             <TextBlock Text="{Binding ErrorMessage}"
                        Foreground="Red"
