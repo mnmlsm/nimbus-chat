@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Windows;
 using System.Windows.Input;
-using NimbusChat.WetterChatApp.Data;
 using NimbusChat.WetterChatApp.Infrastructure;
-using NimbusChat.WetterChatApp.Models;
 using NimbusChat.WetterChatApp.Repositories;
 
 namespace NimbusChat.WetterChatApp.ViewModels
@@ -15,25 +10,9 @@ namespace NimbusChat.WetterChatApp.ViewModels
     {
         private readonly UserRepository _userRepository;
 
-        private string _username;
         private string _email;
         private string _password;
         private string _errorMessage;
-        private string _successMessage;
-
-        public RegisterViewModel()
-        {
-            DatabaseInitializer.Initialize();
-            _userRepository = new UserRepository();
-
-            RegisterCommand = new RelayCommand(_ => ExecuteRegister(), _ => CanExecuteRegister());
-        }
-
-        public string Username
-        {
-            get => _username;
-            set => SetProperty(ref _username, value);
-        }
 
         public string Email
         {
@@ -53,43 +32,44 @@ namespace NimbusChat.WetterChatApp.ViewModels
             set => SetProperty(ref _errorMessage, value);
         }
 
-        public string SuccessMessage
-        {
-            get => _successMessage;
-            set => SetProperty(ref _successMessage, value);
-        }
-
         public ICommand RegisterCommand { get; }
 
-        private bool CanExecuteRegister()
+        public RegisterViewModel()
         {
-            return !string.IsNullOrWhiteSpace(Username) &&
-                   !string.IsNullOrWhiteSpace(Email) &&
+            _userRepository = new UserRepository();
+            RegisterCommand = new RelayCommand(_ => ExecuteRegister(), _ => CanRegister());
+        }
+
+        private bool CanRegister()
+        {
+            return !string.IsNullOrWhiteSpace(Email) &&
                    !string.IsNullOrWhiteSpace(Password);
         }
 
         private void ExecuteRegister()
         {
-            ErrorMessage = string.Empty;
-            SuccessMessage = string.Empty;
+            ErrorMessage = "";
 
-            var user = new User
+            var existingUser = _userRepository.GetByEmail(Email);
+
+            if (existingUser != null)
             {
-                Username = Username,
-                Email = Email,
-                PasswordHash = Password // später Hashen
-            };
-
-            var created = _userRepository.Create(user);
-
-            if (created)
-            {
-                SuccessMessage = "Registrierung erfolgreich. Du kannst dich jetzt einloggen.";
+                ErrorMessage = "User already exists";
+                return;
             }
-            else
-            {
-                ErrorMessage = "Registrierung fehlgeschlagen. Username/E-Mail eventuell bereits vorhanden.";
-            }
+
+            _userRepository.AddUser(Email, Password);
+
+            MessageBox.Show("Registration successful!");
+
+            var login = new MainWindow();
+            login.Show();
+
+            var registerWindow = Application.Current.Windows
+                .OfType<Window>()
+                .FirstOrDefault(w => w is Views.RegisterView);
+
+            registerWindow?.Close();
         }
     }
 }

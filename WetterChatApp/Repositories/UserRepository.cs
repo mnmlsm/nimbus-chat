@@ -72,5 +72,24 @@ namespace NimbusChat.WetterChatApp.Repositories
                 }
             }
         }
+
+        public void AddUser(string email, string password)
+        {
+            using (var connection = new SQLiteConnection(DatabaseInitializer.ConnectionString))
+            {
+                connection.Open();
+
+                var sql = "INSERT INTO Users (Username, Email, PasswordHash) VALUES (@Username, @Email, @Password)";
+
+                using (var cmd = new SQLiteCommand(sql, connection))
+                {
+                    cmd.Parameters.AddWithValue("@Username", email);
+                    cmd.Parameters.AddWithValue("@Email", email);
+                    cmd.Parameters.AddWithValue("@Password", password);
+
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
     }
 }
