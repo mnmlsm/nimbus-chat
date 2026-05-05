@@ -11,31 +11,31 @@ namespace NimbusChat.WetterChatApp.Models
         public int Id
         {
             get; set;
-        }
+        } = 0;
 
         public string City
         {
             get; set;
-        }
+        } = string.Empty;
 
         public double Temperature
         {
             get; set;
-        }
+        } = 0.0;
 
         public int Humidity
         {
             get; set;
-        }
+        } = 0;
 
         public string Description
         {
             get; set;
-        }
+        } = string.Empty;
 
         public DateTime CreatedAt
         {
             get; set;
-        }
+        } 
     }
 }
