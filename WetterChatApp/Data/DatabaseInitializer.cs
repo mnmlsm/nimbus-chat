@@ -6,12 +6,13 @@ using System.Threading.Tasks;
 using System.IO;
 using System.Data.SQLite;
 
+
+
 namespace NimbusChat.WetterChatApp.Data
 {
     public static class DatabaseInitializer
     {
-       
-        private const string DatabaseFile = @"C:\Users\Memo\Documents\GitHub\nimbus-chat\Files\WetterchatDatabaseLibrary.db";
+        private static string DatabaseFile = Path.Combine(Environment.CurrentDirectory, "weather.db");
 
         public static string ConnectionString => $"Data Source={DatabaseFile};Version=3;";
 
@@ -32,23 +33,6 @@ CREATE TABLE IF NOT EXISTS Users (
     Username TEXT NOT NULL UNIQUE,
     Email TEXT NOT NULL,
     PasswordHash TEXT NOT NULL
-);
-
-CREATE TABLE IF NOT EXISTS Messages (
-    Id INTEGER PRIMARY KEY AUTOINCREMENT,
-    SenderId INTEGER NOT NULL,
-    ReceiverId INTEGER NOT NULL,
-    Content TEXT NOT NULL,
-    CreatedAt TEXT NOT NULL
-);
-
-CREATE TABLE IF NOT EXISTS WeatherData (
-    Id INTEGER PRIMARY KEY AUTOINCREMENT,
-    City TEXT NOT NULL,
-    Temperature REAL NOT NULL,
-    Humidity INTEGER NOT NULL,
-    Description TEXT NOT NULL,
-    CreatedAt TEXT NOT NULL
 );";
 
                 using (var command = new SQLiteCommand(sql, connection))

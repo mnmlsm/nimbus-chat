@@ -21,7 +21,7 @@ namespace NimbusChat
 
         private void OpenMessages_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("Messages page coming soon!");
+            new MessagesWindow().Show();
         }
     }
 }
