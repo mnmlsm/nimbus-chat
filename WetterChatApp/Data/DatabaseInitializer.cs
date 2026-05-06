@@ -11,7 +11,7 @@ namespace NimbusChat.WetterChatApp.Data
     public static class DatabaseInitializer
     {
         // new path for saving the file in a portable way, relative to the application directory .. LG Memooooo
-        private static string DatabaseFile => Path.Combine(AppDomain.CurrentDomain.BaseDirectory,"../", "../", "Files", "WetterchatDatabaseLibrary.db");
+        private static string DatabaseFile => Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "../", "../", "Files", "WetterchatDatabaseLibrary.db");
 
         // Old path for saving the file on the local machine, not portable
         //private const string DatabaseFile = @"C:\Users\Student\source\repos\nimbus-chat\Files\WetterchatDatabaseLibrary.db";
