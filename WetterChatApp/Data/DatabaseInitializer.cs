@@ -10,13 +10,21 @@ namespace NimbusChat.WetterChatApp.Data
 {
     public static class DatabaseInitializer
     {
-       
-        private const string DatabaseFile = @"C:\Users\Memo\Documents\GitHub\nimbus-chat\Files\WetterchatDatabaseLibrary.db";
+        // new path for saving the file in a portable way, relative to the application directory .. LG Memooooo
+        private static string DatabaseFile => Path.Combine(AppDomain.CurrentDomain.BaseDirectory,"../", "../", "Files", "WetterchatDatabaseLibrary.db");
+
+        // Old path for saving the file on the local machine, not portable
+        //private const string DatabaseFile = @"C:\Users\Student\source\repos\nimbus-chat\Files\WetterchatDatabaseLibrary.db";
 
         public static string ConnectionString => $"Data Source={DatabaseFile};Version=3;";
 
         public static void Initialize()
         {
+            if (Directory.Exists(Path.GetDirectoryName(DatabaseFile)))
+            {
+                Directory.CreateDirectory(Path.GetDirectoryName(DatabaseFile));
+            }
+
             if (!File.Exists(DatabaseFile))
             {
                 SQLiteConnection.CreateFile(DatabaseFile);
