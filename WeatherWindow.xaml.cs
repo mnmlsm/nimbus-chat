@@ -8,7 +8,7 @@ namespace NimbusChat
         public WeatherWindow()
         {
             InitializeComponent();
-            DataContext = new WeatherViewModel(); // ← ВОТ ЭТУ СТРОКУ ДОБАВИТЬ
+            DataContext = new WeatherViewModel(); 
         }
     }
 }

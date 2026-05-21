@@ -1,16 +1,13 @@
-﻿using Newtonsoft.Json;
-using NimbusChat.WetterChatApp.Infrastructure;
-using NimbusChat.WetterChatApp.Infrastructure;
-using System;
-using System.ComponentModel;
+﻿using System;
 using System.Net.Http;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Newtonsoft.Json;
+using NimbusChat.WetterChatApp.Infrastructure;
 
 namespace NimbusChat.ViewModels
 {
-    public class WeatherViewModel : INotifyPropertyChanged
+    public class WeatherViewModel : BaseViewModel
     {
         private string _city;
         private string _weatherResult;
@@ -39,10 +36,10 @@ namespace NimbusChat.ViewModels
 
         public WeatherViewModel()
         {
-            SearchCommand = new RelayCommand(_ => Search());
+            SearchCommand = new RelayCommand(async _ => await Search());
         }
 
-        private async void Search()
+        private async Task Search()
         {
             if (string.IsNullOrWhiteSpace(City))
             {
@@ -54,7 +51,8 @@ namespace NimbusChat.ViewModels
             {
                 using (var client = new HttpClient())
                 {
-                    var url = $"https://api.openweathermap.org/data/2.5/weather?q={City}&appid=ТВОЙ_API_KEY&units=metric";
+                    var url =
+                        $"https://api.openweathermap.org/data/2.5/weather?q={City}&appid=87f7befd922e98326b86d972952a799c&units=metric";
 
                     var response = await client.GetStringAsync(url);
 
@@ -63,20 +61,14 @@ namespace NimbusChat.ViewModels
                     var temp = data.main.temp;
                     var description = data.weather[0].description;
 
-                    WeatherResult = $"{City}: {temp}°C, {description}";
+                    WeatherResult =
+                        $"{City}: {temp}°C, {description}";
                 }
             }
             catch (Exception ex)
             {
                 WeatherResult = ex.Message;
             }
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected void OnPropertyChanged([CallerMemberName] string name = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
     }
 }
