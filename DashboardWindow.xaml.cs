@@ -65,10 +65,22 @@ namespace NimbusChat
 
         private void OpenProfile_Click(object sender, RoutedEventArgs e)
         {
+            var profileWindow = new ProfileWindow
+            {
+                Owner = this
+            };
+
+            profileWindow.ShowDialog();
         }
 
         private void OpenMessages_Click(object sender, RoutedEventArgs e)
         {
+            var messagesWindow = new MessagesWindow
+            {
+                Owner = this
+            };
+
+            messagesWindow.ShowDialog();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

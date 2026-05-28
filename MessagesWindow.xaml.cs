@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using System.Windows.Controls;
 
 namespace NimbusChat
 {
@@ -11,13 +12,11 @@ namespace NimbusChat
 
         private void Send_Click(object sender, RoutedEventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(MessageInput.Text))
-            {
-                MessageBox.Show("Enter a message");
+            var text = MessageInput.Text.Trim();
+            if (string.IsNullOrEmpty(text))
                 return;
-            }
 
-            ChatList.Items.Add("You: " + MessageInput.Text);
+            ChatList.Items.Add(text);
             MessageInput.Clear();
         }
     }
