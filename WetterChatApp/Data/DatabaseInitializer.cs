@@ -39,6 +39,29 @@ CREATE TABLE IF NOT EXISTS Users (
     Username TEXT NOT NULL UNIQUE,
     Email TEXT NOT NULL,
     PasswordHash TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS Messages (
+    Id INTEGER PRIMARY KEY AUTOINCREMENT,
+    SenderId INTEGER NOT NULL,
+    ReceiverId INTEGER NOT NULL,
+    Content TEXT NOT NULL,
+    CreatedAt TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS WeatherData (
+    Id INTEGER PRIMARY KEY AUTOINCREMENT,
+    City TEXT NOT NULL,
+    Temperature REAL NOT NULL,
+    Humidity INTEGER NOT NULL,
+    Description TEXT NOT NULL,
+    CreatedAt TEXT NOT NULL
+);"";
+CREATE TABLE IF NOT EXISTS Users (
+    Id INTEGER PRIMARY KEY AUTOINCREMENT,
+    Username TEXT NOT NULL UNIQUE,
+    Email TEXT NOT NULL,
+    PasswordHash TEXT NOT NULL
 );";
 
                 using (var command = new SQLiteCommand(sql, connection))
