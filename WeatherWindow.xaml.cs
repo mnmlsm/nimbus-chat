@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using NimbusChat.ViewModels;
 
 namespace NimbusChat
 {
@@ -7,18 +8,7 @@ namespace NimbusChat
         public WeatherWindow()
         {
             InitializeComponent();
-        }
-
-        private void Search_Click(object sender, RoutedEventArgs e)
-        {
-            if (string.IsNullOrWhiteSpace(CityTextBox.Text))
-            {
-                MessageBox.Show("Please enter a city");
-                return;
-            }
-
-            // Fake Result (without API)
-            WeatherResult.Text = CityTextBox.Text + ": 14°C, Cloudy";
+            DataContext = new WeatherViewModel(); 
         }
     }
 }
