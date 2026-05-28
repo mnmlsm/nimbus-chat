@@ -51,7 +51,7 @@ CREATE TABLE IF NOT EXISTS WeatherData (
     Description TEXT NOT NULL,
     CreatedAt TEXT NOT NULL
 );";
-SS
+
                 using (var command = new SQLiteCommand(sql, connection))
                 {
                     command.ExecuteNonQuery();
