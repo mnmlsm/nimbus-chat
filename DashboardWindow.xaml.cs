@@ -1,27 +1,81 @@
-﻿using System.Windows;
+﻿using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using System.Windows;
+using NimbusChat.ViewModels;
 
 namespace NimbusChat
 {
-    public partial class DashboardWindow : Window
+    public partial class DashboardWindow : Window, INotifyPropertyChanged
     {
+        private string _weatherCity = "Leipzig";
+        public string WeatherCity
+        {
+            get => _weatherCity;
+            set
+            {
+                _weatherCity = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private string _weatherTemperature = "14°C";
+        public string WeatherTemperature
+        {
+            get => _weatherTemperature;
+            set
+            {
+                _weatherTemperature = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private string _weatherCondition = "Cloudy";
+        public string WeatherCondition
+        {
+            get => _weatherCondition;
+            set
+            {
+                _weatherCondition = value;
+                OnPropertyChanged();
+            }
+        }
+
         public DashboardWindow()
         {
             InitializeComponent();
-        }
-
-        private void OpenProfile_Click(object sender, RoutedEventArgs e)
-        {
-            new ProfileWindow().Show();
+            DataContext = this;
         }
 
         private void OpenWeather_Click(object sender, RoutedEventArgs e)
         {
-            new WeatherWindow().Show();
+            var window = new WeatherWindow
+            {
+                Owner = this
+            };
+
+            if (window.ShowDialog() == true)
+            {
+                var vm = window.ViewModel;
+
+                WeatherCity = vm.City;
+                WeatherTemperature = vm.Temperature;
+                WeatherCondition = vm.Condition;
+            }
+        }
+
+        private void OpenProfile_Click(object sender, RoutedEventArgs e)
+        {
         }
 
         private void OpenMessages_Click(object sender, RoutedEventArgs e)
         {
-            new MessagesWindow().Show();
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

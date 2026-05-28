@@ -1,14 +1,24 @@
-﻿using System.Windows;
+﻿using System.ComponentModel;
+using System.Windows;
 using NimbusChat.ViewModels;
 
 namespace NimbusChat
 {
     public partial class WeatherWindow : Window
     {
+        public WeatherViewModel ViewModel => (WeatherViewModel)DataContext;
+
         public WeatherWindow()
         {
             InitializeComponent();
-            DataContext = new WeatherViewModel(); 
+
+            ViewModel.PropertyChanged += (s, e) =>
+            {
+                if (e.PropertyName == nameof(WeatherViewModel.DialogResultValue))
+                {
+                    DialogResult = ViewModel.DialogResultValue;
+                }
+            };
         }
     }
 }

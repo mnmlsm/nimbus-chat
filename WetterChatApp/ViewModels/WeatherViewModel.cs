@@ -11,6 +11,9 @@ namespace NimbusChat.ViewModels
     {
         private string _city;
         private string _weatherResult;
+        private string _temperature;
+        private string _condition;
+        private bool? _dialogResult;
 
         public string City
         {
@@ -28,6 +31,36 @@ namespace NimbusChat.ViewModels
             set
             {
                 _weatherResult = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public string Temperature
+        {
+            get => _temperature;
+            set
+            {
+                _temperature = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public string Condition
+        {
+            get => _condition;
+            set
+            {
+                _condition = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public bool? DialogResultValue
+        {
+            get => _dialogResult;
+            set
+            {
+                _dialogResult = value;
                 OnPropertyChanged();
             }
         }
@@ -61,8 +94,12 @@ namespace NimbusChat.ViewModels
                     var temp = data.main.temp;
                     var description = data.weather[0].description;
 
-                    WeatherResult =
-                        $"{City}: {temp}°C, {description}";
+                    Temperature = $"{temp}°C";
+                    Condition = description;
+
+                    WeatherResult = $"{City}: {temp}°C, {description}";
+
+                    DialogResultValue = true;
                 }
             }
             catch (Exception ex)
