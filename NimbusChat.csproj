@@ -112,6 +112,7 @@
     </Compile>
     <Compile Include="WetterChatApp\Repositories\WeatherDataRepository.cs" />
     <Compile Include="WetterChatApp\Services\AuthService.cs" />
+    <Compile Include="WetterChatApp\ViewModels\ProfileViewModel.cs" />
     <Compile Include="WetterChatApp\ViewModels\WeatherViewModel.cs" />
     <Compile Include="WeatherWindow.xaml.cs">
       <DependentUpon>WeatherWindow.xaml</DependentUpon>

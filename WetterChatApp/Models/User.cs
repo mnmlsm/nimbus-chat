@@ -32,5 +32,13 @@ namespace NimbusChat.WetterChatApp.Models
         }
             = string.Empty;
 
+        public string Status 
+        { 
+            get; set; 
+        }       
+        public string FavoriteCity 
+        { 
+            get; set; 
+        } 
     }
 }

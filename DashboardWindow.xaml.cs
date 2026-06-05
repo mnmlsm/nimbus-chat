@@ -65,7 +65,7 @@ namespace NimbusChat
 
         private void OpenProfile_Click(object sender, RoutedEventArgs e)
         {
-            var profileWindow = new ProfileWindow
+            var profileWindow = new ProfileWindow(1) // Replace 1 with the actual user ID
             {
                 Owner = this
             };

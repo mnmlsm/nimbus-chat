@@ -35,7 +35,9 @@ CREATE TABLE IF NOT EXISTS Users (
     Id INTEGER PRIMARY KEY AUTOINCREMENT,
     Username TEXT NOT NULL UNIQUE,
     Email TEXT NOT NULL,
-    PasswordHash TEXT NOT NULL
+    PasswordHash TEXT NOT NULL,
+    Status TEXT,
+    FavoriteCity TEXT
 );
 
 CREATE TABLE IF NOT EXISTS Messages (
@@ -58,6 +60,22 @@ CREATE TABLE IF NOT EXISTS WeatherData (
                 using (var command = new SQLiteCommand(sql, connection))
                 {
                     command.ExecuteNonQuery();
+                }
+
+                // Optional: für bestehende DBs Spalten nachrüsten (fehler werden still ignoriert)
+                var alterSql = @"
+ALTER TABLE Users ADD COLUMN Status TEXT;
+ALTER TABLE Users ADD COLUMN FavoriteCity TEXT;";
+                try
+                {
+                    using (var alterCommand = new SQLiteCommand(alterSql, connection))
+                    {
+                        alterCommand.ExecuteNonQuery();
+                    }
+                }
+                catch (SQLiteException)
+                {
+                    // Spalten existieren bereits -> ignorieren
                 }
             }
         }
