@@ -9,7 +9,7 @@ namespace NimbusChat.WetterChatApp.Data
         private static string DatabaseFile => Path.Combine(
             AppDomain.CurrentDomain.BaseDirectory,
             "Files",
-            "weather.db");
+            "WetterchatDatabaseLibrary.db");
 
         public static string ConnectionString => $"Data Source={DatabaseFile};Version=3;";
 
