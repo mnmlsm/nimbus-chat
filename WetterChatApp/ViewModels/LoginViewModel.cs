@@ -1,9 +1,11 @@
 ﻿using System.Linq;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using NimbusChat.WetterChatApp.Infrastructure;
+using NimbusChat.WetterChatApp.Data;
+using NimbusChat.WetterChatApp.Repositories;
 using NimbusChat.WetterChatApp.Services;
+using NimbusChat.WetterChatApp.Models;
 
 namespace NimbusChat.WetterChatApp.ViewModels
 {
@@ -37,8 +39,11 @@ namespace NimbusChat.WetterChatApp.ViewModels
 
         public LoginViewModel()
         {
+            // DB vorbereiten
+            DatabaseInitializer.Initialize();
+
             _authService = new AuthService();
-            LoginCommand = new RelayCommand(async _ => await ExecuteLoginAsync(), _ => CanExecuteLogin());
+            LoginCommand = new RelayCommand(_ => ExecuteLogin(), _ => CanExecuteLogin());
         }
 
         private bool CanExecuteLogin()
@@ -47,33 +52,28 @@ namespace NimbusChat.WetterChatApp.ViewModels
                    !string.IsNullOrWhiteSpace(Password);
         }
 
-        private async Task ExecuteLoginAsync()
+        private void ExecuteLogin()
         {
             ErrorMessage = string.Empty;
 
-            try
+            // Einfach synchroner Call auf AuthService
+            var user = _authService.Login(Email, Password);
+
+            if (user == null)
             {
-                var user = await _authService.LoginAsync(Email, Password);
-
-                if (user == null)
-                {
-                    ErrorMessage = "Ungültige E-Mail oder Passwort.";
-                    return;
-                }
-
-                var dashboard = new DashboardWindow();
-                dashboard.Show();
-
-                var loginWindow = Application.Current.Windows
-                    .OfType<Window>()
-                    .FirstOrDefault(w => w is MainWindow);
-
-                loginWindow?.Close();
+                ErrorMessage = "Invalid email or password.";
+                return;
             }
-            catch
-            {
-                ErrorMessage = "Login fehlgeschlagen.";
-            }
+
+            // Dashboard mit aktuellem User öffnen
+            var dashboard = new DashboardWindow(user);
+            dashboard.Show();
+
+            var loginWindow = Application.Current.Windows
+                .OfType<Window>()
+                .FirstOrDefault(w => w is MainWindow);
+
+            loginWindow?.Close();
         }
     }
 }

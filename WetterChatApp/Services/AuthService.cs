@@ -29,5 +29,17 @@ namespace NimbusChat.WetterChatApp.Services
 
             return Task.FromResult(user);
         }
+
+        public User Login(string email, string password)
+        {
+            var user = _userRepository.GetByEmail(email);
+            if (user == null)
+                return null;
+
+            if (user.PasswordHash != password)
+                return null;
+
+            return user;
+        }
     }
 }

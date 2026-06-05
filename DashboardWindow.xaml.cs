@@ -2,11 +2,14 @@
 using System.Runtime.CompilerServices;
 using System.Windows;
 using NimbusChat.ViewModels;
+using NimbusChat.WetterChatApp.Models;
 
 namespace NimbusChat
 {
     public partial class DashboardWindow : Window, INotifyPropertyChanged
     {
+        private readonly User _currentUser;
+
         private string _weatherCity = "Leipzig";
         public string WeatherCity
         {
@@ -40,9 +43,10 @@ namespace NimbusChat
             }
         }
 
-        public DashboardWindow()
+        public DashboardWindow(User currentUser)
         {
             InitializeComponent();
+            _currentUser = currentUser;
             DataContext = this;
         }
 
@@ -65,7 +69,7 @@ namespace NimbusChat
 
         private void OpenProfile_Click(object sender, RoutedEventArgs e)
         {
-            var profileWindow = new ProfileWindow(1) // Replace 1 with the actual user ID
+            var profileWindow = new ProfileWindow(_currentUser.Id)
             {
                 Owner = this
             };
@@ -83,18 +87,18 @@ namespace NimbusChat
             messagesWindow.ShowDialog();
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        private void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
         private void Logout_Click(object sender, RoutedEventArgs e)
         {
             var login = new MainWindow();
             login.Show();
             this.Close();
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }
