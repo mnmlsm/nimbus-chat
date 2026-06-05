@@ -110,6 +110,7 @@
     <Compile Include="ProfileWindow.xaml.cs">
       <DependentUpon>ProfileWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="WetterChatApp\Services\AuthService.cs" />
     <Compile Include="WetterChatApp\ViewModels\WeatherViewModel.cs" />
     <Compile Include="WeatherWindow.xaml.cs">
       <DependentUpon>WeatherWindow.xaml</DependentUpon>
