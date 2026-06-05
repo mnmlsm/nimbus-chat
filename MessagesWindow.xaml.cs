@@ -1,13 +1,20 @@
 ﻿using System.Windows;
-using System.Windows.Controls;
+using NimbusChat.WetterChatApp.Models;
+using NimbusChat.WetterChatApp.Services;
 
 namespace NimbusChat
 {
     public partial class MessagesWindow : Window
     {
-        public MessagesWindow()
+        private readonly MessageService _messageService = new MessageService();
+        private readonly int _currentUserId;
+        private readonly int _otherUserId;
+
+        public MessagesWindow(int currentUserId, int otherUserId)
         {
             InitializeComponent();
+            _currentUserId = currentUserId;
+            _otherUserId = otherUserId;
         }
 
         private void Send_Click(object sender, RoutedEventArgs e)
@@ -16,8 +23,18 @@ namespace NimbusChat
             if (string.IsNullOrEmpty(text))
                 return;
 
-            ChatList.Items.Add(text);
-            MessageInput.Clear();
+            var success = _messageService.SendMessage(_currentUserId, _otherUserId, text);
+
+            if (success)
+            {
+                ChatList.Items.Add($"Me: {text}");
+                MessageInput.Clear();
+            }
+            else
+            {
+                MessageBox.Show("Message could not be sent.", "Error",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
     }
 }

@@ -79,7 +79,11 @@ namespace NimbusChat
 
         private void OpenMessages_Click(object sender, RoutedEventArgs e)
         {
-            var messagesWindow = new MessagesWindow
+            // TODO: Hier echten Chat-Partner bestimmen.
+            // Zum Testen nehmen wir z.B. User mit Id 2:
+            var otherUserId = 2;
+
+            var messagesWindow = new MessagesWindow(_currentUser.Id, otherUserId)
             {
                 Owner = this
             };

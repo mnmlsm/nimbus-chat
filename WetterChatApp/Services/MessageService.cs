@@ -1,12 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using NimbusChat.WetterChatApp.Models;
+﻿using NimbusChat.WetterChatApp.Models;
 using NimbusChat.WetterChatApp.Repositories;
+using System;
+using System.Collections.Generic;
+using System.Data.SQLite;
+using System.Runtime.Remoting.Messaging;
 
 namespace NimbusChat.WetterChatApp.Services
 {
     public class MessageService
     {
+
         private readonly MessageRepository _messageRepository;
 
         public MessageService()
@@ -14,11 +17,10 @@ namespace NimbusChat.WetterChatApp.Services
             _messageRepository = new MessageRepository();
         }
 
-        /// <summary>
-        /// Sendet eine neue Nachricht von senderId an receiverId.
-        /// </summary>
         public bool SendMessage(int senderId, int receiverId, string content)
         {
+            Console.WriteLine($"[MessageService.SendMessage] sender={senderId}, receiver={receiverId}, content='{content}'");
+
             if (senderId <= 0 || receiverId <= 0)
                 return false;
 
@@ -33,12 +35,11 @@ namespace NimbusChat.WetterChatApp.Services
                 CreatedAt = DateTime.UtcNow
             };
 
-            return _messageRepository.Create(message);
+            var success = _messageRepository.Create(message);
+            Console.WriteLine($"[MessageService.SendMessage] success={success}");
+            return success;
         }
 
-        /// <summary>
-        /// Holt alle Nachrichten zwischen zwei Usern (Chat-Verlauf).
-        /// </summary>
         public List<Message> GetMessagesBetween(int userId1, int userId2)
         {
             if (userId1 <= 0 || userId2 <= 0)
@@ -47,9 +48,6 @@ namespace NimbusChat.WetterChatApp.Services
             return _messageRepository.GetMessagesBetween(userId1, userId2);
         }
 
-        /// <summary>
-        /// Holt alle neuen Nachrichten seit einer bestimmten Message-Id (für Polling).
-        /// </summary>
         public List<Message> GetNewMessagesSince(int userId1, int userId2, int lastMessageId)
         {
             if (userId1 <= 0 || userId2 <= 0)

@@ -10,115 +10,101 @@ namespace NimbusChat.WetterChatApp.Repositories
     {
         public bool Create(Message message)
         {
-            using (var connection = new SQLiteConnection(DatabaseInitializer.ConnectionString))
-            {
-                connection.Open();
+            var connection = new SQLiteConnection(DatabaseInitializer.ConnectionString);
+            connection.Open();
 
-                var sql = @"
+            const string sql = @"
 INSERT INTO Messages (SenderId, ReceiverId, Content, CreatedAt)
 VALUES (@SenderId, @ReceiverId, @Content, @CreatedAt);";
 
-                using (var command = new SQLiteCommand(sql, connection))
-                {
-                    command.Parameters.AddWithValue("@SenderId", message.SenderId);
-                    command.Parameters.AddWithValue("@ReceiverId", message.ReceiverId);
-                    command.Parameters.AddWithValue("@Content", message.Content);
-                    command.Parameters.AddWithValue("@CreatedAt", message.CreatedAt.ToString("o")); // ISO-8601
+            var command = new SQLiteCommand(sql, connection);
+            command.Parameters.AddWithValue("@SenderId", message.SenderId);
+            command.Parameters.AddWithValue("@ReceiverId", message.ReceiverId);
+            command.Parameters.AddWithValue("@Content", message.Content);
+            command.Parameters.AddWithValue("@CreatedAt",
+                message.CreatedAt == default
+                    ? DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss")
+                    : message.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss"));
 
-                    try
-                    {
-                        return command.ExecuteNonQuery() > 0;
-                    }
-                    catch (SQLiteException)
-                    {
-                        return false;
-                    }
-                }
-            }
+            var rows = command.ExecuteNonQuery();
+            Console.WriteLine($"[MessageRepository.Create] rows={rows}, sender={message.SenderId}, receiver={message.ReceiverId}");
+            return rows == 1;
         }
 
-        public List<Message> GetMessagesBetween(int userId1, int userId2)
+        /// <summary>
+        /// Holt den gesamten Chat-Verlauf zwischen zwei Usern.
+        /// </summary>
+        public List<Message> GetMessagesBetween(int userId1, int userId2, int limit = 200)
         {
-            var messages = new List<Message>();
+            var result = new List<Message>();
 
-            using (var connection = new SQLiteConnection(DatabaseInitializer.ConnectionString))
-            {
-                connection.Open();
+            var connection = new SQLiteConnection(DatabaseInitializer.ConnectionString);
+            connection.Open();
 
-                var sql = @"
+            const string sql = @"
 SELECT Id, SenderId, ReceiverId, Content, CreatedAt
 FROM Messages
-WHERE (SenderId = @User1 AND ReceiverId = @User2)
-   OR (SenderId = @User2 AND ReceiverId = @User1)
-ORDER BY Id;";
+WHERE (SenderId = @U1 AND ReceiverId = @U2)
+   OR (SenderId = @U2 AND ReceiverId = @U1)
+ORDER BY datetime(CreatedAt) ASC
+LIMIT @Limit;";
 
-                using (var command = new SQLiteCommand(sql, connection))
+            var command = new SQLiteCommand(sql, connection);
+            command.Parameters.AddWithValue("@U1", userId1);
+            command.Parameters.AddWithValue("@U2", userId2);
+            command.Parameters.AddWithValue("@Limit", limit);
+
+            var reader = command.ExecuteReader();
+            while (reader.Read())
+            {
+                result.Add(new Message
                 {
-                    command.Parameters.AddWithValue("@User1", userId1);
-                    command.Parameters.AddWithValue("@User2", userId2);
-
-                    using (var reader = command.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            messages.Add(new Message
-                            {
-                                Id = Convert.ToInt32(reader["Id"]),
-                                SenderId = Convert.ToInt32(reader["SenderId"]),
-                                ReceiverId = Convert.ToInt32(reader["ReceiverId"]),
-                                Content = reader["Content"].ToString(),
-                                CreatedAt = DateTime.Parse(reader["CreatedAt"].ToString())
-                            });
-                        }
-                    }
-                }
+                    Id = reader.GetInt32(0),
+                    SenderId = reader.GetInt32(1),
+                    ReceiverId = reader.GetInt32(2),
+                    Content = reader.GetString(3),
+                    CreatedAt = DateTime.Parse(reader.GetString(4))
+                });
             }
 
-            return messages;
+            return result;
         }
-
-
-
         public List<Message> GetNewMessagesSince(int userId1, int userId2, int lastMessageId)
         {
-            var messages = new List<Message>();
+            var result = new List<Message>();
 
-            using (var connection = new SQLiteConnection(DatabaseInitializer.ConnectionString))
-            {
-                connection.Open();
+            var connection = new SQLiteConnection(DatabaseInitializer.ConnectionString);
+            connection.Open();
 
-                var sql = @"
+            const string sql = @"
 SELECT Id, SenderId, ReceiverId, Content, CreatedAt
 FROM Messages
 WHERE Id > @LastId
-  AND ((SenderId = @User1 AND ReceiverId = @User2)
-    OR (SenderId = @User2 AND ReceiverId = @User1))
-ORDER BY Id;";
+  AND (
+        (SenderId = @U1 AND ReceiverId = @U2)
+     OR (SenderId = @U2 AND ReceiverId = @U1)
+  )
+ORDER BY Id ASC;";
 
-                using (var command = new SQLiteCommand(sql, connection))
+            var command = new SQLiteCommand(sql, connection);
+            command.Parameters.AddWithValue("@LastId", lastMessageId);
+            command.Parameters.AddWithValue("@U1", userId1);
+            command.Parameters.AddWithValue("@U2", userId2);
+
+            var reader = command.ExecuteReader();
+            while (reader.Read())
+            {
+                result.Add(new Message
                 {
-                    command.Parameters.AddWithValue("@LastId", lastMessageId);
-                    command.Parameters.AddWithValue("@User1", userId1);
-                    command.Parameters.AddWithValue("@User2", userId2);
-
-                    using (var reader = command.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            messages.Add(new Message
-                            {
-                                Id = Convert.ToInt32(reader["Id"]),
-                                SenderId = Convert.ToInt32(reader["SenderId"]),
-                                ReceiverId = Convert.ToInt32(reader["ReceiverId"]),
-                                Content = reader["Content"].ToString(),
-                                CreatedAt = DateTime.Parse(reader["CreatedAt"].ToString())
-                            });
-                        }
-                    }
-                }
+                    Id = reader.GetInt32(0),
+                    SenderId = reader.GetInt32(1),
+                    ReceiverId = reader.GetInt32(2),
+                    Content = reader.GetString(3),
+                    CreatedAt = DateTime.Parse(reader.GetString(4))
+                });
             }
 
-            return messages;
+            return result;
         }
     }
 }
