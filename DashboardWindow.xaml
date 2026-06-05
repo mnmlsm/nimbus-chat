@@ -5,7 +5,9 @@
         WindowStartupLocation="CenterScreen">
 
     <Grid Background="#EAF2F8">
-        <StackPanel Margin="30">
+
+        <!-- Hauptinhalt links oben -->
+        <StackPanel Margin="30" HorizontalAlignment="Left" VerticalAlignment="Top">
 
             <TextBlock Text="Welcome!"
                        FontSize="28"
@@ -49,5 +51,15 @@
             </WrapPanel>
 
         </StackPanel>
+
+        <!-- Logout-Button unten rechts -->
+        <Button Content="Logout"
+                Width="100" Height="35"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Bottom"
+                Margin="0,0,20,20"
+                Background="#444444"
+                Foreground="White"
+                Click="Logout_Click"/>
     </Grid>
 </Window>

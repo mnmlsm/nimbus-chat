@@ -89,5 +89,12 @@ namespace NimbusChat
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+
+        private void Logout_Click(object sender, RoutedEventArgs e)
+        {
+            var login = new MainWindow();
+            login.Show();
+            this.Close();
+        }
     }
 }
