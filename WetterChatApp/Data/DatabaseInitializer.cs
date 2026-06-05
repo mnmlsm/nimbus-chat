@@ -1,23 +1,26 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.IO;
 using System.Data.SQLite;
-
-
 
 namespace NimbusChat.WetterChatApp.Data
 {
     public static class DatabaseInitializer
     {
-        private static string DatabaseFile = Path.Combine(Environment.CurrentDirectory, "weather.db");
+        private static string DatabaseFile => Path.Combine(
+            AppDomain.CurrentDomain.BaseDirectory,
+            "Files",
+            "weather.db");
 
         public static string ConnectionString => $"Data Source={DatabaseFile};Version=3;";
 
         public static void Initialize()
         {
+            var directory = Path.GetDirectoryName(DatabaseFile);
+            if (!Directory.Exists(directory))
+            {
+                Directory.CreateDirectory(directory);
+            }
+
             if (!File.Exists(DatabaseFile))
             {
                 SQLiteConnection.CreateFile(DatabaseFile);
