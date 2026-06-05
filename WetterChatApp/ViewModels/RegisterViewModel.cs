@@ -1,8 +1,9 @@
-﻿using System.Linq;
+﻿using NimbusChat.WetterChatApp.Infrastructure;
+using NimbusChat.WetterChatApp.Models;
+using NimbusChat.WetterChatApp.Repositories;
+using System.Linq;
 using System.Windows;
 using System.Windows.Input;
-using NimbusChat.WetterChatApp.Infrastructure;
-using NimbusChat.WetterChatApp.Repositories;
 
 namespace NimbusChat.WetterChatApp.ViewModels
 {
@@ -58,7 +59,20 @@ namespace NimbusChat.WetterChatApp.ViewModels
                 return;
             }
 
-            _userRepository.AddUser(Email, Password);
+            var user = new User
+            {
+                Username = Email,
+                Email = Email,
+                PasswordHash = Password
+            };
+
+            var success = _userRepository.Create(user);
+
+            if (!success)
+            {
+                ErrorMessage = "Registration failed.";
+                return;
+            }
 
             MessageBox.Show("Registration successful!");
 

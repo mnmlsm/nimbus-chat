@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Data.SQLite;
 using NimbusChat.WetterChatApp.Data;
 using NimbusChat.WetterChatApp.Models;
@@ -18,8 +14,8 @@ namespace NimbusChat.WetterChatApp.Repositories
                 connection.Open();
 
                 var sql = @"
-                INSERT INTO Users (Username, Email, PasswordHash)
-                VALUES (@Username, @Email, @PasswordHash);";
+                    INSERT INTO Users (Username, Email, PasswordHash)
+                    VALUES (@Username, @Email, @PasswordHash);";
 
                 using (var command = new SQLiteCommand(sql, connection))
                 {
@@ -33,7 +29,6 @@ namespace NimbusChat.WetterChatApp.Repositories
                     }
                     catch (SQLiteException)
                     {
-                        // z.B. UNIQUE-Constraint verletzt (Username/Email bereits vorhanden)
                         return false;
                     }
                 }
@@ -47,10 +42,10 @@ namespace NimbusChat.WetterChatApp.Repositories
                 connection.Open();
 
                 var sql = @"
-                SELECT Id, Username, Email, PasswordHash
-                FROM Users
-                WHERE Email = @Email
-                LIMIT 1;";
+                    SELECT Id, Username, Email, PasswordHash
+                    FROM Users
+                    WHERE Email = @Email
+                    LIMIT 1;";
 
                 using (var command = new SQLiteCommand(sql, connection))
                 {
@@ -69,25 +64,6 @@ namespace NimbusChat.WetterChatApp.Repositories
                             PasswordHash = reader["PasswordHash"].ToString()
                         };
                     }
-                }
-            }
-        }
-
-        public void AddUser(string email, string password)
-        {
-            using (var connection = new SQLiteConnection(DatabaseInitializer.ConnectionString))
-            {
-                connection.Open();
-
-                var sql = "INSERT INTO Users (Username, Email, PasswordHash) VALUES (@Username, @Email, @Password)";
-
-                using (var cmd = new SQLiteCommand(sql, connection))
-                {
-                    cmd.Parameters.AddWithValue("@Username", email);
-                    cmd.Parameters.AddWithValue("@Email", email);
-                    cmd.Parameters.AddWithValue("@Password", password);
-
-                    cmd.ExecuteNonQuery();
                 }
             }
         }
