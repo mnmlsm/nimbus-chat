@@ -13,7 +13,7 @@ namespace NimbusChat.WetterChatApp.Repositories
             {
                 connection.Open();
 
-                var sql = @"
+                string sql = @"
                     INSERT INTO WeatherData (City, Temperature, Humidity, Description, CreatedAt)
                     VALUES (@City, @Temperature, @Humidity, @Description, @CreatedAt);";
 

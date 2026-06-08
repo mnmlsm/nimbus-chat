@@ -7,6 +7,7 @@ namespace NimbusChat.WetterChatApp.Repositories
 {
     public class UserRepository
     {
+        // User anlegen
         public bool Create(User user)
         {
             using (var connection = new SQLiteConnection(DatabaseInitializer.ConnectionString))
@@ -37,6 +38,7 @@ VALUES (@Username, @Email, @PasswordHash, @Status, @FavoriteCity);";
             }
         }
 
+        // User Finden
         public User GetByEmail(string email)
         {
             using (var connection = new SQLiteConnection(DatabaseInitializer.ConnectionString))
@@ -72,6 +74,7 @@ LIMIT 1;";
             }
         }
 
+        // User finden mit ID
         public User GetById(int id)
         {
             using (var connection = new SQLiteConnection(DatabaseInitializer.ConnectionString))
@@ -107,6 +110,7 @@ LIMIT 1;";
             }
         }
 
+        // User information update
         public bool Update(User user)
         {
             using (var connection = new SQLiteConnection(DatabaseInitializer.ConnectionString))

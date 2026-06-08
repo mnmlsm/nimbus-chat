@@ -15,7 +15,7 @@ namespace NimbusChat.WetterChatApp.Data
 
         public static void Initialize()
         {
-            var directory = Path.GetDirectoryName(DatabaseFile);
+            string directory = Path.GetDirectoryName(DatabaseFile);
             if (!Directory.Exists(directory))
             {
                 Directory.CreateDirectory(directory);
@@ -28,11 +28,11 @@ namespace NimbusChat.WetterChatApp.Data
                 SQLiteConnection.CreateFile(DatabaseFile);
             }
 
-            using (var connection = new SQLiteConnection(ConnectionString))
+            using (SQLiteConnection connection = new SQLiteConnection(ConnectionString))
             {
                 connection.Open();
 
-                var sql = @"
+                string sql = @"
 CREATE TABLE IF NOT EXISTS Users 
 (
     Id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -62,18 +62,18 @@ CREATE TABLE IF NOT EXISTS WeatherData
     CreatedAt TEXT NOT NULL
 );";
 
-                using (var command = new SQLiteCommand(sql, connection))
+                using (SQLiteCommand command = new SQLiteCommand(sql, connection))
                 {
                     command.ExecuteNonQuery();
                 }
 
-                var alterSql = @"
+                string  alterSql = @"
 ALTER TABLE Users ADD COLUMN Status TEXT;
 ALTER TABLE Users ADD COLUMN FavoriteCity TEXT;";
 
                 try
                 {
-                    using (var alterCommand = new SQLiteCommand(alterSql, connection))
+                    using (SQLiteCommand alterCommand = new SQLiteCommand(alterSql, connection))
                     {
                         alterCommand.ExecuteNonQuery();
                     }

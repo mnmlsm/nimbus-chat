@@ -34,20 +34,20 @@ VALUES (@SenderId, @ReceiverId, @Content, @CreatedAt);";
 
         public List<Message> GetMessagesBetween(int userId1, int userId2, int limit = 200)
         {
-            var result = new List<Message>();
+            List<Message> result = new List<Message>();
 
             var connection = new SQLiteConnection(DatabaseInitializer.ConnectionString);
             connection.Open();
 
             const string sql = @"
-SELECT Id, SenderId, ReceiverId, Content, CreatedAt
-FROM Messages
-WHERE (SenderId = @U1 AND ReceiverId = @U2)
-   OR (SenderId = @U2 AND ReceiverId = @U1)
-ORDER BY datetime(CreatedAt) ASC
-LIMIT @Limit;";
+                        SELECT Id, SenderId, ReceiverId, Content, CreatedAt
+                        FROM Messages
+                        WHERE (SenderId = @U1 AND ReceiverId = @U2)
+                           OR (SenderId = @U2 AND ReceiverId = @U1)
+                        ORDER BY datetime(CreatedAt) ASC
+                        LIMIT @Limit;";
 
-            var command = new SQLiteCommand(sql, connection);
+            SQLiteCommand command = new SQLiteCommand(sql, connection);
             command.Parameters.AddWithValue("@U1", userId1);
             command.Parameters.AddWithValue("@U2", userId2);
             command.Parameters.AddWithValue("@Limit", limit);
