@@ -8,7 +8,7 @@ namespace NimbusChat.WetterChatApp.Data
     {
         private static string DatabaseFile => Path.Combine(
             AppDomain.CurrentDomain.BaseDirectory,
-            "Files",
+            "Data",
             "WetterchatDatabaseLibrary.db");
 
         public static string ConnectionString => $"Data Source={DatabaseFile};Version=3;";
@@ -23,6 +23,8 @@ namespace NimbusChat.WetterChatApp.Data
 
             if (!File.Exists(DatabaseFile))
             {
+                // nur im Output-Ordner eine neue Datei erzeugen,
+                // das Original im Projektordner bleibt unberührt
                 SQLiteConnection.CreateFile(DatabaseFile);
             }
 
@@ -65,6 +67,7 @@ CREATE TABLE IF NOT EXISTS WeatherData (
                 var alterSql = @"
 ALTER TABLE Users ADD COLUMN Status TEXT;
 ALTER TABLE Users ADD COLUMN FavoriteCity TEXT;";
+
                 try
                 {
                     using (var alterCommand = new SQLiteCommand(alterSql, connection))
