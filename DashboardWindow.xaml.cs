@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
-using NimbusChat.ViewModels;
 using NimbusChat.WetterChatApp.Models;
 
 namespace NimbusChat
@@ -50,6 +49,16 @@ namespace NimbusChat
             DataContext = this;
         }
 
+        private void OpenProfile_Click(object sender, RoutedEventArgs e)
+        {
+            var profileWindow = new ProfileWindow(_currentUser.Id)
+            {
+                Owner = this
+            };
+
+            profileWindow.ShowDialog();
+        }
+
         private void OpenWeather_Click(object sender, RoutedEventArgs e)
         {
             var window = new WeatherWindow
@@ -67,23 +76,9 @@ namespace NimbusChat
             }
         }
 
-        private void OpenProfile_Click(object sender, RoutedEventArgs e)
-        {
-            var profileWindow = new ProfileWindow(_currentUser.Id)
-            {
-                Owner = this
-            };
-
-            profileWindow.ShowDialog();
-        }
-
         private void OpenMessages_Click(object sender, RoutedEventArgs e)
         {
-            // TODO: Hier echten Chat-Partner bestimmen.
-            // Zum Testen nehmen wir z.B. User mit Id 2:
-            var otherUserId = 2;
-
-            var messagesWindow = new MessagesWindow(_currentUser.Id, otherUserId)
+            var messagesWindow = new MessagesWindow(_currentUser.Id)
             {
                 Owner = this
             };
@@ -95,7 +90,7 @@ namespace NimbusChat
         {
             var login = new MainWindow();
             login.Show();
-            this.Close();
+            Close();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

@@ -7,8 +7,9 @@ namespace NimbusChat.WetterChatApp.Data
     public static class DatabaseInitializer
     {
         private static string DatabaseFile => Path.Combine(
-            AppDomain.CurrentDomain.BaseDirectory, 
-            "Files", "WetterchatDatabaseLibrary.db");
+            AppDomain.CurrentDomain.BaseDirectory,
+            "Files",
+            "WetterchatDatabaseLibrary.db");
 
         public static string ConnectionString => $"Data Source={DatabaseFile};Version=3;";
 
@@ -64,7 +65,6 @@ CREATE TABLE IF NOT EXISTS WeatherData (
                 var alterSql = @"
 ALTER TABLE Users ADD COLUMN Status TEXT;
 ALTER TABLE Users ADD COLUMN FavoriteCity TEXT;";
-
                 try
                 {
                     using (var alterCommand = new SQLiteCommand(alterSql, connection))
@@ -74,7 +74,6 @@ ALTER TABLE Users ADD COLUMN FavoriteCity TEXT;";
                 }
                 catch (SQLiteException)
                 {
-                    // columns already exist
                 }
             }
         }
