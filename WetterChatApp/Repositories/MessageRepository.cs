@@ -30,9 +30,8 @@ VALUES (@SenderId, @ReceiverId, @Content, @CreatedAt);";
             return rows == 1;
         }
 
-        /// <summary>
-        /// Bisheriger 1:1-Chat-Verlauf (falls du ihn weiter nutzen willst).
-        /// </summary>
+        // Bisheriger 1:1-Chat-Verlauf 
+
         public List<Message> GetMessagesBetween(int userId1, int userId2, int limit = 200)
         {
             var result = new List<Message>();

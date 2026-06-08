@@ -33,7 +33,8 @@ namespace NimbusChat.WetterChatApp.Data
                 connection.Open();
 
                 var sql = @"
-CREATE TABLE IF NOT EXISTS Users (
+CREATE TABLE IF NOT EXISTS Users 
+(
     Id INTEGER PRIMARY KEY AUTOINCREMENT,
     Username TEXT NOT NULL UNIQUE,
     Email TEXT NOT NULL UNIQUE,
@@ -42,7 +43,8 @@ CREATE TABLE IF NOT EXISTS Users (
     FavoriteCity TEXT
 );
 
-CREATE TABLE IF NOT EXISTS Messages (
+CREATE TABLE IF NOT EXISTS Messages 
+(
     Id INTEGER PRIMARY KEY AUTOINCREMENT,
     SenderId INTEGER NOT NULL,
     ReceiverId INTEGER NOT NULL,
@@ -50,7 +52,8 @@ CREATE TABLE IF NOT EXISTS Messages (
     CreatedAt TEXT NOT NULL DEFAULT (datetime('now'))
 );
 
-CREATE TABLE IF NOT EXISTS WeatherData (
+CREATE TABLE IF NOT EXISTS WeatherData 
+(
     Id INTEGER PRIMARY KEY AUTOINCREMENT,
     City TEXT NOT NULL,
     Temperature REAL NOT NULL,
