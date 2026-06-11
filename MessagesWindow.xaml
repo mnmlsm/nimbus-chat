@@ -4,6 +4,7 @@
         Title="Global Chat"
         Height="500"
         Width="400"
+        Background="AliceBlue"
         WindowStartupLocation="CenterOwner">
     <Grid Margin="10">
         <Grid.RowDefinitions>

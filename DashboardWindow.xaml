@@ -4,7 +4,7 @@
         Title="Dashboard" Height="450" Width="700"
         WindowStartupLocation="CenterScreen">
 
-    <Grid Background="#EAF2F8">
+    <Grid Background="AliceBlue">
 
         <!-- Hauptinhalt links oben -->
         <StackPanel Margin="30" HorizontalAlignment="Left" VerticalAlignment="Top">

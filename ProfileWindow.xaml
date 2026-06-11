@@ -6,9 +6,10 @@
         Width="500"
         MinHeight="400"
         MinWidth="400"
+        Background="AliceBlue"
         WindowStartupLocation="CenterScreen">
 
-    <Grid Background="#F4F6F8">
+    <Grid Background="AliceBlue">
         <StackPanel Margin="30">
 
             <TextBlock Text="User Profile"
