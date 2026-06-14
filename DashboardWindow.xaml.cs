@@ -2,12 +2,14 @@
 using System.Runtime.CompilerServices;
 using System.Windows;
 using NimbusChat.WetterChatApp.Models;
+using NimbusChat.WetterChatApp.Repositories;
 
 namespace NimbusChat
 {
     public partial class DashboardWindow : Window, INotifyPropertyChanged
     {
         private readonly User _currentUser;
+        private readonly UserRepository _userRepository = new UserRepository();
 
         private string _weatherCity = "Leipzig";
         public string WeatherCity
@@ -88,8 +90,11 @@ namespace NimbusChat
 
         private void Logout_Click(object sender, RoutedEventArgs e)
         {
+            _userRepository.UpdateStatus(_currentUser.Id, "Offline");
+
             var login = new MainWindow();
             login.Show();
+
             Close();
         }
 
@@ -98,6 +103,12 @@ namespace NimbusChat
         private void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        protected override void OnClosing(CancelEventArgs e)
+        {
+            _userRepository.UpdateStatus(_currentUser.Id, "Offline");
+            base.OnClosing(e);
         }
     }
 }

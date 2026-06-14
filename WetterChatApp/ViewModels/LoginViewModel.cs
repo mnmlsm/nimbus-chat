@@ -12,6 +12,7 @@ namespace NimbusChat.WetterChatApp.ViewModels
     public class LoginViewModel : BaseViewModel
     {
         private readonly AuthService _authService;
+        private readonly UserRepository _userRepository;
 
         private string _email;
         private string _password;
@@ -43,6 +44,7 @@ namespace NimbusChat.WetterChatApp.ViewModels
             DatabaseInitializer.Initialize();
 
             _authService = new AuthService();
+            _userRepository = new UserRepository();
             LoginCommand = new RelayCommand(_ => ExecuteLogin(), _ => CanExecuteLogin());
         }
 
@@ -64,6 +66,8 @@ namespace NimbusChat.WetterChatApp.ViewModels
                 ErrorMessage = "Invalid email or password.";
                 return;
             }
+
+            _userRepository.UpdateStatus(user.Id, "Online");
 
             // Dashboard mit aktuellem User öffnen
             var dashboard = new DashboardWindow(user);

@@ -1,7 +1,8 @@
-﻿using System;
-using System.Data.SQLite;
-using NimbusChat.WetterChatApp.Data;
+﻿using NimbusChat.WetterChatApp.Data;
 using NimbusChat.WetterChatApp.Models;
+using System;
+using System.Collections.Generic;
+using System.Data.SQLite;
 
 namespace NimbusChat.WetterChatApp.Repositories
 {
@@ -143,6 +144,73 @@ WHERE Id = @Id;";
                     {
                         return false;
                     }
+                }
+            }
+        }
+
+        public List<User> GetAllUsers()
+        {
+            var users = new List<User>();
+
+            using (var connection =
+                   new SQLiteConnection(DatabaseInitializer.ConnectionString))
+            {
+                connection.Open();
+
+                var command =
+                    new SQLiteCommand(
+                        @"SELECT Id,
+                         Username,
+                         Email,
+                         PasswordHash,
+                         Status,
+                         FavoriteCity
+                  FROM Users",
+                        connection);
+
+                var reader = command.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    users.Add(new User
+                    {
+                        Id = reader.GetInt32(0),
+                        Username = reader.GetString(1),
+                        Email = reader.GetString(2),
+                        PasswordHash = reader.GetString(3),
+
+                        Status = reader.IsDBNull(4)
+                            ? null
+                            : reader.GetString(4),
+
+                        FavoriteCity = reader.IsDBNull(5)
+                            ? null
+                            : reader.GetString(5)
+                    });
+                }
+            }
+
+            return users;
+        }
+
+        public bool UpdateStatus(int userId, string status)
+        {
+            using (var connection =
+                   new SQLiteConnection(DatabaseInitializer.ConnectionString))
+            {
+                connection.Open();
+
+                var sql = @"
+UPDATE Users
+SET Status = @Status
+WHERE Id = @Id;";
+
+                using (var command = new SQLiteCommand(sql, connection))
+                {
+                    command.Parameters.AddWithValue("@Status", status);
+                    command.Parameters.AddWithValue("@Id", userId);
+
+                    return command.ExecuteNonQuery() > 0;
                 }
             }
         }

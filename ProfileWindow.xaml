@@ -32,12 +32,13 @@
                      Text="{Binding Email, UpdateSourceTrigger=PropertyChanged}"/>
 
             <!-- Status -->
-            <TextBlock Text="Status"/>
-            <TextBox x:Name="StatusBox"
-                     Height="30"
-                     Margin="0,5,0,15"
-                     Text="{Binding Status, UpdateSourceTrigger=PropertyChanged}"/>
-
+            <ComboBox x:Name="StatusBox"
+          SelectedItem="{Binding Status}">
+                <ComboBoxItem Content="Online"/>
+                <ComboBoxItem Content="Away"/>
+                <ComboBoxItem Content="Busy"/>
+                <ComboBoxItem Content="Offline"/>
+            </ComboBox>
             <!-- Favorite City -->
             <TextBlock Text="Favorite City"/>
             <TextBox x:Name="CityBox"
