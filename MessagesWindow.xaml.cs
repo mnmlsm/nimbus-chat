@@ -90,7 +90,7 @@ namespace NimbusChat
                 UsersList.Items.Add(new User
                 {
                     Id = user.Id,
-                    Username = $"{statusIcon} {user.Username}",
+                    Username = user.Username,
                     Email = user.Email,
                     PasswordHash = user.PasswordHash,
                     Status = user.Status,
