@@ -2,14 +2,18 @@
 using NimbusChat.WetterChatApp.Repositories;
 using NimbusChat.WetterChatApp.Services;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
 
 namespace NimbusChat
 {
+
     public partial class MessagesWindow : Window
     {
+
         private readonly MessageService _messageService = new MessageService();
         private readonly int _currentUserId;
         private int _lastMessageId = 0;
@@ -51,32 +55,47 @@ namespace NimbusChat
 
         private void LoadUsers()
         {
+            _allUsers = _userRepository.GetAllUsers();
+
+            DisplayUsers(_allUsers);
+
+        }
+
+        private void DisplayUsers(IEnumerable<User> users)
+        {
             UsersList.Items.Clear();
-
-            var users = _userRepository.GetAllUsers();
-
-            MessageBox.Show("Users found: " + users.Count);
 
             foreach (var user in users)
             {
-                if (user.Id != _currentUserId)
+                if (user.Id == _currentUserId)
+                    continue;
+
+                string statusIcon = "⚫";
+
+                switch (user.Status)
                 {
-                    string statusIcon = "⚫";
-
-                    if (user.Status == "Online")
+                    case "Online":
                         statusIcon = "🟢";
-                    else if (user.Status == "Busy")
+                        break;
+
+                    case "Busy":
                         statusIcon = "🔴";
-                    else if (user.Status == "Away")
+                        break;
+
+                    case "Away":
                         statusIcon = "🟡";
-
-                    user.Username = $"{statusIcon} {user.Username}";
-                    UsersList.Items.Add(user);
-
-                        MessageBox.Show(
-                            $"{user.Username} | Status = {user.Status}");
-                    
+                        break;
                 }
+
+                UsersList.Items.Add(new User
+                {
+                    Id = user.Id,
+                    Username = $"{statusIcon} {user.Username}",
+                    Email = user.Email,
+                    PasswordHash = user.PasswordHash,
+                    Status = user.Status,
+                    FavoriteCity = user.FavoriteCity
+                });
             }
         }
 
@@ -155,13 +174,31 @@ namespace NimbusChat
         private readonly UserRepository _userRepository =
     new UserRepository();
 
+        private List<User> _allUsers = new List<User>();
+
         private int _selectedUserId;
 
         private void MessageInput_TextChanged(object sender, TextChangedEventArgs e)
         {
 
         }
+
+    private void SearchBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            string search = SearchBox.Text.Trim().ToLower();
+
+            if (string.IsNullOrWhiteSpace(search))
+            {
+                DisplayUsers(_allUsers);
+                return;
+            }
+
+            var filteredUsers = _allUsers.Where(user =>
+                user.Username.ToLower().Contains(search) ||
+                user.Email.ToLower().Contains(search));
+
+            DisplayUsers(filteredUsers);
+        }
+
     }
-
-
 }

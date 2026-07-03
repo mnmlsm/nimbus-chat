@@ -15,57 +15,66 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <!-- LEFT SIDE -->
-
         <Border Grid.Column="0"
-                Background="White"
-                CornerRadius="20"
-                Padding="15">
+        Background="White"
+        CornerRadius="20"
+        Padding="15">
 
             <Border.Effect>
                 <DropShadowEffect BlurRadius="12"
-                                  ShadowDepth="2"
-                                  Opacity="0.15"/>
+                          ShadowDepth="2"
+                          Opacity="0.15"/>
             </Border.Effect>
 
             <Grid>
 
                 <Grid.RowDefinitions>
+
                     <RowDefinition Height="Auto"/>
+
                     <RowDefinition Height="Auto"/>
+
                     <RowDefinition Height="*"/>
+
                 </Grid.RowDefinitions>
 
-                <TextBlock Text="Messages"
-                           FontSize="26"
-                           FontWeight="Bold"
-                           Margin="0,0,0,15"/>
+                <!-- Title -->
 
-                <TextBox Grid.Row="1"
-                         Height="40"
-                         Margin="0,0,0,15"
-                         Padding="10"
-                         Text="Search..."
-                         Foreground="Gray"
-                         IsReadOnly="True"/>
+                <TextBlock Text="Messages"
+                   FontSize="26"
+                   FontWeight="Bold"
+                   Margin="0,0,0,15"/>
+
+                <!-- Search -->
+
+                <TextBox x:Name="SearchBox"
+                 Grid.Row="1"
+                 Height="40"
+                 Margin="0,0,0,15"
+                 Padding="10"
+                 VerticalContentAlignment="Center"
+                 TextChanged="SearchBox_TextChanged"/>
+
+                <!-- Users -->
 
                 <ListBox x:Name="UsersList"
-                         Grid.Row="2"
-                         BorderThickness="0"
-                         SelectionChanged="UsersList_SelectionChanged">
+                 Grid.Row="2"
+                 BorderThickness="0"
+                 Background="Transparent"
+                 SelectionChanged="UsersList_SelectionChanged">
 
                     <ListBox.ItemContainerStyle>
 
                         <Style TargetType="ListBoxItem">
 
-                            <Setter Property="Margin"
-                                    Value="0,5"/>
-
                             <Setter Property="Padding"
-                                    Value="10"/>
+                            Value="12"/>
+
+                            <Setter Property="Margin"
+                            Value="0,4"/>
 
                             <Setter Property="HorizontalContentAlignment"
-                                    Value="Stretch"/>
+                            Value="Stretch"/>
 
                         </Style>
 
