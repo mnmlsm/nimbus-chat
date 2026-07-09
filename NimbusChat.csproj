@@ -256,11 +256,6 @@
   </ItemGroup>
   <!-- DB-Datei: in Data\ und beim Build kopieren -->
   <ItemGroup>
-    <None Include="Data\WetterchatDatabaseLibrary.db">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="sql\migrations\20260709_make_receiverid_nullable.sql" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
