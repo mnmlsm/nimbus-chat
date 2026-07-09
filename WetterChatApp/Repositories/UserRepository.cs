@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Data.SQLite;
+using MySql.Data.MySqlClient;
 using NimbusChat.WetterChatApp.Data;
 using NimbusChat.WetterChatApp.Models;
 
@@ -10,7 +10,7 @@ namespace NimbusChat.WetterChatApp.Repositories
         // User anlegen
         public bool Create(User user)
         {
-            using (var connection = new SQLiteConnection(DatabaseInitializer.ConnectionString))
+            using (var connection = new MySqlConnection(DatabaseInitializer.ConnectionString))
             {
                 connection.Open();
 
@@ -18,7 +18,7 @@ namespace NimbusChat.WetterChatApp.Repositories
 INSERT INTO Users (Username, Email, PasswordHash, Status, FavoriteCity)
 VALUES (@Username, @Email, @PasswordHash, @Status, @FavoriteCity);";
 
-                using (var command = new SQLiteCommand(sql, connection))
+                using (var command = new MySqlCommand(sql, connection))
                 {
                     command.Parameters.AddWithValue("@Username", user.Username);
                     command.Parameters.AddWithValue("@Email", user.Email);
@@ -30,7 +30,7 @@ VALUES (@Username, @Email, @PasswordHash, @Status, @FavoriteCity);";
                     {
                         return command.ExecuteNonQuery() > 0;
                     }
-                    catch (SQLiteException)
+                    catch (MySqlException)
                     {
                         return false;
                     }
@@ -38,10 +38,10 @@ VALUES (@Username, @Email, @PasswordHash, @Status, @FavoriteCity);";
             }
         }
 
-        // User Finden
+        // User finden (Email)
         public User GetByEmail(string email)
         {
-            using (var connection = new SQLiteConnection(DatabaseInitializer.ConnectionString))
+            using (var connection = new MySqlConnection(DatabaseInitializer.ConnectionString))
             {
                 connection.Open();
 
@@ -51,7 +51,7 @@ FROM Users
 WHERE Email = @Email
 LIMIT 1;";
 
-                using (var command = new SQLiteCommand(sql, connection))
+                using (var command = new MySqlCommand(sql, connection))
                 {
                     command.Parameters.AddWithValue("@Email", email);
 
@@ -77,7 +77,7 @@ LIMIT 1;";
         // User finden mit ID
         public User GetById(int id)
         {
-            using (var connection = new SQLiteConnection(DatabaseInitializer.ConnectionString))
+            using (var connection = new MySqlConnection(DatabaseInitializer.ConnectionString))
             {
                 connection.Open();
 
@@ -87,7 +87,7 @@ FROM Users
 WHERE Id = @Id
 LIMIT 1;";
 
-                using (var command = new SQLiteCommand(sql, connection))
+                using (var command = new MySqlCommand(sql, connection))
                 {
                     command.Parameters.AddWithValue("@Id", id);
 
@@ -113,7 +113,7 @@ LIMIT 1;";
         // User information update
         public bool Update(User user)
         {
-            using (var connection = new SQLiteConnection(DatabaseInitializer.ConnectionString))
+            using (var connection = new MySqlConnection(DatabaseInitializer.ConnectionString))
             {
                 connection.Open();
 
@@ -126,7 +126,7 @@ SET Username = @Username,
     FavoriteCity = @FavoriteCity
 WHERE Id = @Id;";
 
-                using (var command = new SQLiteCommand(sql, connection))
+                using (var command = new MySqlCommand(sql, connection))
                 {
                     command.Parameters.AddWithValue("@Username", user.Username);
                     command.Parameters.AddWithValue("@Email", user.Email);
@@ -139,7 +139,7 @@ WHERE Id = @Id;";
                     {
                         return command.ExecuteNonQuery() > 0;
                     }
-                    catch (SQLiteException)
+                    catch (MySqlException)
                     {
                         return false;
                     }

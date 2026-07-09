@@ -1,94 +1,102 @@
 ﻿using System;
-using System.IO;
-using System.Data.SQLite;
+using MySql.Data.MySqlClient; // MySQL ADO.NET Provider
 
 namespace NimbusChat.WetterChatApp.Data
 {
     public static class DatabaseInitializer
     {
-        // readonly property to get the path of the SQLite database file in the output directory (bin/Debug or bin/Release)
-        // Path of the SQLite database file in the output directory (bin/Debug or bin/Release)
-        private static string DatabaseFile => Path.Combine(
-            AppDomain.CurrentDomain.BaseDirectory,
-            "Data",
-            "WetterchatDatabaseLibrary.db");
+        // MySQL-Verbindungsdaten – bitte an deine Umgebung anpassen:
+        private const string Server = "localhost";
+        private const int Port = 3306;
+        private const string User = "root";
+        private const string Password = "NimbusChatPW";
+        private const string DatabaseName = "nimbuschat";
 
-        public static string ConnectionString => $"Data Source={DatabaseFile};Version=3;";
+        // ConnectionString für deinen MySQL-Server MIT Datenbank
+        public static string ConnectionString =>
+            $"Server={Server};Port={Port};Database={DatabaseName};Uid={User};Pwd={Password};";
 
         public static void Initialize()
         {
-            // Ensure the directory for the database file exists
-            string directory = Path.GetDirectoryName(DatabaseFile);
-            if (!Directory.Exists(directory))
-            {
-                Directory.CreateDirectory(directory);
-            }
+            // Datenbank automatisch erstellen (falls sie noch nicht existiert)
+            EnsureDatabaseExists();
 
-            if (!File.Exists(DatabaseFile))
-            {
-                // creates a new database file in the output directory,
-                // originally created in the project directory, but copied to output during build
-                SQLiteConnection.CreateFile(DatabaseFile);
-            }
-
-            // Open a connection to the SQLite database and create the necessary tables if they do not exist
-            using (SQLiteConnection connection = new SQLiteConnection(ConnectionString))
+            using (var connection = new MySqlConnection(ConnectionString))
             {
                 connection.Open();
 
-                // SQL command to create the Users, Messages, and WeatherData tables if they do not already exist
-                string sql = @"
-                    CREATE TABLE IF NOT EXISTS Users 
-                    (
-                        Id INTEGER PRIMARY KEY AUTOINCREMENT,
-                        Username TEXT NOT NULL UNIQUE,
-                        Email TEXT NOT NULL UNIQUE,
-                        PasswordHash TEXT NOT NULL,
-                        Status TEXT,
-                        FavoriteCity TEXT
-                    );
+                // Tabellen in MySQL-Syntax anlegen
+                var sql = @"
+CREATE TABLE IF NOT EXISTS Users 
+(
+    Id INT AUTO_INCREMENT PRIMARY KEY,
+    Username VARCHAR(255) NOT NULL UNIQUE,
+    Email VARCHAR(255) NOT NULL UNIQUE,
+    PasswordHash VARCHAR(255) NOT NULL,
+    Status VARCHAR(255),
+    FavoriteCity VARCHAR(255)
+);
 
-                    CREATE TABLE IF NOT EXISTS Messages 
-                    (
-                        Id INTEGER PRIMARY KEY AUTOINCREMENT,
-                        SenderId INTEGER NOT NULL,
-                        ReceiverId INTEGER NOT NULL,
-                        Content TEXT NOT NULL,
-                        CreatedAt TEXT NOT NULL DEFAULT (datetime('now'))
-                    );
+CREATE TABLE IF NOT EXISTS Messages 
+(
+    Id INT AUTO_INCREMENT PRIMARY KEY,
+    SenderId INT NOT NULL,
+    ReceiverId INT NOT NULL,
+    Content TEXT NOT NULL,
+    CreatedAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_messages_sender FOREIGN KEY (SenderId) REFERENCES Users(Id),
+    CONSTRAINT fk_messages_receiver FOREIGN KEY (ReceiverId) REFERENCES Users(Id)
+);
 
-                    CREATE TABLE IF NOT EXISTS WeatherData 
-                    (
-                        Id INTEGER PRIMARY KEY AUTOINCREMENT,
-                        City TEXT NOT NULL,
-                        Temperature REAL NOT NULL,
-                        Humidity INTEGER NOT NULL,
-                        Description TEXT NOT NULL,
-                        CreatedAt TEXT NOT NULL
-                    );";
-                // Execute the SQL command to create the tables
-                using (var command = new SQLiteCommand(sql, connection))
+CREATE TABLE IF NOT EXISTS WeatherData 
+(
+    Id INT AUTO_INCREMENT PRIMARY KEY,
+    City VARCHAR(255) NOT NULL,
+    Temperature DOUBLE NOT NULL,
+    Humidity INT NOT NULL,
+    Description TEXT NOT NULL,
+    CreatedAt DATETIME NOT NULL
+);";
+
+                using (var command = new MySqlCommand(sql, connection))
                 {
-                    // Execute the SQL command to create the tables
                     command.ExecuteNonQuery();
                 }
 
-                // SQL command to add new columns to the Users table if they do not already exist
-                string alterSql = @"
-                        ALTER TABLE Users ADD COLUMN Status TEXT;
-                        ALTER TABLE Users ADD COLUMN FavoriteCity TEXT;";
+                // OPTIONAL: ALTER TABLE, falls du später Spalten ergänzt
+                var alterSql = @"
+ALTER TABLE Users 
+    ADD COLUMN Status VARCHAR(255),
+    ADD COLUMN FavoriteCity VARCHAR(255);";
 
-                // Try to execute the ALTER TABLE command to add new columns, but ignore any exceptions if the columns already exist
                 try
                 {
-                    using (var alterCommand = new SQLiteCommand(alterSql, connection))
+                    using (var alterCommand = new MySqlCommand(alterSql, connection))
                     {
                         alterCommand.ExecuteNonQuery();
                     }
                 }
-                catch (SQLiteException)
+                catch (MySqlException)
                 {
-                    // Ignore exceptions if the columns already exist
+                    // Ignorieren, wenn Spalten bereits existieren
+                }
+            }
+        }
+
+        private static void EnsureDatabaseExists()
+        {
+            // ConnectionString OHNE Database, nur Server + Login
+            var masterConnectionString =
+                $"Server={Server};Port={Port};Uid={User};Pwd={Password};";
+
+            using (var connection = new MySqlConnection(masterConnectionString))
+            {
+                connection.Open();
+
+                var sql = $"CREATE DATABASE IF NOT EXISTS `{DatabaseName}`;";
+                using (var command = new MySqlCommand(sql, connection))
+                {
+                    command.ExecuteNonQuery();
                 }
             }
         }

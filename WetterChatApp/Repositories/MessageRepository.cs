@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.SQLite;
+using MySql.Data.MySqlClient;
 using NimbusChat.WetterChatApp.Data;
 using NimbusChat.WetterChatApp.Models;
 
@@ -10,59 +10,70 @@ namespace NimbusChat.WetterChatApp.Repositories
     {
         public bool Create(Message message)
         {
-            var connection = new SQLiteConnection(DatabaseInitializer.ConnectionString);
-            connection.Open();
+            using (var connection = new MySqlConnection(DatabaseInitializer.ConnectionString))
+            {
+                connection.Open();
 
-            const string sql = @"
+                const string sql = @"
 INSERT INTO Messages (SenderId, ReceiverId, Content, CreatedAt)
 VALUES (@SenderId, @ReceiverId, @Content, @CreatedAt);";
 
-            var command = new SQLiteCommand(sql, connection);
-            command.Parameters.AddWithValue("@SenderId", message.SenderId);
-            command.Parameters.AddWithValue("@ReceiverId", message.ReceiverId);
-            command.Parameters.AddWithValue("@Content", message.Content);
-            command.Parameters.AddWithValue("@CreatedAt",
-                message.CreatedAt == default
-                    ? DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss")
-                    : message.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss"));
+                using (var command = new MySqlCommand(sql, connection))
+                {
+                    command.Parameters.AddWithValue("@SenderId", message.SenderId);
+                    command.Parameters.AddWithValue("@ReceiverId", message.ReceiverId);
+                    command.Parameters.AddWithValue("@Content", message.Content);
 
-            var rows = command.ExecuteNonQuery();
-            return rows == 1;
+                    DateTime createdAt = message.CreatedAt == default
+                        ? DateTime.UtcNow
+                        : message.CreatedAt;
+
+                    command.Parameters.AddWithValue("@CreatedAt", createdAt);
+
+                    var rows = command.ExecuteNonQuery();
+                    return rows == 1;
+                }
+            }
         }
 
-        // Bisheriger 1:1-Chat-Verlauf 
-
+        // 1:1-Chat-Verlauf
         public List<Message> GetMessagesBetween(int userId1, int userId2, int limit = 200)
         {
-            List<Message> result = new List<Message>();
+            var result = new List<Message>();
 
-            var connection = new SQLiteConnection(DatabaseInitializer.ConnectionString);
-            connection.Open();
-
-            const string sql = @"
-                        SELECT Id, SenderId, ReceiverId, Content, CreatedAt
-                        FROM Messages
-                        WHERE (SenderId = @U1 AND ReceiverId = @U2)
-                           OR (SenderId = @U2 AND ReceiverId = @U1)
-                        ORDER BY datetime(CreatedAt) ASC
-                        LIMIT @Limit;";
-
-            SQLiteCommand command = new SQLiteCommand(sql, connection);
-            command.Parameters.AddWithValue("@U1", userId1);
-            command.Parameters.AddWithValue("@U2", userId2);
-            command.Parameters.AddWithValue("@Limit", limit);
-
-            var reader = command.ExecuteReader();
-            while (reader.Read())
+            using (var connection = new MySqlConnection(DatabaseInitializer.ConnectionString))
             {
-                result.Add(new Message
+                connection.Open();
+
+                const string sql = @"
+SELECT Id, SenderId, ReceiverId, Content, CreatedAt
+FROM Messages
+WHERE (SenderId = @U1 AND ReceiverId = @U2)
+   OR (SenderId = @U2 AND ReceiverId = @U1)
+ORDER BY CreatedAt ASC
+LIMIT @Limit;";
+
+                using (var command = new MySqlCommand(sql, connection))
                 {
-                    Id = reader.GetInt32(0),
-                    SenderId = reader.GetInt32(1),
-                    ReceiverId = reader.GetInt32(2),
-                    Content = reader.GetString(3),
-                    CreatedAt = DateTime.Parse(reader.GetString(4))
-                });
+                    command.Parameters.AddWithValue("@U1", userId1);
+                    command.Parameters.AddWithValue("@U2", userId2);
+                    command.Parameters.AddWithValue("@Limit", limit);
+
+                    using (var reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            result.Add(new Message
+                            {
+                                Id = reader.GetInt32(0),
+                                SenderId = reader.GetInt32(1),
+                                ReceiverId = reader.GetInt32(2),
+                                Content = reader.GetString(3),
+                                CreatedAt = reader.GetDateTime(4)
+                            });
+                        }
+                    }
+                }
             }
 
             return result;
@@ -72,10 +83,11 @@ VALUES (@SenderId, @ReceiverId, @Content, @CreatedAt);";
         {
             var result = new List<(Message, string)>();
 
-            var connection = new SQLiteConnection(DatabaseInitializer.ConnectionString);
-            connection.Open();
+            using (var connection = new MySqlConnection(DatabaseInitializer.ConnectionString))
+            {
+                connection.Open();
 
-            const string sql = @"
+                const string sql = @"
 SELECT m.Id,
        m.SenderId,
        m.ReceiverId,
@@ -85,42 +97,44 @@ SELECT m.Id,
        u.Email
 FROM Messages m
 JOIN Users u ON u.Id = m.SenderId
-ORDER BY datetime(m.CreatedAt) ASC;";
+ORDER BY m.CreatedAt ASC;";
 
-            var command = new SQLiteCommand(sql, connection);
-            var reader = command.ExecuteReader();
-
-            while (reader.Read())
-            {
-                var message = new Message
+                using (var command = new MySqlCommand(sql, connection))
+                using (var reader = command.ExecuteReader())
                 {
-                    Id = reader.GetInt32(0),
-                    SenderId = reader.GetInt32(1),
-                    ReceiverId = reader.GetInt32(2),
-                    Content = reader.GetString(3),
-                    CreatedAt = DateTime.Parse(reader.GetString(4))
-                };
+                    while (reader.Read())
+                    {
+                        var message = new Message
+                        {
+                            Id = reader.GetInt32(0),
+                            SenderId = reader.GetInt32(1),
+                            ReceiverId = reader.GetInt32(2),
+                            Content = reader.GetString(3),
+                            CreatedAt = reader.GetDateTime(4)
+                        };
 
-                var username = reader.IsDBNull(5) ? null : reader.GetString(5);
-                var email = reader.IsDBNull(6) ? null : reader.GetString(6);
+                        var username = reader.IsDBNull(5) ? null : reader.GetString(5);
+                        var email = reader.IsDBNull(6) ? null : reader.GetString(6);
+                        var displayName = !string.IsNullOrWhiteSpace(username) ? username : email;
 
-                var displayName = !string.IsNullOrWhiteSpace(username) ? username : email;
+                        result.Add((message, displayName));
+                    }
+                }
 
-                result.Add((message, displayName));
+                return result;
             }
-
-            return result;
         }
-        // Globaler Chat: neue Nachrichten seit einer bestimmten Id.
 
+        // Globaler Chat: neue Nachrichten seit einer bestimmten Id.
         public List<(Message Message, string DisplayName)> GetNewGlobalSince(int lastMessageId)
         {
             var result = new List<(Message, string)>();
 
-            var connection = new SQLiteConnection(DatabaseInitializer.ConnectionString);
-            connection.Open();
+            using (var connection = new MySqlConnection(DatabaseInitializer.ConnectionString))
+            {
+                connection.Open();
 
-            const string sql = @"
+                const string sql = @"
 SELECT m.Id,
        m.SenderId,
        m.ReceiverId,
@@ -133,26 +147,31 @@ JOIN Users u ON u.Id = m.SenderId
 WHERE m.Id > @LastId
 ORDER BY m.Id ASC;";
 
-            var command = new SQLiteCommand(sql, connection);
-            command.Parameters.AddWithValue("@LastId", lastMessageId);
-
-            var reader = command.ExecuteReader();
-            while (reader.Read())
-            {
-                var message = new Message
+                using (var command = new MySqlCommand(sql, connection))
                 {
-                    Id = reader.GetInt32(0),
-                    SenderId = reader.GetInt32(1),
-                    ReceiverId = reader.GetInt32(2),
-                    Content = reader.GetString(3),
-                    CreatedAt = DateTime.Parse(reader.GetString(4))
-                };
+                    command.Parameters.AddWithValue("@LastId", lastMessageId);
 
-                var username = reader.IsDBNull(5) ? null : reader.GetString(5);
-                var email = reader.IsDBNull(6) ? null : reader.GetString(6);
-                var displayName = !string.IsNullOrWhiteSpace(username) ? username : email;
+                    using (var reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            var message = new Message
+                            {
+                                Id = reader.GetInt32(0),
+                                SenderId = reader.GetInt32(1),
+                                ReceiverId = reader.GetInt32(2),
+                                Content = reader.GetString(3),
+                                CreatedAt = reader.GetDateTime(4)
+                            };
 
-                result.Add((message, displayName));
+                            var username = reader.IsDBNull(5) ? null : reader.GetString(5);
+                            var email = reader.IsDBNull(6) ? null : reader.GetString(6);
+                            var displayName = !string.IsNullOrWhiteSpace(username) ? username : email;
+
+                            result.Add((message, displayName));
+                        }
+                    }
+                }
             }
 
             return result;

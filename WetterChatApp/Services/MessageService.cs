@@ -7,28 +7,46 @@ namespace NimbusChat.WetterChatApp.Services
 {
     public class MessageService
     {
+        private readonly UserRepository _userRepository;
         private readonly MessageRepository _messageRepository;
 
-        public MessageService()
+        public MessageService(UserRepository userRepository, MessageRepository messageRepository)
         {
-            _messageRepository = new MessageRepository();
+            _userRepository = userRepository;
+            _messageRepository = messageRepository;
         }
 
-        /// <summary>
-        /// 1:1-Nachricht (wird für Global-Chat mit ReceiverId = 0 verwendet).
-        /// </summary>
-        public bool SendMessage(int senderId, int receiverId, string content)
+        // Alle globalen Nachrichten (aktuell: alle Messages)
+        public List<(Message Message, string DisplayName)> GetAllGlobalMessages()
         {
-            if (senderId <= 0 || receiverId < 0)
-                return false;
+            return _messageRepository.GetAllWithUser();
+        }
 
-            if (string.IsNullOrWhiteSpace(content))
+        // Neue globale Nachrichten seit einer bestimmten Id
+        public List<(Message Message, string DisplayName)> GetNewGlobalMessagesSince(int lastMessageId)
+        {
+            return _messageRepository.GetNewGlobalSince(lastMessageId);
+        }
+
+        // Global-Nachricht senden mit gültigen Foreign Keys
+        public bool SendGlobalMessage(int senderId, string content)
+        {
+            var sender = _userRepository.GetById(senderId);
+            if (sender == null)
+            {
                 return false;
+            }
+
+            var globalUser = GetOrCreateGlobalChatUser();
+            if (globalUser == null)
+            {
+                return false;
+            }
 
             var message = new Message
             {
                 SenderId = senderId,
-                ReceiverId = receiverId,
+                ReceiverId = globalUser.Id,
                 Content = content,
                 CreatedAt = DateTime.UtcNow
             };
@@ -36,32 +54,30 @@ namespace NimbusChat.WetterChatApp.Services
             return _messageRepository.Create(message);
         }
 
-        /// <summary>
-        /// Globaler Chat: Nachricht an alle (ReceiverId = 0).
-        /// </summary>
-        public bool SendGlobalMessage(int senderId, string content)
+        private User GetOrCreateGlobalChatUser()
         {
-            // ReceiverId = 0 kennzeichnet globalen Chat
-            return SendMessage(senderId, 0, content);
-        }
+            var existing = _userRepository.GetByEmail("global@nimbuschat.local");
+            if (existing != null)
+            {
+                return existing;
+            }
 
-        /// <summary>
-        /// Globaler Chat: alle Nachrichten mit Username/Email.
-        /// </summary>
-        public List<(Message Message, string DisplayName)> GetAllGlobalMessages()
-        {
-            return _messageRepository.GetAllWithUser();
-        }
+            var globalUser = new User
+            {
+                Username = "GlobalChat",
+                Email = "global@nimbuschat.local",
+                PasswordHash = "GLOBAL_CHAT_SYSTEM_USER",
+                Status = "System",
+                FavoriteCity = null
+            };
 
-        /// <summary>
-        /// Globaler Chat: neue Nachrichten seit einer bestimmten Id.
-        /// </summary>
-        public List<(Message Message, string DisplayName)> GetNewGlobalMessagesSince(int lastMessageId)
-        {
-            if (lastMessageId < 0)
-                lastMessageId = 0;
+            var created = _userRepository.Create(globalUser);
+            if (!created)
+            {
+                return null;
+            }
 
-            return _messageRepository.GetNewGlobalSince(lastMessageId);
+            return _userRepository.GetByEmail("global@nimbuschat.local");
         }
     }
 }
