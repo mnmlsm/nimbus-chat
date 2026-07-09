@@ -9,7 +9,7 @@ namespace NimbusChat
     {
         private readonly User _currentUser;
 
-        private string _weatherCity = "Leipzig";
+        private string _weatherCity = "Select your city.";
         public string WeatherCity
         {
             get => _weatherCity;
@@ -20,7 +20,7 @@ namespace NimbusChat
             }
         }
 
-        private string _weatherTemperature = "14°C";
+        private string _weatherTemperature = "-";
         public string WeatherTemperature
         {
             get => _weatherTemperature;
@@ -31,7 +31,7 @@ namespace NimbusChat
             }
         }
 
-        private string _weatherCondition = "Cloudy";
+        private string _weatherCondition = "-";
         public string WeatherCondition
         {
             get => _weatherCondition;

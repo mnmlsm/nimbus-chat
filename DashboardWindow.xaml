@@ -49,7 +49,6 @@
                         Width="120" Height="40"
                         Margin="5"/>
             </WrapPanel>
-
         </StackPanel>
 
         <!-- Logout-Button unten rechts -->
