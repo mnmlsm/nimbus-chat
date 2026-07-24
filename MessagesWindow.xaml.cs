@@ -1,9 +1,8 @@
-﻿using NimbusChat.WetterChatApp.Repositories;
-using NimbusChat.WetterChatApp.Services;
-using System;
-using System.Threading.Tasks;
+﻿using System;
 using System.Windows;
 using System.Windows.Threading;
+using NimbusChat.WetterChatApp.Repositories;
+using NimbusChat.WetterChatApp.Services;
 
 namespace NimbusChat
 {
@@ -14,14 +13,10 @@ namespace NimbusChat
         private int _lastMessageId = 0;
         private readonly DispatcherTimer _pollTimer;
 
-        private readonly ApiClient _apiClient;   // NEU
-
         public MessagesWindow(int currentUserId)
         {
             InitializeComponent();
             _currentUserId = currentUserId;
-
-            _apiClient = new ApiClient(); // NEU
 
             LoadGlobalHistory();
 
@@ -32,27 +27,6 @@ namespace NimbusChat
             };
             _pollTimer.Tick += PollTimer_Tick;
             _pollTimer.Start();
-
-            // Health-Check beim Start (NEU)
-            _ = CheckApiAsync();
-        }
-
-        private async Task CheckApiAsync()
-        {
-            try
-            {
-                // z.B. Fenstertitel vorübergehend anpassen
-                this.Title = "Nimbus Chat - Prüfe API...";
-
-                var result = await _apiClient.GetHealthAsync();
-
-                // z.B. Ergebnis im Titel anzeigen
-                this.Title = $"Nimbus Chat - API: {result}";
-            }
-            catch (Exception ex)
-            {
-                this.Title = $"Nimbus Chat - API Fehler: {ex.Message}";
-            }
         }
 
         private void LoadGlobalHistory()
