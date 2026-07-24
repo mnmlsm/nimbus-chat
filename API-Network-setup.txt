@@ -1,0 +1,274 @@
+API & Network Setup with Cloudflare Tunnel and memo-dev.uk
+
+
+This document explains how the nimbus-chat.Api runs locally, how it is exposed to the internet using Cloudflare Tunnel under the domain api.memo-dev.uk, and how clients (e.g., your WPF app) connect to it.
+
+Architecture Overview
+MySQL runs locally on your machine (e.g., localhost:3306).
+
+nimbus-chat.Api runs locally on http://127.0.0.1:5251.
+
+Cloudflared (Cloudflare Tunnel) connects api.memo-dev.uk to http://127.0.0.1:5251.
+
+Clients (e.g., WPF app, browser) only talk to https://api.memo-dev.uk, never directly to MySQL.
+
+As long as MySQL, the API, and the tunnel are running, clients anywhere in the world can reach your API via https://api.memo-dev.uk, and the API will access your local database.
+
+Prerequisites
+Domain
+
+memo-dev.uk is managed by Cloudflare (nameservers point to Cloudflare).
+
+Cloudflare Account
+
+A free Cloudflare account with the site memo-dev.uk added.
+
+Cloudflared Installed
+
+cloudflared is installed on your Windows machine.
+
+MySQL
+
+MySQL is running locally and reachable with something like:
+
+Server: 127.0.0.1 or localhost
+
+Port: 3306
+
+User: root (or another user)
+
+Database: nimbuschat
+
+.NET / API
+
+Project: nimbus-chat.Api
+
+Runs with dotnet run.
+
+Cloudflare Tunnel – One-Time Setup
+This part you already did, but it’s important for documentation.
+
+1. Link Cloudflared with Cloudflare
+powershell
+cloudflared tunnel login
+A browser window opens.
+
+Select your Cloudflare account and the site memo-dev.uk.
+
+After approval, cert.pem is stored in C:\Users\Memo\.cloudflared\.
+
+2. Create the Tunnel
+powershell
+cloudflared tunnel create nimbus-chat
+Cloudflare creates a named tunnel with a UUID, e.g.:
+016b7618-c213-4fac-975b-45c017a7eb56.
+
+A JSON credentials file is created in C:\Users\Memo\.cloudflared\:
+
+016b7618-c213-4fac-975b-45c017a7eb56.json
+
+3. Route api.memo-dev.uk to the Tunnel
+powershell
+cloudflared tunnel route dns nimbus-chat api.memo-dev.uk
+This creates a DNS entry for api.memo-dev.uk in Cloudflare that points to your tunnel.
+
+4. Create config.yml
+Create C:\Users\Memo\.cloudflared\config.yml:
+
+text
+tunnel: 016b7618-c213-4fac-975b-45c017a7eb56
+credentials-file: C:\Users\Memo\.cloudflared\016b7618-c213-4fac-975b-45c017a7eb56.json
+
+ingress:
+  - hostname: api.memo-dev.uk
+    service: http://127.0.0.1:5251
+  - service: http_status:404
+Explanation:
+
+tunnel: UUID of the tunnel (you can also use the name, but UUID is explicit).
+
+credentials-file: path to the JSON credentials file.
+
+ingress:
+
+hostname: api.memo-dev.uk → public hostname.
+
+service: http://127.0.0.1:5251 → local address of your API.
+
+Fallback http_status:404 for unmatched routes.
+
+MySQL Configuration (API Side)
+The API connects to MySQL locally via a connection string, e.g. in appsettings.json:
+
+json
+"ConnectionStrings": {
+  "DefaultConnection": "Server=127.0.0.1;Port=3306;Database=nimbuschat;Uid=root;Pwd=NimbusChatPW;"
+}
+Key points:
+
+The API uses 127.0.0.1 / localhost to talk to MySQL.
+
+MySQL must be running before the API starts.
+
+Daily Run: How to Start Everything
+When everything is closed and you want to start from scratch, follow this sequence:
+
+1. Start MySQL
+Make sure:
+
+The MySQL Windows service is running, or
+
+You start it via your preferred tool (e.g., XAMPP, MySQL Workbench).
+
+You should be able to connect locally with:
+
+Host: 127.0.0.1
+
+Port: 3306
+
+DB: nimbuschat
+
+2. Start the API
+Open PowerShell:
+
+powershell
+cd C:\Users\Memo\Documents\GitHub\nimbus-chat
+
+dotnet run --project .\nimbus-chat.Api --urls http://127.0.0.1:5251
+Leave this window open – this process is your running API.
+
+Test locally in a browser:
+
+text
+http://127.0.0.1:5251/api/health
+→ Should return something like DB OK.
+
+3. Start the Cloudflare Tunnel
+Open a second PowerShell window:
+
+powershell
+cd C:\Users\Memo\Documents\GitHub\nimbus-chat
+
+cloudflared tunnel run nimbus-chat
+cloudflared reads config.yml, uses the credentials, and links api.memo-dev.uk to http://127.0.0.1:5251.
+
+Test externally in a browser:
+
+text
+https://api.memo-dev.uk/api/health
+→ Should return the same response as the local health check.
+
+Client Configuration (e.g., WPF App)
+Clients only need a Base URL.
+
+clientsettings.json (for the WPF app)
+json
+{
+  "ApiBaseUrl": "https://api.memo-dev.uk"
+}
+Example ClientConfig.Load():
+
+csharp
+public class ClientConfig
+{
+    public string ApiBaseUrl { get; set; } = string.Empty;
+
+    private static readonly string ConfigFileName = "clientsettings.json";
+
+    public static ClientConfig Load()
+    {
+        var baseDir = AppContext.BaseDirectory;
+        var fullPath = Path.Combine(baseDir, ConfigFileName);
+
+        if (!File.Exists(fullPath))
+        {
+            throw new FileNotFoundException($"Config file '{ConfigFileName}' not found at '{fullPath}'.");
+        }
+
+        var json = File.ReadAllText(fullPath);
+        var config = JsonSerializer.Deserialize<ClientConfig>(json);
+
+        if (config == null || string.IsNullOrWhiteSpace(config.ApiBaseUrl))
+        {
+            throw new InvalidOperationException("ApiBaseUrl is missing in clientsettings.json.");
+        }
+
+        return config;
+    }
+}
+The WPF app then builds an HttpClient like:
+
+csharp
+_httpClient = new HttpClient
+{
+    BaseAddress = new Uri(config.ApiBaseUrl)
+};
+All requests go through the domain:
+
+GET https://api.memo-dev.uk/api/health
+
+POST https://api.memo-dev.uk/api/users/login
+
+GET https://api.memo-dev.uk/api/messages
+etc.
+
+The domain is stable; you do not need to change URLs in the EXE anymore.
+
+What Happens If Something Is Down
+502 / 503 Errors from Cloudflare
+If you see 502 Bad Gateway or Host Error from Cloudflare:
+
+Cloudflare can reach the tunnel, but the tunnel cannot reach your API (or the API is down).
+
+Typical causes:
+
+The API process (dotnet run) is not running.
+
+The API is listening on a different port than 5251.
+
+The service in config.yml is wrong.
+
+“Unable to reach the origin service”
+In cloudflared logs:
+
+text
+Unable to reach the origin service. The service may be down or it may not be responding to traffic from cloudflared...
+Means:
+
+The origin URL (e.g., http://127.0.0.1:5251) is not reachable.
+
+Check:
+
+Is the API running?
+
+Is the URL in config.yml correct?
+
+Is MySQL running so that /api/health can succeed?
+
+Security / Access Model
+Only https://api.memo-dev.uk is exposed to the internet.
+
+MySQL is not exposed; it stays local on your machine.
+
+Cloudflare Tunnel uses an outgoing connection from your PC to Cloudflare; you do not need port forwarding on your router.
+
+If you stop the API or the tunnel, external clients cannot connect anymore – you have full control.
+
+Ultra-short Checklist for You
+When everything is off and you want to run the system:
+
+Start MySQL.
+
+Start API:
+
+powershell
+cd C:\Users\Memo\Documents\GitHub\nimbus-chat
+dotnet run --project .\nimbus-chat.Api --urls http://127.0.0.1:5251
+Start tunnel (second PowerShell window):
+
+powershell
+cd C:\Users\Memo\Documents\GitHub\nimbus-chat
+cloudflared tunnel run nimbus-chat
+Start the WPF app (with ApiBaseUrl = "https://api.memo-dev.uk" in clientsettings.json).
+
+As long as these three components (DB, API, tunnel) are running, users anywhere in the world can run your app and use your system through the API.

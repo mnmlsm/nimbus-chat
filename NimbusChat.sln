@@ -5,6 +5,8 @@ VisualStudioVersion = 18.5.11723.231
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NimbusChat", "NimbusChat.csproj", "{CF35879C-79C3-478D-8214-4BCE4944B47F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "nimbus-chat.Api", "nimbus-chat.Api\nimbus-chat.Api.csproj", "{46FF3A3B-382E-4BF6-88BA-3A97F3AFD485}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,18 @@ Global
 		{CF35879C-79C3-478D-8214-4BCE4944B47F}.Release|x64.Build.0 = Release|x64
 		{CF35879C-79C3-478D-8214-4BCE4944B47F}.Release|x86.ActiveCfg = Release|x86
 		{CF35879C-79C3-478D-8214-4BCE4944B47F}.Release|x86.Build.0 = Release|x86
+		{46FF3A3B-382E-4BF6-88BA-3A97F3AFD485}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{46FF3A3B-382E-4BF6-88BA-3A97F3AFD485}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{46FF3A3B-382E-4BF6-88BA-3A97F3AFD485}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{46FF3A3B-382E-4BF6-88BA-3A97F3AFD485}.Debug|x64.Build.0 = Debug|Any CPU
+		{46FF3A3B-382E-4BF6-88BA-3A97F3AFD485}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{46FF3A3B-382E-4BF6-88BA-3A97F3AFD485}.Debug|x86.Build.0 = Debug|Any CPU
+		{46FF3A3B-382E-4BF6-88BA-3A97F3AFD485}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{46FF3A3B-382E-4BF6-88BA-3A97F3AFD485}.Release|Any CPU.Build.0 = Release|Any CPU
+		{46FF3A3B-382E-4BF6-88BA-3A97F3AFD485}.Release|x64.ActiveCfg = Release|Any CPU
+		{46FF3A3B-382E-4BF6-88BA-3A97F3AFD485}.Release|x64.Build.0 = Release|Any CPU
+		{46FF3A3B-382E-4BF6-88BA-3A97F3AFD485}.Release|x86.ActiveCfg = Release|Any CPU
+		{46FF3A3B-382E-4BF6-88BA-3A97F3AFD485}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
