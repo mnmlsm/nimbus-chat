@@ -1,0 +1,6 @@
+@nimbus_chat.Api_HostAddress = http://localhost:5251
+
+GET {{nimbus_chat.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
