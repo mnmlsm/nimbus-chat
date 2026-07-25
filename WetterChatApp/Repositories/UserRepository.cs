@@ -146,5 +146,26 @@ WHERE Id = @Id;";
                 }
             }
         }
+
+        internal void UpdateStatus(int id, string v)
+        {
+            using (var connection = new MySqlConnection(DatabaseInitializer.ConnectionString))
+            {
+                connection.Open();
+
+                var sql = @"
+UPDATE Users
+SET Status = @Status
+WHERE Id = @Id;";
+
+                using (var command = new MySqlCommand(sql, connection))
+                {
+                    command.Parameters.AddWithValue("@Status", (object)v ?? DBNull.Value);
+                    command.Parameters.AddWithValue("@Id", id);
+
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
     }
 }
