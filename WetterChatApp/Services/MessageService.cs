@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using NimbusChat.WetterChatApp.Models;
 
 namespace NimbusChat.WetterChatApp.Services
@@ -13,33 +14,33 @@ namespace NimbusChat.WetterChatApp.Services
         }
 
         // Alle globalen Nachrichten
-        public List<(Message Message, string DisplayName)> GetAllGlobalMessages()
+        public Task<List<(Message Message, string DisplayName)>> GetAllGlobalMessagesAsync()
         {
-            return _apiClient.GetGlobalMessagesAsync(0).GetAwaiter().GetResult();
+            return _apiClient.GetGlobalMessagesAsync(0);
         }
 
         // Neue globale Nachrichten seit einer bestimmten Id
-        public List<(Message Message, string DisplayName)> GetNewGlobalMessagesSince(int lastMessageId)
+        public Task<List<(Message Message, string DisplayName)>> GetNewGlobalMessagesSinceAsync(int lastMessageId)
         {
-            return _apiClient.GetGlobalMessagesAsync(lastMessageId).GetAwaiter().GetResult();
+            return _apiClient.GetGlobalMessagesAsync(lastMessageId);
         }
 
         // Global-Nachricht senden
-        public bool SendGlobalMessage(int senderId, string content)
+        public Task<bool> SendGlobalMessageAsync(int senderId, string content)
         {
-            return _apiClient.SendGlobalMessageAsync(senderId, content).GetAwaiter().GetResult();
+            return _apiClient.SendGlobalMessageAsync(senderId, content);
         }
 
         // Privater Chat: Nachrichten zwischen zwei Nutzern
-        public List<Message> GetMessagesBetween(int userId1, int userId2)
+        public Task<List<Message>> GetMessagesBetweenAsync(int userId1, int userId2)
         {
-            return _apiClient.GetMessagesBetweenAsync(userId1, userId2).GetAwaiter().GetResult();
+            return _apiClient.GetMessagesBetweenAsync(userId1, userId2);
         }
 
         // Privater Chat: Nachricht senden
-        public bool SendPrivateMessage(int senderId, int receiverId, string content)
+        public Task<bool> SendPrivateMessageAsync(int senderId, int receiverId, string content)
         {
-            return _apiClient.SendPrivateMessageAsync(senderId, receiverId, content).GetAwaiter().GetResult();
+            return _apiClient.SendPrivateMessageAsync(senderId, receiverId, content);
         }
     }
 }

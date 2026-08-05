@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using NimbusChat.WetterChatApp.Models;
 
 namespace NimbusChat.WetterChatApp.Services
@@ -11,14 +12,14 @@ namespace NimbusChat.WetterChatApp.Services
             _apiClient = new ApiClient();
         }
 
-        public User Login(string email, string password)
+        public Task<User> LoginAsync(string email, string password)
         {
-            return _apiClient.LoginAsync(email, password).GetAwaiter().GetResult();
+            return _apiClient.LoginAsync(email, password);
         }
 
-        public bool Register(string username, string email, string password)
+        public Task<bool> RegisterAsync(string username, string email, string password)
         {
-            return _apiClient.RegisterAsync(username, email, password).GetAwaiter().GetResult();
+            return _apiClient.RegisterAsync(username, email, password);
         }
     }
 }

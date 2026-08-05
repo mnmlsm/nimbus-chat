@@ -10,16 +10,12 @@ namespace NimbusChat.WetterChatApp.Services
 {
     public class ApiClient
     {
-        private readonly HttpClient _httpClient;
-
-        public ApiClient()
+        // Ein HttpClient wird für die gesamte App-Laufzeit geteilt, statt bei
+        // jedem "new ApiClient()" einen neuen TCP/TLS-Handshake aufzubauen.
+        private static readonly HttpClient _httpClient = new HttpClient
         {
-            var config = ClientConfig.Load();
-            _httpClient = new HttpClient
-            {
-                BaseAddress = new Uri(config.ApiBaseUrl)
-            };
-        }
+            BaseAddress = new Uri(ClientConfig.Load().ApiBaseUrl)
+        };
 
         public async Task<string> GetHealthAsync()
         {

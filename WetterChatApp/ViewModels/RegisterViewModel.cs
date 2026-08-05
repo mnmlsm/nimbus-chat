@@ -1,6 +1,7 @@
 using NimbusChat.WetterChatApp.Infrastructure;
 using NimbusChat.WetterChatApp.Services;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 
@@ -51,7 +52,7 @@ namespace NimbusChat.WetterChatApp.ViewModels
         public RegisterViewModel()
         {
             _authService = new AuthService();
-            RegisterCommand = new RelayCommand(_ => ExecuteRegister(), _ => CanRegister());
+            RegisterCommand = new RelayCommand(async _ => await ExecuteRegisterAsync(), _ => CanRegister());
         }
 
         private bool CanRegister()
@@ -62,7 +63,7 @@ namespace NimbusChat.WetterChatApp.ViewModels
                    !string.IsNullOrWhiteSpace(ConfirmPassword);
         }
 
-        private void ExecuteRegister()
+        private async Task ExecuteRegisterAsync()
         {
             ErrorMessage = "";
 
@@ -72,7 +73,7 @@ namespace NimbusChat.WetterChatApp.ViewModels
                 return;
             }
 
-            var success = _authService.Register(Username, Email, Password);
+            var success = await _authService.RegisterAsync(Username, Email, Password);
 
             if (!success)
             {

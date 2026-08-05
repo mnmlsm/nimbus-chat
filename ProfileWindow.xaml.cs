@@ -11,11 +11,11 @@ namespace NimbusChat
             DataContext = new ProfileViewModel(userId);
         }
 
-        private void Save_Click(object sender, RoutedEventArgs e)
+        private async void Save_Click(object sender, RoutedEventArgs e)
         {
             if (DataContext is ProfileViewModel vm && vm.SaveProfileCommand.CanExecute(null))
             {
-                vm.SaveProfileCommand.Execute(null);
+                await vm.SaveProfileAsync();
 
                 if (string.IsNullOrWhiteSpace(vm.ErrorMessage))
                 {

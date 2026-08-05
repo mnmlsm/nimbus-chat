@@ -1,4 +1,5 @@
-﻿using System.Linq;
+using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using NimbusChat.WetterChatApp.Infrastructure;
@@ -40,7 +41,7 @@ namespace NimbusChat.WetterChatApp.ViewModels
         {
             _authService = new AuthService();
             _apiClient = new ApiClient();
-            LoginCommand = new RelayCommand(_ => ExecuteLogin(), _ => CanExecuteLogin());
+            LoginCommand = new RelayCommand(async _ => await ExecuteLoginAsync(), _ => CanExecuteLogin());
         }
 
         private bool CanExecuteLogin()
@@ -49,12 +50,11 @@ namespace NimbusChat.WetterChatApp.ViewModels
                    !string.IsNullOrWhiteSpace(Password);
         }
 
-        private void ExecuteLogin()
+        private async Task ExecuteLoginAsync()
         {
             ErrorMessage = string.Empty;
 
-            // Einfach synchroner Call auf AuthService
-            var user = _authService.Login(Email, Password);
+            var user = await _authService.LoginAsync(Email, Password);
 
             if (user == null)
             {
@@ -62,7 +62,7 @@ namespace NimbusChat.WetterChatApp.ViewModels
                 return;
             }
 
-            _apiClient.UpdateStatusAsync(user.Id, "Online").GetAwaiter().GetResult();
+            await _apiClient.UpdateStatusAsync(user.Id, "Online");
 
             // Dashboard mit aktuellem User öffnen
             var dashboard = new DashboardWindow(user);

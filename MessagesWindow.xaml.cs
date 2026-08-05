@@ -8,6 +8,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
+using System.Threading.Tasks;
 
 namespace NimbusChat
 {
@@ -27,7 +28,7 @@ namespace NimbusChat
 
             _currentUserId = currentUserId;
 
-            LoadUsers();
+            Loaded += async (s, e) => await LoadUsersAsync();
 
             _pollTimer = new DispatcherTimer
             {
@@ -38,9 +39,9 @@ namespace NimbusChat
             _pollTimer.Start();
         }
 
-        private void LoadUsers()
+        private async Task LoadUsersAsync()
         {
-            _allUsers = _apiClient.GetAllUsersAsync().GetAwaiter().GetResult();
+            _allUsers = await _apiClient.GetAllUsersAsync();
             DisplayUsers(_allUsers);
         }
 
@@ -57,11 +58,11 @@ namespace NimbusChat
             }
         }
 
-        private void LoadPrivateMessages()
+        private async Task LoadPrivateMessagesAsync()
         {
-            ChatList.Items.Clear();
+            var messages = await _messageService.GetMessagesBetweenAsync(_currentUserId, _selectedUserId);
 
-            var messages = _messageService.GetMessagesBetween(_currentUserId, _selectedUserId);
+            ChatList.Items.Clear();
 
             foreach (var message in messages)
             {
@@ -77,26 +78,26 @@ namespace NimbusChat
                 ChatList.ScrollIntoView(ChatList.Items[ChatList.Items.Count - 1]);
         }
 
-        private void PollTimer_Tick(object sender, EventArgs e)
+        private async void PollTimer_Tick(object sender, EventArgs e)
         {
             if (_selectedUserId > 0)
             {
-                LoadPrivateMessages();
+                await LoadPrivateMessagesAsync();
             }
         }
 
-        private void Send_Click(object sender, RoutedEventArgs e)
+        private async void Send_Click(object sender, RoutedEventArgs e)
         {
             var text = MessageInput.Text.Trim();
             if (string.IsNullOrWhiteSpace(text))
                 return;
 
-            var success = _messageService.SendPrivateMessage(_currentUserId, _selectedUserId, text);
+            var success = await _messageService.SendPrivateMessageAsync(_currentUserId, _selectedUserId, text);
 
             if (success)
             {
                 MessageInput.Clear();
-                LoadPrivateMessages();
+                await LoadPrivateMessagesAsync();
             }
             else
             {
@@ -105,7 +106,7 @@ namespace NimbusChat
             }
         }
 
-        private void UsersList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private async void UsersList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (UsersList.SelectedItem is User user)
             {
@@ -136,7 +137,7 @@ namespace NimbusChat
                         break;
                 }
 
-                LoadPrivateMessages();
+                await LoadPrivateMessagesAsync();
             }
         }
 

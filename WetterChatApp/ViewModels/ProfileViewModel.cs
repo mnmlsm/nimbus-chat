@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using System.Windows.Input;
 using NimbusChat.WetterChatApp.Infrastructure;
 using NimbusChat.WetterChatApp.Services;
@@ -65,17 +66,17 @@ namespace NimbusChat.WetterChatApp.ViewModels
             _apiClient = new ApiClient();
             UserId = userId;
 
-            SaveProfileCommand = new RelayCommand(_ => ExecuteSaveProfile(), _ => CanSaveProfile());
+            SaveProfileCommand = new RelayCommand(async _ => await SaveProfileAsync(), _ => CanSaveProfile());
 
-            LoadProfile();
+            _ = LoadProfileAsync();
         }
 
-        private void LoadProfile()
+        private async Task LoadProfileAsync()
         {
             ErrorMessage = string.Empty;
             SuccessMessage = string.Empty;
 
-            var user = _apiClient.GetUserAsync(UserId).GetAwaiter().GetResult();
+            var user = await _apiClient.GetUserAsync(UserId);
             if (user == null)
             {
                 ErrorMessage = "User profile could not be loaded.";
@@ -102,7 +103,7 @@ namespace NimbusChat.WetterChatApp.ViewModels
             return true;
         }
 
-        private void ExecuteSaveProfile()
+        public async Task SaveProfileAsync()
         {
             ErrorMessage = string.Empty;
             SuccessMessage = string.Empty;
@@ -113,7 +114,7 @@ namespace NimbusChat.WetterChatApp.ViewModels
                 return;
             }
 
-            var user = _apiClient.GetUserAsync(UserId).GetAwaiter().GetResult();
+            var user = await _apiClient.GetUserAsync(UserId);
             if (user == null)
             {
                 ErrorMessage = "User not found.";
@@ -125,7 +126,7 @@ namespace NimbusChat.WetterChatApp.ViewModels
             user.Status = Status;
             user.FavoriteCity = FavoriteCity;
 
-            var updated = _apiClient.UpdateUserAsync(user).GetAwaiter().GetResult();
+            var updated = await _apiClient.UpdateUserAsync(user);
 
             if (!updated)
             {

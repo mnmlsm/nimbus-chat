@@ -311,7 +311,7 @@ namespace NimbusChat
 
             if (profileWindow.ShowDialog() == true)
             {
-                var updatedUser = _apiClient.GetUserAsync(_currentUser.Id).GetAwaiter().GetResult();
+                var updatedUser = await _apiClient.GetUserAsync(_currentUser.Id);
 
                 if (updatedUser != null)
                 {
@@ -352,9 +352,9 @@ namespace NimbusChat
             messagesWindow.ShowDialog();
         }
 
-        private void Logout_Click(object sender, RoutedEventArgs e)
+        private async void Logout_Click(object sender, RoutedEventArgs e)
         {
-            _apiClient.UpdateStatusAsync(_currentUser.Id, "Offline").GetAwaiter().GetResult();
+            await _apiClient.UpdateStatusAsync(_currentUser.Id, "Offline");
 
             var login = new MainWindow();
             login.Show();
@@ -364,7 +364,9 @@ namespace NimbusChat
 
         protected override void OnClosing(CancelEventArgs e)
         {
-            _apiClient.UpdateStatusAsync(_currentUser.Id, "Offline").GetAwaiter().GetResult();
+            // Fire-and-forget: das Fenster schließt sofort, ohne auf die
+            // Netzwerkantwort zu warten (die App läuft ohnehin noch kurz weiter).
+            _ = _apiClient.UpdateStatusAsync(_currentUser.Id, "Offline");
             base.OnClosing(e);
         }
 
