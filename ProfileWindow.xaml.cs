@@ -19,7 +19,7 @@ namespace NimbusChat
 
                 if (string.IsNullOrWhiteSpace(vm.ErrorMessage))
                 {
-                    MessageBox.Show("Profile saved!", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+                    AppMessageBox.Show("Profile saved!", "Success", AppMessageBoxIcon.Success, this);
                     DialogResult = true;
                     Close();
                 }

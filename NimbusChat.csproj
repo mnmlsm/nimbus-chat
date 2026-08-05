@@ -180,6 +180,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="AppMessageBox.xaml.cs">
+      <DependentUpon>AppMessageBox.xaml</DependentUpon>
+    </Compile>
     <Compile Include="MessagesWindow.xaml.cs">
       <DependentUpon>MessagesWindow.xaml</DependentUpon>
     </Compile>
@@ -209,6 +212,10 @@
     <Compile Include="WetterChatApp\Views\RegisterWindow.xaml.cs">
       <DependentUpon>RegisterWindow.xaml</DependentUpon>
     </Compile>
+    <Page Include="AppMessageBox.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="DashboardWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

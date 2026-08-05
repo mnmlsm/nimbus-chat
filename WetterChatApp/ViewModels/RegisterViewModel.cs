@@ -81,7 +81,7 @@ namespace NimbusChat.WetterChatApp.ViewModels
                 return;
             }
 
-            MessageBox.Show("Registration successful!");
+            AppMessageBox.Show("Registration successful!", "Success", AppMessageBoxIcon.Success);
 
             // zurück zum Login/MainWindow
             var login = new MainWindow();

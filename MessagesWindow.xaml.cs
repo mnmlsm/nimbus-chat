@@ -101,8 +101,7 @@ namespace NimbusChat
             }
             else
             {
-                MessageBox.Show("Message could not be sent.", "Error",
-                    MessageBoxButton.OK, MessageBoxImage.Error);
+                AppMessageBox.Show("Message could not be sent.", "Error", AppMessageBoxIcon.Error, this);
             }
         }
 

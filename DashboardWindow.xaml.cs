@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Net.Http;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
@@ -216,21 +217,17 @@ namespace NimbusChat
             await LoadFavoriteCityWeatherAsync();
         }
 
+        // Fallback, solange der Nutzer noch keine Stadt im Profil gespeichert hat,
+        // damit Wetter und Forecast auf dem Dashboard nie leer bleiben.
+        private const string DefaultCity = "Berlin";
+
         private async Task LoadFavoriteCityWeatherAsync()
         {
-            if (string.IsNullOrWhiteSpace(_currentUser.FavoriteCity))
-            {
-                WeatherCity = "Select your city";
-                WeatherTemperature = "-";
-                WeatherCondition = "No weather data";
-                WeatherHumidity = "-";
-                WeatherWind = "-";
+            var city = string.IsNullOrWhiteSpace(_currentUser.FavoriteCity)
+                ? DefaultCity
+                : _currentUser.FavoriteCity;
 
-                UpdateWeatherVisual();
-                return;
-            }
-
-            await LoadWeatherForCityAsync(_currentUser.FavoriteCity);
+            await LoadWeatherForCityAsync(city);
         }
 
         private async Task LoadWeatherForCityAsync(string cityName)
@@ -269,9 +266,9 @@ namespace NimbusChat
                     await LoadForecastAsync(cityName);
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                MessageBox.Show(ex.ToString());
+                AppMessageBox.Show("Weather data could not be loaded.", "Weather Error", AppMessageBoxIcon.Error, this);
 
                 WeatherTemperature = "-";
                 WeatherCondition = "Weather unavailable";
@@ -430,33 +427,38 @@ namespace NimbusChat
                 dynamic data = JsonConvert.DeserializeObject(json);
 
                 var today = DateTime.Now.Date;
-                var addedDates = new HashSet<DateTime>();
+                var entries = new List<(DateTime Date, DateTime Time, double Temp, string Icon)>();
 
                 foreach (var item in data.list)
                 {
-                    DateTime date =
-                        DateTime.Parse((string)item.dt_txt);
+                    DateTime time = DateTime.Parse((string)item.dt_txt);
 
                     // Nur zukünftige Tage anzeigen, nicht den heutigen.
-                    if (date.Date <= today)
+                    if (time.Date <= today)
                         continue;
 
-                    if (addedDates.Contains(date.Date))
-                        continue;
+                    entries.Add((time.Date, time, (double)item.main.temp, item.weather[0].icon.ToString()));
+                }
 
-                    addedDates.Add(date.Date);
+                var days = entries
+                    .GroupBy(e => e.Date)
+                    .OrderBy(g => g.Key)
+                    .Take(5);
 
-                    string iconCode = item.weather[0].icon.ToString();
+                foreach (var day in days)
+                {
+                    // Den Eintrag nehmen, der am nächsten an 12 Uhr mittags liegt,
+                    // damit Icon/Temperatur den Tag realistisch abbilden (statt
+                    // z.B. eines nächtlichen 3-Uhr-Werts).
+                    var noon = day.Key.AddHours(12);
+                    var representative = day.OrderBy(e => Math.Abs((e.Time - noon).TotalMinutes)).First();
 
                     Forecast.Add(new ForecastDay
                     {
-                        Day = date.ToString("ddd"),
-                        Temperature = $"{(double)item.main.temp:0}°",
-                        IconUrl = $"https://openweathermap.org/img/wn/{iconCode}@2x.png"
+                        Day = day.Key.ToString("ddd"),
+                        Temperature = $"{representative.Temp:0}°",
+                        IconUrl = $"https://openweathermap.org/img/wn/{representative.Icon}@2x.png"
                     });
-
-                    if (Forecast.Count == 5)
-                        break;
                 }
             }
         }
