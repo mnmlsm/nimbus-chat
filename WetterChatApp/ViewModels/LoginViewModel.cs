@@ -12,7 +12,6 @@ namespace NimbusChat.WetterChatApp.ViewModels
     public class LoginViewModel : BaseViewModel
     {
         private readonly AuthService _authService;
-        private readonly ApiClient _apiClient;
 
         private string _email;
         private string _password;
@@ -41,7 +40,6 @@ namespace NimbusChat.WetterChatApp.ViewModels
         public LoginViewModel()
         {
             _authService = new AuthService();
-            _apiClient = new ApiClient();
             LoginCommand = new RelayCommand(async _ => await ExecuteLoginAsync(), _ => CanExecuteLogin());
         }
 
@@ -72,14 +70,8 @@ namespace NimbusChat.WetterChatApp.ViewModels
                 return;
             }
 
-            try
-            {
-                await _apiClient.UpdateStatusAsync(user.Id, "Online");
-            }
-            catch (Exception)
-            {
-                // Login war erfolgreich; ein fehlgeschlagenes Status-Update soll das nicht blockieren.
-            }
+            // Der Login-Endpunkt setzt den Status serverseitig bereits auf Online,
+            // user.Status kommt hier also schon korrekt gesetzt zurück.
 
             // Dashboard mit aktuellem User öffnen
             var dashboard = new DashboardWindow(user);

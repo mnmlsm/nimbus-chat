@@ -1,3 +1,4 @@
+using NimbusChat.Api.Data;
 
 namespace nimbus_chat.Api
 {
@@ -10,11 +11,17 @@ namespace nimbus_chat.Api
             // Add services to the container.
 
             builder.Services.AddControllers();
+            builder.Services.AddHttpClient();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
             var app = builder.Build();
+
+            // Datenbank und Tabellen anlegen, falls noch nicht vorhanden.
+            // Dadurch startet die App auch nach einem kompletten DB-Reset.
+            DatabaseInitializer.Initialize(
+                app.Configuration.GetConnectionString("NimbusChatDatabase")!);
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())

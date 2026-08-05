@@ -19,6 +19,10 @@ namespace NimbusChat
         private readonly int _currentUserId;
         private readonly DispatcherTimer _pollTimer;
 
+        // Sentinel-Id für den gepinnten "Global Chat"-Eintrag; kollidiert nie mit
+        // einer echten Users.Id, da AUTO_INCREMENT bei 1 beginnt.
+        private const int GlobalChatId = -1;
+
         private List<User> _allUsers = new List<User>();
         private int _selectedUserId;
 
@@ -45,9 +49,19 @@ namespace NimbusChat
             DisplayUsers(_allUsers);
         }
 
+        private static User CreateGlobalChatEntry() => new User
+        {
+            Id = GlobalChatId,
+            Username = "Global Chat",
+            Status = "Everyone"
+        };
+
         private void DisplayUsers(IEnumerable<User> users)
         {
             UsersList.Items.Clear();
+
+            // Immer angepinnt oben, für jeden Nutzer erreichbar.
+            UsersList.Items.Add(CreateGlobalChatEntry());
 
             foreach (var user in users)
             {
@@ -78,9 +92,36 @@ namespace NimbusChat
                 ChatList.ScrollIntoView(ChatList.Items[ChatList.Items.Count - 1]);
         }
 
+        private async Task LoadGlobalMessagesAsync()
+        {
+            var messages = await _messageService.GetAllGlobalMessagesAsync();
+
+            ChatList.Items.Clear();
+
+            foreach (var (message, displayName) in messages)
+            {
+                var isMine = message.SenderId == _currentUserId;
+
+                ChatList.Items.Add(new ChatMessage
+                {
+                    Content = message.Content,
+                    IsMine = isMine,
+                    Time = message.CreatedAt.ToString("HH:mm"),
+                    SenderName = isMine ? null : displayName
+                });
+            }
+
+            if (ChatList.Items.Count > 0)
+                ChatList.ScrollIntoView(ChatList.Items[ChatList.Items.Count - 1]);
+        }
+
         private async void PollTimer_Tick(object sender, EventArgs e)
         {
-            if (_selectedUserId > 0)
+            if (_selectedUserId == GlobalChatId)
+            {
+                await LoadGlobalMessagesAsync();
+            }
+            else if (_selectedUserId > 0)
             {
                 await LoadPrivateMessagesAsync();
             }
@@ -92,12 +133,25 @@ namespace NimbusChat
             if (string.IsNullOrWhiteSpace(text))
                 return;
 
-            var success = await _messageService.SendPrivateMessageAsync(_currentUserId, _selectedUserId, text);
+            bool success;
+
+            if (_selectedUserId == GlobalChatId)
+            {
+                success = await _messageService.SendGlobalMessageAsync(_currentUserId, text);
+            }
+            else
+            {
+                success = await _messageService.SendPrivateMessageAsync(_currentUserId, _selectedUserId, text);
+            }
 
             if (success)
             {
                 MessageInput.Clear();
-                await LoadPrivateMessagesAsync();
+
+                if (_selectedUserId == GlobalChatId)
+                    await LoadGlobalMessagesAsync();
+                else
+                    await LoadPrivateMessagesAsync();
             }
             else
             {
@@ -131,12 +185,19 @@ namespace NimbusChat
                         ChatStatus.Foreground = Brushes.Gold;
                         break;
 
+                    case "Everyone":
+                        ChatStatus.Foreground = (Brush)FindResource("PrimaryBrush");
+                        break;
+
                     default:
                         ChatStatus.Foreground = Brushes.Gray;
                         break;
                 }
 
-                await LoadPrivateMessagesAsync();
+                if (user.Id == GlobalChatId)
+                    await LoadGlobalMessagesAsync();
+                else
+                    await LoadPrivateMessagesAsync();
             }
         }
 

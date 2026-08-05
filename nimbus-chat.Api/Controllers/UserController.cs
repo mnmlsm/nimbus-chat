@@ -11,6 +11,11 @@ namespace NimbusChat.Api.Controllers
     [Route("api/[controller]")]
     public class UsersController : ControllerBase
     {
+        // Muss mit MessagesController.GlobalChatEmail übereinstimmen: der System-User
+        // fürs globale Chat-Postfach soll nicht als normaler Kontakt auftauchen,
+        // die Oberfläche zeigt "Global Chat" bereits als eigenen, gepinnten Eintrag.
+        private const string GlobalChatEmail = "global@nimbuschat.local";
+
         private readonly IConfiguration _configuration;
 
         public UsersController(IConfiguration configuration)
@@ -27,9 +32,10 @@ namespace NimbusChat.Api.Controllers
             using var connection = new MySqlConnection(connectionString);
             connection.Open();
 
-            var sql = @"SELECT Id, Username, Email, Status, FavoriteCity FROM Users";
+            var sql = @"SELECT Id, Username, Email, Status, FavoriteCity FROM Users WHERE Email <> @GlobalChatEmail";
 
             using var command = new MySqlCommand(sql, connection);
+            command.Parameters.AddWithValue("@GlobalChatEmail", GlobalChatEmail);
             using var reader = command.ExecuteReader();
 
             while (reader.Read())

@@ -81,6 +81,44 @@ namespace NimbusChat.WetterChatApp.Services
             return response.IsSuccessStatusCode;
         }
 
+        // Die API holt das Wetter von OpenWeatherMap und legt jeden Abruf in
+        // der Tabelle WeatherData ab; der Client sieht nur noch das Ergebnis.
+        public async Task<WeatherData> GetWeatherAsync(string city, int userId = 0)
+        {
+            var response = await _httpClient
+                .GetAsync($"/api/weather?city={Uri.EscapeDataString(city)}&userId={userId}")
+                .ConfigureAwait(false);
+            response.EnsureSuccessStatusCode();
+
+            return await response.Content.ReadFromJsonAsync<WeatherData>().ConfigureAwait(false);
+        }
+
+        public async Task<List<ForecastDay>> GetForecastAsync(string city)
+        {
+            var response = await _httpClient
+                .GetAsync($"/api/weather/forecast?city={Uri.EscapeDataString(city)}")
+                .ConfigureAwait(false);
+            response.EnsureSuccessStatusCode();
+
+            var items = await response.Content.ReadFromJsonAsync<List<ForecastDayResponse>>().ConfigureAwait(false)
+                        ?? new List<ForecastDayResponse>();
+            var result = new List<ForecastDay>();
+
+            foreach (var item in items)
+            {
+                result.Add(new ForecastDay
+                {
+                    Day = item.Date.ToString("ddd"),
+                    Temperature = $"{item.Temperature:0}°",
+                    Icon = item.Icon,
+                    IconUrl = $"https://openweathermap.org/img/wn/{item.Icon}@2x.png",
+                    Condition = item.Condition
+                });
+            }
+
+            return result;
+        }
+
         public async Task<List<(Message Message, string DisplayName)>> GetGlobalMessagesAsync(int since = 0)
         {
             var response = await _httpClient.GetAsync($"/api/messages?since={since}").ConfigureAwait(false);
@@ -160,6 +198,14 @@ namespace NimbusChat.WetterChatApp.Services
             public string Email { get; set; }
             public string Status { get; set; }
             public string FavoriteCity { get; set; }
+        }
+
+        private class ForecastDayResponse
+        {
+            public DateTime Date { get; set; }
+            public double Temperature { get; set; }
+            public string Icon { get; set; }
+            public string Condition { get; set; }
         }
 
         private class GlobalMessageResponse

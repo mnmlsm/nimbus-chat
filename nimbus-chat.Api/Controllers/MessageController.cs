@@ -30,15 +30,18 @@ namespace NimbusChat.Api.Controllers
             using var connection = new MySqlConnection(connectionString);
             connection.Open();
 
+            var globalChatUserId = GetOrCreateGlobalChatUserId(connection);
+
             var sql = @"
 SELECT m.Id, m.SenderId, m.Content, m.CreatedAt, u.Username
 FROM Messages m
 JOIN Users u ON u.Id = m.SenderId
-WHERE m.Id > @Since
+WHERE m.Id > @Since AND m.ReceiverId = @GlobalChatUserId
 ORDER BY m.Id ASC";
 
             using var command = new MySqlCommand(sql, connection);
             command.Parameters.AddWithValue("@Since", since);
+            command.Parameters.AddWithValue("@GlobalChatUserId", globalChatUserId);
             using var reader = command.ExecuteReader();
 
             while (reader.Read())

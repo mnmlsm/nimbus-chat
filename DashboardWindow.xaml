@@ -1090,8 +1090,8 @@
         Margin="8"
         Padding="15"
         CornerRadius="22"
-        Background="#FFFFFF"
-        BorderBrush="#E3ECF8"
+        Background="{Binding TileBackground}"
+        BorderBrush="{Binding TileBorderBrush}"
         BorderThickness="1"
         RenderTransformOrigin="0.5,0.5">
 

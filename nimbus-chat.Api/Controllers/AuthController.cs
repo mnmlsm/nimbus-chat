@@ -33,21 +33,38 @@ namespace NimbusChat.Api.Controllers
             using var command = new MySqlCommand(sql, connection);
             command.Parameters.AddWithValue("@Email", dto.Email);
 
-            using var reader = command.ExecuteReader();
-            if (!reader.Read())
-                return Unauthorized("Invalid email or password.");
+            int id;
+            string username, email, favoriteCity;
 
-            var storedHash = reader.GetString("PasswordHash");
-            if (!string.Equals(storedHash, HashPassword(dto.Password), StringComparison.Ordinal))
-                return Unauthorized("Invalid email or password.");
+            using (var reader = command.ExecuteReader())
+            {
+                if (!reader.Read())
+                    return Unauthorized("Invalid email or password.");
+
+                var storedHash = reader.GetString("PasswordHash");
+                if (!string.Equals(storedHash, HashPassword(dto.Password), StringComparison.Ordinal))
+                    return Unauthorized("Invalid email or password.");
+
+                id = reader.GetInt32("Id");
+                username = reader.GetString("Username");
+                email = reader.GetString("Email");
+                favoriteCity = reader.IsDBNull(reader.GetOrdinal("FavoriteCity")) ? string.Empty : reader.GetString("FavoriteCity");
+            }
+
+            // Bei jedem erfolgreichen Login wird der Status auf Online zurückgesetzt,
+            // unabhängig vom vorherigen Wert (z.B. Busy/Away/Offline aus der letzten Sitzung).
+            const string updateSql = "UPDATE Users SET Status = 'Online' WHERE Id = @Id;";
+            using var updateCommand = new MySqlCommand(updateSql, connection);
+            updateCommand.Parameters.AddWithValue("@Id", id);
+            updateCommand.ExecuteNonQuery();
 
             return Ok(new UserDto
             {
-                Id = reader.GetInt32("Id"),
-                Username = reader.GetString("Username"),
-                Email = reader.GetString("Email"),
-                Status = reader.IsDBNull(reader.GetOrdinal("Status")) ? string.Empty : reader.GetString("Status"),
-                FavoriteCity = reader.IsDBNull(reader.GetOrdinal("FavoriteCity")) ? string.Empty : reader.GetString("FavoriteCity")
+                Id = id,
+                Username = username,
+                Email = email,
+                Status = "Online",
+                FavoriteCity = favoriteCity
             });
         }
 

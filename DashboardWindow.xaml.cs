@@ -1,12 +1,8 @@
-﻿using Newtonsoft.Json;
-using NimbusChat.WetterChatApp.Models;
+﻿using NimbusChat.WetterChatApp.Models;
 using NimbusChat.WetterChatApp.Services;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
-using System.Net.Http;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows;
@@ -263,34 +259,20 @@ namespace NimbusChat
 
             try
             {
-                using (var client = new HttpClient())
-                {
-                    string city = Uri.EscapeDataString(cityName);
+                // Die API ruft OpenWeatherMap auf und schreibt den Abruf in die
+                // Datenbank; hier kommt nur noch das fertige Ergebnis an.
+                var data = await _apiClient.GetWeatherAsync(cityName, _currentUser.Id);
 
-                    string url =
-    $"https://api.openweathermap.org/data/2.5/weather?q={Uri.EscapeDataString(cityName)}&appid=9a88681c950ff48215f6b23a7b43f21a&units=metric";
+                WeatherCity = cityName;
+                WeatherTemperature = $"{data.Temperature:0.#}°C";
+                WeatherCondition = data.Description;
+                WeatherHumidity = $"{data.Humidity}%";
 
-                    string response = await client.GetStringAsync(url);
+                double windKmH = data.WindSpeed * 3.6;
+                WeatherWind = $"{windKmH:0.#} km/h";
 
-                    dynamic data = JsonConvert.DeserializeObject(response);
-
-
-                    double temperature = data.main.temp;
-                    int humidity = data.main.humidity;
-                    double windSpeed = data.wind.speed;
-                    string condition = data.weather[0].description;
-
-                    WeatherCity = cityName;
-                    WeatherTemperature = $"{temperature:0.#}°C";
-                    WeatherCondition = condition;
-                    WeatherHumidity = $"{humidity}%";
-
-                    double windKmH = windSpeed * 3.6;
-                    WeatherWind = $"{windKmH:0.#} km/h";
-
-                    UpdateWeatherVisual();
-                    await LoadForecastAsync(cityName);
-                }
+                UpdateWeatherVisual();
+                await LoadForecastAsync(cityName);
             }
             catch (Exception)
             {
@@ -445,51 +427,9 @@ namespace NimbusChat
         {
             Forecast.Clear();
 
-            using (var client = new HttpClient())
-            {
-                string url =
-        $"https://api.openweathermap.org/data/2.5/forecast?q={Uri.EscapeDataString(city)}&appid=9a88681c950ff48215f6b23a7b43f21a&units=metric";
-
-                string json = await client.GetStringAsync(url);
-
-                dynamic data = JsonConvert.DeserializeObject(json);
-
-                var today = DateTime.Now.Date;
-                var entries = new List<(DateTime Date, DateTime Time, double Temp, string Icon, string Condition)>();
-
-                foreach (var item in data.list)
-                {
-                    DateTime time = DateTime.Parse((string)item.dt_txt);
-
-                    // Nur zukünftige Tage anzeigen, nicht den heutigen.
-                    if (time.Date <= today)
-                        continue;
-
-                    entries.Add((time.Date, time, (double)item.main.temp, item.weather[0].icon.ToString(), (string)item.weather[0].description));
-                }
-
-                var days = entries
-                    .GroupBy(e => e.Date)
-                    .OrderBy(g => g.Key)
-                    .Take(5);
-
-                foreach (var day in days)
-                {
-                    // Den Eintrag nehmen, der am nächsten an 12 Uhr mittags liegt,
-                    // damit Icon/Temperatur den Tag realistisch abbilden (statt
-                    // z.B. eines nächtlichen 3-Uhr-Werts).
-                    var noon = day.Key.AddHours(12);
-                    var representative = day.OrderBy(e => Math.Abs((e.Time - noon).TotalMinutes)).First();
-
-                    Forecast.Add(new ForecastDay
-                    {
-                        Day = day.Key.ToString("ddd"),
-                        Temperature = $"{representative.Temp:0}°",
-                        IconUrl = $"https://openweathermap.org/img/wn/{representative.Icon}@2x.png",
-                        Condition = representative.Condition
-                    });
-                }
-            }
+            // Gruppierung auf einen Eintrag pro Tag passiert serverseitig.
+            foreach (var day in await _apiClient.GetForecastAsync(city))
+                Forecast.Add(day);
         }
     }
 }

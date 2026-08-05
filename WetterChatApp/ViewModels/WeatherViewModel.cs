@@ -1,14 +1,15 @@
 using System;
-using System.Net.Http;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using Newtonsoft.Json;
 using NimbusChat.WetterChatApp.Infrastructure;
+using NimbusChat.WetterChatApp.Services;
 
 namespace NimbusChat.ViewModels
 {
     public class WeatherViewModel : BaseViewModel
     {
+        private readonly ApiClient _apiClient = new ApiClient();
+
         private string _city;
         private string _cityName;
         private string _temperature;
@@ -101,22 +102,15 @@ namespace NimbusChat.ViewModels
 
             try
             {
-                using (var client = new HttpClient())
-                {
-                    var url =
-                        $"https://api.openweathermap.org/data/2.5/weather?q={Uri.EscapeDataString(City)}&appid=9a88681c950ff48215f6b23a7b43f21a&units=metric";
+                // Über die API, damit der Abruf in der Datenbank landet.
+                var weather = await _apiClient.GetWeatherAsync(City);
 
-                    var response = await client.GetStringAsync(url);
-
-                    dynamic weather = JsonConvert.DeserializeObject(response);
-
-                    CityName = weather.name;
-                    Temperature = $"{weather.main.temp:0}°C";
-                    Description = weather.weather[0].description.ToString();
-                    Humidity = $"{weather.main.humidity}%";
-                    Wind = $"{weather.wind.speed:0.#} m/s";
-                    FeelsLike = $"{weather.main.feels_like:0}°C";
-                }
+                CityName = weather.City;
+                Temperature = $"{weather.Temperature:0}°C";
+                Description = weather.Description;
+                Humidity = $"{weather.Humidity}%";
+                Wind = $"{weather.WindSpeed:0.#} m/s";
+                FeelsLike = $"{weather.FeelsLike:0}°C";
             }
             catch (Exception ex)
             {
