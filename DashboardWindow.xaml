@@ -342,7 +342,8 @@
                                  Fill="Gray"
                                  VerticalAlignment="Center"/>
 
-                        <TextBlock Text="WEATHER · CONNECTED"
+                        <TextBlock x:Name="ConnectionText"
+                                   Text="WEATHER · CONNECTED"
                                    Foreground="#7F9ABF"
                                    FontSize="9"
                                    FontWeight="SemiBold"

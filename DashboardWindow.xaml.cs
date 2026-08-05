@@ -234,10 +234,12 @@ namespace NimbusChat
             {
                 await _apiClient.GetHealthAsync();
                 ConnectionDot.Fill = Brushes.LimeGreen;
+                ConnectionText.Text = "WEATHER · CONNECTED";
             }
             catch
             {
                 ConnectionDot.Fill = Brushes.Red;
+                ConnectionText.Text = "WEATHER · NOT CONNECTED";
             }
         }
 
