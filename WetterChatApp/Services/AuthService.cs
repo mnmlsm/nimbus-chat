@@ -16,9 +16,9 @@ namespace NimbusChat.WetterChatApp.Services
             return _apiClient.LoginAsync(email, password).GetAwaiter().GetResult();
         }
 
-        public bool Register(string email, string password)
+        public bool Register(string username, string email, string password)
         {
-            return _apiClient.RegisterAsync(email, password).GetAwaiter().GetResult();
+            return _apiClient.RegisterAsync(username, email, password).GetAwaiter().GetResult();
         }
     }
 }

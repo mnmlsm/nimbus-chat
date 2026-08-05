@@ -38,9 +38,9 @@ namespace NimbusChat.WetterChatApp.Services
             return ToUser(await response.Content.ReadFromJsonAsync<UserResponse>().ConfigureAwait(false));
         }
 
-        public async Task<bool> RegisterAsync(string email, string password)
+        public async Task<bool> RegisterAsync(string username, string email, string password)
         {
-            var response = await _httpClient.PostAsJsonAsync("/api/auth/register", new { Email = email, Password = password }).ConfigureAwait(false);
+            var response = await _httpClient.PostAsJsonAsync("/api/auth/register", new { Username = username, Email = email, Password = password }).ConfigureAwait(false);
             return response.IsSuccessStatusCode;
         }
 
@@ -51,6 +51,20 @@ namespace NimbusChat.WetterChatApp.Services
                 return null;
 
             return ToUser(await response.Content.ReadFromJsonAsync<UserResponse>().ConfigureAwait(false));
+        }
+
+        public async Task<List<User>> GetAllUsersAsync()
+        {
+            var response = await _httpClient.GetAsync("/api/users").ConfigureAwait(false);
+            response.EnsureSuccessStatusCode();
+
+            var items = await response.Content.ReadFromJsonAsync<List<UserResponse>>().ConfigureAwait(false) ?? new List<UserResponse>();
+            var result = new List<User>();
+
+            foreach (var item in items)
+                result.Add(ToUser(item));
+
+            return result;
         }
 
         public async Task<bool> UpdateUserAsync(User user)
@@ -99,6 +113,35 @@ namespace NimbusChat.WetterChatApp.Services
             return response.IsSuccessStatusCode;
         }
 
+        public async Task<List<Message>> GetMessagesBetweenAsync(int userId1, int userId2)
+        {
+            var response = await _httpClient.GetAsync($"/api/messages/between?user1={userId1}&user2={userId2}").ConfigureAwait(false);
+            response.EnsureSuccessStatusCode();
+
+            var items = await response.Content.ReadFromJsonAsync<List<MessageResponse>>().ConfigureAwait(false) ?? new List<MessageResponse>();
+            var result = new List<Message>();
+
+            foreach (var item in items)
+            {
+                result.Add(new Message
+                {
+                    Id = item.Id,
+                    SenderId = item.SenderId,
+                    ReceiverId = item.ReceiverId,
+                    Content = item.Content,
+                    CreatedAt = item.CreatedAt
+                });
+            }
+
+            return result;
+        }
+
+        public async Task<bool> SendPrivateMessageAsync(int senderId, int receiverId, string content)
+        {
+            var response = await _httpClient.PostAsJsonAsync("/api/messages", new { SenderId = senderId, ReceiverId = receiverId, Content = content }).ConfigureAwait(false);
+            return response.IsSuccessStatusCode;
+        }
+
         private static User ToUser(UserResponse dto)
         {
             if (dto == null)
@@ -130,6 +173,15 @@ namespace NimbusChat.WetterChatApp.Services
             public string Content { get; set; }
             public DateTime CreatedAt { get; set; }
             public string SenderName { get; set; }
+        }
+
+        private class MessageResponse
+        {
+            public int Id { get; set; }
+            public int SenderId { get; set; }
+            public int ReceiverId { get; set; }
+            public string Content { get; set; }
+            public DateTime CreatedAt { get; set; }
         }
     }
 }

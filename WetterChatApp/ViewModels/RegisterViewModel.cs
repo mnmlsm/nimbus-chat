@@ -10,9 +10,17 @@ namespace NimbusChat.WetterChatApp.ViewModels
     {
         private readonly AuthService _authService;
 
+        private string _username;
         private string _email;
         private string _password;
+        private string _confirmPassword;
         private string _errorMessage;
+
+        public string Username
+        {
+            get => _username;
+            set => SetProperty(ref _username, value);
+        }
 
         public string Email
         {
@@ -24,6 +32,12 @@ namespace NimbusChat.WetterChatApp.ViewModels
         {
             get => _password;
             set => SetProperty(ref _password, value);
+        }
+
+        public string ConfirmPassword
+        {
+            get => _confirmPassword;
+            set => SetProperty(ref _confirmPassword, value);
         }
 
         public string ErrorMessage
@@ -42,15 +56,23 @@ namespace NimbusChat.WetterChatApp.ViewModels
 
         private bool CanRegister()
         {
-            return !string.IsNullOrWhiteSpace(Email) &&
-                   !string.IsNullOrWhiteSpace(Password);
+            return !string.IsNullOrWhiteSpace(Username) &&
+                   !string.IsNullOrWhiteSpace(Email) &&
+                   !string.IsNullOrWhiteSpace(Password) &&
+                   !string.IsNullOrWhiteSpace(ConfirmPassword);
         }
 
         private void ExecuteRegister()
         {
             ErrorMessage = "";
 
-            var success = _authService.Register(Email, Password);
+            if (Password != ConfirmPassword)
+            {
+                ErrorMessage = "Passwords do not match.";
+                return;
+            }
+
+            var success = _authService.Register(Username, Email, Password);
 
             if (!success)
             {

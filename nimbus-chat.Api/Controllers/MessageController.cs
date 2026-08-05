@@ -56,6 +56,43 @@ ORDER BY m.Id ASC";
             return Ok(messages);
         }
 
+        // Privater Chatverlauf zwischen zwei Nutzern.
+        [HttpGet("between")]
+        public IActionResult GetBetween([FromQuery] int user1, [FromQuery] int user2)
+        {
+            var messages = new List<MessageDto>();
+            var connectionString = _configuration.GetConnectionString("NimbusChatDatabase");
+
+            using var connection = new MySqlConnection(connectionString);
+            connection.Open();
+
+            var sql = @"
+SELECT Id, SenderId, ReceiverId, Content, CreatedAt
+FROM Messages
+WHERE (SenderId = @User1 AND ReceiverId = @User2)
+   OR (SenderId = @User2 AND ReceiverId = @User1)
+ORDER BY Id ASC";
+
+            using var command = new MySqlCommand(sql, connection);
+            command.Parameters.AddWithValue("@User1", user1);
+            command.Parameters.AddWithValue("@User2", user2);
+            using var reader = command.ExecuteReader();
+
+            while (reader.Read())
+            {
+                messages.Add(new MessageDto
+                {
+                    Id = reader.GetInt32("Id"),
+                    SenderId = reader.GetInt32("SenderId"),
+                    ReceiverId = reader.GetInt32("ReceiverId"),
+                    Content = reader.GetString("Content"),
+                    CreatedAt = reader.GetDateTime("CreatedAt")
+                });
+            }
+
+            return Ok(messages);
+        }
+
         [HttpPost]
         public IActionResult Post([FromBody] CreateMessageDto dto)
         {
@@ -69,14 +106,16 @@ ORDER BY m.Id ASC";
             using var connection = new MySqlConnection(connectionString);
             connection.Open();
 
-            var globalUserId = GetOrCreateGlobalChatUserId(connection);
+            var receiverId = dto.ReceiverId.HasValue && dto.ReceiverId.Value > 0
+                ? dto.ReceiverId.Value
+                : GetOrCreateGlobalChatUserId(connection);
 
             var sql = @"INSERT INTO Messages (SenderId, ReceiverId, Content, CreatedAt)
                         VALUES (@SenderId, @ReceiverId, @Content, @CreatedAt);";
 
             using var command = new MySqlCommand(sql, connection);
             command.Parameters.AddWithValue("@SenderId", dto.SenderId);
-            command.Parameters.AddWithValue("@ReceiverId", globalUserId);
+            command.Parameters.AddWithValue("@ReceiverId", receiverId);
             command.Parameters.AddWithValue("@Content", dto.Content);
             command.Parameters.AddWithValue("@CreatedAt", DateTime.UtcNow);
 

@@ -15,6 +15,9 @@ namespace NimbusChat.Api.Models
     {
         public int SenderId { get; set; }
         public string Content { get; set; } = default!;
+
+        // Optional: gesetzt für private 1:1-Nachrichten; leer/0 = globaler Chat.
+        public int? ReceiverId { get; set; }
     }
 
     public class GlobalMessageDto

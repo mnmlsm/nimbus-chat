@@ -29,5 +29,17 @@ namespace NimbusChat.WetterChatApp.Services
         {
             return _apiClient.SendGlobalMessageAsync(senderId, content).GetAwaiter().GetResult();
         }
+
+        // Privater Chat: Nachrichten zwischen zwei Nutzern
+        public List<Message> GetMessagesBetween(int userId1, int userId2)
+        {
+            return _apiClient.GetMessagesBetweenAsync(userId1, userId2).GetAwaiter().GetResult();
+        }
+
+        // Privater Chat: Nachricht senden
+        public bool SendPrivateMessage(int senderId, int receiverId, string content)
+        {
+            return _apiClient.SendPrivateMessageAsync(senderId, receiverId, content).GetAwaiter().GetResult();
+        }
     }
 }
