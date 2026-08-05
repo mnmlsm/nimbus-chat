@@ -427,26 +427,28 @@ namespace NimbusChat
 
                 dynamic data = JsonConvert.DeserializeObject(json);
 
-                var added = new HashSet<string>();
+                var today = DateTime.Now.Date;
+                var addedDates = new HashSet<DateTime>();
 
                 foreach (var item in data.list)
                 {
                     DateTime date =
                         DateTime.Parse((string)item.dt_txt);
 
-                    string day =
-                        date.ToString("ddd");
-
-                    if (added.Contains(day))
+                    // Nur zukünftige Tage anzeigen, nicht den heutigen.
+                    if (date.Date <= today)
                         continue;
 
-                    added.Add(day);
+                    if (addedDates.Contains(date.Date))
+                        continue;
+
+                    addedDates.Add(date.Date);
 
                     string iconCode = item.weather[0].icon.ToString();
 
                     Forecast.Add(new ForecastDay
                     {
-                        Day = day,
+                        Day = date.ToString("ddd"),
                         Temperature = $"{(double)item.main.temp:0}°",
                         IconUrl = $"https://openweathermap.org/img/wn/{iconCode}@2x.png"
                     });

@@ -194,6 +194,12 @@
 
                 </Border>
 
+                <Button
+                    Style="{StaticResource PrimaryButton}"
+                    Content="Use for Dashboard"
+                    Margin="0,18,0,0"
+                    Click="UseForDashboard_Click"/>
+
             </StackPanel>
 
         </Border>

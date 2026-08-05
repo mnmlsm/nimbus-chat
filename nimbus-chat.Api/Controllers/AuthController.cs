@@ -61,7 +61,7 @@ namespace NimbusChat.Api.Controllers
             using var connection = new MySqlConnection(connectionString);
             connection.Open();
 
-            const string sql = @"INSERT INTO Users (Username, Email, PasswordHash) VALUES (@Username, @Email, @PasswordHash);";
+            const string sql = @"INSERT INTO Users (Username, Email, PasswordHash, Status) VALUES (@Username, @Email, @PasswordHash, 'Online');";
             using var command = new MySqlCommand(sql, connection);
             command.Parameters.AddWithValue("@Username", string.IsNullOrWhiteSpace(dto.Username) ? dto.Email : dto.Username);
             command.Parameters.AddWithValue("@Email", dto.Email);

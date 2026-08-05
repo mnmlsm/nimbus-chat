@@ -13,5 +13,13 @@ namespace NimbusChat
             InitializeComponent();
 
         }
+
+        private void UseForDashboard_Click(object sender, RoutedEventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(ViewModel.City))
+                return;
+
+            DialogResult = true;
+        }
     }
 }
