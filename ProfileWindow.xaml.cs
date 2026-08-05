@@ -13,7 +13,7 @@ namespace NimbusChat
 
         private async void Save_Click(object sender, RoutedEventArgs e)
         {
-            if (DataContext is ProfileViewModel vm && vm.SaveProfileCommand.CanExecute(null))
+            if (DataContext is ProfileViewModel vm)
             {
                 await vm.SaveProfileAsync();
 

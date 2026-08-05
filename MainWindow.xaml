@@ -26,6 +26,27 @@
              VerticalAlignment="Bottom"
              Margin="-80,0,0,-70"/>
 
+        <!-- Server connection indicator -->
+        <StackPanel Orientation="Horizontal"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Top"
+                    Margin="0,24,0,0">
+
+            <Ellipse x:Name="ConnectionDot"
+                     Width="8"
+                     Height="8"
+                     Fill="Gray"
+                     VerticalAlignment="Center"/>
+
+            <TextBlock x:Name="ConnectionText"
+                       Text="SERVER · CONNECTED"
+                       Foreground="{StaticResource SecondaryTextBrush}"
+                       FontSize="9"
+                       FontWeight="SemiBold"
+                       Margin="5,0,0,0"/>
+
+        </StackPanel>
+
         <!-- Login Card -->
         <Border Width="390"
             Padding="40"

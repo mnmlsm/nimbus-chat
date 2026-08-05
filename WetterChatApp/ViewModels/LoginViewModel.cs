@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -54,7 +55,16 @@ namespace NimbusChat.WetterChatApp.ViewModels
         {
             ErrorMessage = string.Empty;
 
-            var user = await _authService.LoginAsync(Email, Password);
+            User user;
+            try
+            {
+                user = await _authService.LoginAsync(Email, Password);
+            }
+            catch (Exception)
+            {
+                ErrorMessage = "The server cannot be reached right now. Please try again later.";
+                return;
+            }
 
             if (user == null)
             {
@@ -62,7 +72,14 @@ namespace NimbusChat.WetterChatApp.ViewModels
                 return;
             }
 
-            await _apiClient.UpdateStatusAsync(user.Id, "Online");
+            try
+            {
+                await _apiClient.UpdateStatusAsync(user.Id, "Online");
+            }
+            catch (Exception)
+            {
+                // Login war erfolgreich; ein fehlgeschlagenes Status-Update soll das nicht blockieren.
+            }
 
             // Dashboard mit aktuellem User öffnen
             var dashboard = new DashboardWindow(user);

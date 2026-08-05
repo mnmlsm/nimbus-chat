@@ -1,5 +1,6 @@
 using NimbusChat.WetterChatApp.Infrastructure;
 using NimbusChat.WetterChatApp.Services;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -73,7 +74,16 @@ namespace NimbusChat.WetterChatApp.ViewModels
                 return;
             }
 
-            var success = await _authService.RegisterAsync(Username, Email, Password);
+            bool success;
+            try
+            {
+                success = await _authService.RegisterAsync(Username, Email, Password);
+            }
+            catch (Exception)
+            {
+                ErrorMessage = "The server cannot be reached right now. Please try again later.";
+                return;
+            }
 
             if (!success)
             {

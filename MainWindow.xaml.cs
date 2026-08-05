@@ -1,15 +1,48 @@
-﻿using NimbusChat.WetterChatApp.ViewModels;
+using NimbusChat.WetterChatApp.Services;
+using NimbusChat.WetterChatApp.ViewModels;
+using System;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
+using System.Windows.Threading;
 
 namespace NimbusChat
 {
     public partial class MainWindow : Window
     {
+        private readonly ApiClient _apiClient = new ApiClient();
+        private readonly DispatcherTimer _connectionCheckTimer;
+
         public MainWindow()
         {
             InitializeComponent();
             DataContext = new LoginViewModel();
+
+            Loaded += async (s, e) => await CheckConnectionAsync();
+
+            _connectionCheckTimer = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromSeconds(15)
+            };
+            _connectionCheckTimer.Tick += async (s, e) => await CheckConnectionAsync();
+            _connectionCheckTimer.Start();
+
+            Closed += (s, e) => _connectionCheckTimer.Stop();
+        }
+
+        private async System.Threading.Tasks.Task CheckConnectionAsync()
+        {
+            try
+            {
+                await _apiClient.GetHealthAsync();
+                ConnectionDot.Fill = Brushes.LimeGreen;
+                ConnectionText.Text = "SERVER · CONNECTED";
+            }
+            catch
+            {
+                ConnectionDot.Fill = Brushes.Red;
+                ConnectionText.Text = "SERVER · NOT CONNECTED";
+            }
         }
 
         private void PasswordBox_PasswordChanged(object sender, RoutedEventArgs e)
