@@ -183,6 +183,9 @@
     <Compile Include="AppMessageBox.xaml.cs">
       <DependentUpon>AppMessageBox.xaml</DependentUpon>
     </Compile>
+    <Compile Include="WeatherIconControl.xaml.cs">
+      <DependentUpon>WeatherIconControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="MessagesWindow.xaml.cs">
       <DependentUpon>MessagesWindow.xaml</DependentUpon>
     </Compile>
@@ -213,6 +216,10 @@
       <DependentUpon>RegisterWindow.xaml</DependentUpon>
     </Compile>
     <Page Include="AppMessageBox.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="WeatherIconControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

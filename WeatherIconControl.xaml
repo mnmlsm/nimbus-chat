@@ -1,0 +1,221 @@
+<UserControl x:Class="NimbusChat.WeatherIconControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Width="64"
+             Height="64">
+
+    <Viewbox Stretch="Uniform">
+        <Grid Width="220"
+              Height="220">
+
+            <!-- SUNNY -->
+            <Grid x:Name="SunnyVisual"
+                  Width="210"
+                  Height="210"
+                  Visibility="Collapsed">
+
+                <Ellipse Width="190"
+                         Height="190"
+                         HorizontalAlignment="Center"
+                         VerticalAlignment="Center"
+                         Opacity="0.35">
+
+                    <Ellipse.Fill>
+                        <RadialGradientBrush>
+                            <GradientStop Color="#80FFD978" Offset="0"/>
+                            <GradientStop Color="#30FFD978" Offset="0.5"/>
+                            <GradientStop Color="#00FFD978" Offset="1"/>
+                        </RadialGradientBrush>
+                    </Ellipse.Fill>
+
+                </Ellipse>
+
+                <Grid Width="170"
+                      Height="170"
+                      HorizontalAlignment="Center"
+                      VerticalAlignment="Center"
+                      RenderTransformOrigin="0.5,0.5">
+
+                    <Grid.RenderTransform>
+                        <RotateTransform x:Name="SunRotate"/>
+                    </Grid.RenderTransform>
+
+                    <Rectangle Width="7" Height="30" RadiusX="4" RadiusY="4" Fill="#FFE7A83D" VerticalAlignment="Top"/>
+                    <Rectangle Width="7" Height="30" RadiusX="4" RadiusY="4" Fill="#FFE7A83D" VerticalAlignment="Bottom"/>
+                    <Rectangle Width="30" Height="7" RadiusX="4" RadiusY="4" Fill="#FFE7A83D" HorizontalAlignment="Left"/>
+                    <Rectangle Width="30" Height="7" RadiusX="4" RadiusY="4" Fill="#FFE7A83D" HorizontalAlignment="Right"/>
+
+                    <Rectangle Width="7" Height="27" RadiusX="4" RadiusY="4" Fill="#FFE7A83D"
+                               VerticalAlignment="Top" RenderTransformOrigin="0.5,2.7">
+                        <Rectangle.RenderTransform>
+                            <RotateTransform Angle="45"/>
+                        </Rectangle.RenderTransform>
+                    </Rectangle>
+
+                    <Rectangle Width="7" Height="27" RadiusX="4" RadiusY="4" Fill="#FFE7A83D"
+                               VerticalAlignment="Bottom" RenderTransformOrigin="0.5,-1.7">
+                        <Rectangle.RenderTransform>
+                            <RotateTransform Angle="45"/>
+                        </Rectangle.RenderTransform>
+                    </Rectangle>
+
+                    <Grid.Triggers>
+                        <EventTrigger RoutedEvent="Loaded">
+                            <BeginStoryboard>
+                                <Storyboard RepeatBehavior="Forever">
+                                    <DoubleAnimation
+                                        Storyboard.TargetName="SunRotate"
+                                        Storyboard.TargetProperty="Angle"
+                                        From="0" To="360" Duration="0:0:30"/>
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger>
+                    </Grid.Triggers>
+
+                </Grid>
+
+                <Ellipse Width="130"
+                         Height="130"
+                         HorizontalAlignment="Center"
+                         VerticalAlignment="Center">
+
+                    <Ellipse.Fill>
+                        <RadialGradientBrush Center="0.35,0.30" GradientOrigin="0.35,0.30">
+                            <GradientStop Color="#FFFFE49A" Offset="0"/>
+                            <GradientStop Color="#FFFFC94D" Offset="0.55"/>
+                            <GradientStop Color="#FFF3A72F" Offset="1"/>
+                        </RadialGradientBrush>
+                    </Ellipse.Fill>
+
+                    <Ellipse.Effect>
+                        <DropShadowEffect Color="#FFFFC34D" BlurRadius="35" ShadowDepth="0" Opacity="0.65"/>
+                    </Ellipse.Effect>
+
+                    <Ellipse.RenderTransform>
+                        <ScaleTransform x:Name="SunPulse" ScaleX="1" ScaleY="1"/>
+                    </Ellipse.RenderTransform>
+
+                    <Ellipse.RenderTransformOrigin>
+                        <Point X="0.5" Y="0.5"/>
+                    </Ellipse.RenderTransformOrigin>
+
+                    <Ellipse.Triggers>
+                        <EventTrigger RoutedEvent="Loaded">
+                            <BeginStoryboard>
+                                <Storyboard AutoReverse="True" RepeatBehavior="Forever">
+                                    <DoubleAnimation Storyboard.TargetName="SunPulse" Storyboard.TargetProperty="ScaleX" From="1" To="1.06" Duration="0:0:2.5"/>
+                                    <DoubleAnimation Storyboard.TargetName="SunPulse" Storyboard.TargetProperty="ScaleY" From="1" To="1.06" Duration="0:0:2.5"/>
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger>
+                    </Ellipse.Triggers>
+
+                </Ellipse>
+
+                <Ellipse Width="24"
+                         Height="15"
+                         Fill="#70FFFFFF"
+                         Margin="0,55,48,0"
+                         HorizontalAlignment="Center"
+                         VerticalAlignment="Top"/>
+
+            </Grid>
+
+            <!-- CLOUDY -->
+            <Canvas x:Name="CloudyVisual"
+                    Visibility="Collapsed"
+                    Width="220"
+                    Height="170">
+
+                <Ellipse Width="100" Height="70" Fill="#B8D0EE" Canvas.Left="35" Canvas.Top="55" Opacity="0.65"/>
+                <Ellipse Width="85" Height="85" Fill="#C9DCF3" Canvas.Left="80" Canvas.Top="30"/>
+                <Ellipse Width="105" Height="72" Fill="White" Canvas.Left="65" Canvas.Top="78"/>
+                <Ellipse Width="82" Height="82" Fill="White" Canvas.Left="105" Canvas.Top="53"/>
+                <Ellipse Width="75" Height="65" Fill="White" Canvas.Left="130" Canvas.Top="82"/>
+                <Rectangle Width="125" Height="50" RadiusX="25" RadiusY="25" Fill="White" Canvas.Left="65" Canvas.Top="100"/>
+
+                <Canvas.Effect>
+                    <DropShadowEffect Color="#5479A8" BlurRadius="25" ShadowDepth="8" Opacity="0.25"/>
+                </Canvas.Effect>
+
+                <Canvas.RenderTransform>
+                    <TranslateTransform x:Name="CloudMove"/>
+                </Canvas.RenderTransform>
+
+                <Canvas.Triggers>
+                    <EventTrigger RoutedEvent="Loaded">
+                        <BeginStoryboard>
+                            <Storyboard AutoReverse="True" RepeatBehavior="Forever">
+                                <DoubleAnimation Storyboard.TargetName="CloudMove" Storyboard.TargetProperty="X" From="-7" To="7" Duration="0:0:3"/>
+                                <DoubleAnimation Storyboard.TargetName="CloudMove" Storyboard.TargetProperty="Y" From="-2" To="4" Duration="0:0:4"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger>
+                </Canvas.Triggers>
+
+            </Canvas>
+
+            <!-- RAIN -->
+            <Canvas x:Name="RainVisual"
+                    Visibility="Collapsed"
+                    Width="220"
+                    Height="200">
+
+                <Ellipse Width="105" Height="75" Fill="White" Canvas.Left="50" Canvas.Top="35"/>
+                <Ellipse Width="90" Height="90" Fill="#EDF4FC" Canvas.Left="95" Canvas.Top="15"/>
+                <Rectangle Width="135" Height="55" RadiusX="28" RadiusY="28" Fill="White" Canvas.Left="50" Canvas.Top="65"/>
+
+                <Line X1="75" Y1="130" X2="65" Y2="160" Stroke="#BDE5FF" StrokeThickness="6" StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
+                <Line X1="115" Y1="130" X2="105" Y2="165" Stroke="#BDE5FF" StrokeThickness="6" StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
+                <Line X1="155" Y1="130" X2="145" Y2="160" Stroke="#BDE5FF" StrokeThickness="6" StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
+
+                <Canvas.RenderTransform>
+                    <TranslateTransform x:Name="RainMove"/>
+                </Canvas.RenderTransform>
+
+                <Canvas.Triggers>
+                    <EventTrigger RoutedEvent="Loaded">
+                        <BeginStoryboard>
+                            <Storyboard AutoReverse="True" RepeatBehavior="Forever">
+                                <DoubleAnimation Storyboard.TargetName="RainMove" Storyboard.TargetProperty="Y" From="-3" To="8" Duration="0:0:0.7"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger>
+                </Canvas.Triggers>
+
+            </Canvas>
+
+            <!-- SNOW -->
+            <Canvas x:Name="SnowVisual"
+                    Visibility="Collapsed"
+                    Width="220"
+                    Height="200">
+
+                <Ellipse Width="105" Height="75" Fill="White" Canvas.Left="50" Canvas.Top="30"/>
+                <Ellipse Width="90" Height="90" Fill="#EDF4FC" Canvas.Left="95" Canvas.Top="10"/>
+                <Rectangle Width="135" Height="55" RadiusX="28" RadiusY="28" Fill="White" Canvas.Left="50" Canvas.Top="60"/>
+
+                <TextBlock Text="❄" FontSize="28" Foreground="White" Canvas.Left="65" Canvas.Top="120"/>
+                <TextBlock Text="❄" FontSize="20" Foreground="#D9EEFF" Canvas.Left="110" Canvas.Top="145"/>
+                <TextBlock Text="❄" FontSize="25" Foreground="White" Canvas.Left="155" Canvas.Top="120"/>
+
+                <Canvas.RenderTransform>
+                    <TranslateTransform x:Name="SnowMove"/>
+                </Canvas.RenderTransform>
+
+                <Canvas.Triggers>
+                    <EventTrigger RoutedEvent="Loaded">
+                        <BeginStoryboard>
+                            <Storyboard AutoReverse="True" RepeatBehavior="Forever">
+                                <DoubleAnimation Storyboard.TargetName="SnowMove" Storyboard.TargetProperty="Y" From="-4" To="6" Duration="0:0:1.4"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger>
+                </Canvas.Triggers>
+
+            </Canvas>
+
+        </Grid>
+    </Viewbox>
+
+</UserControl>

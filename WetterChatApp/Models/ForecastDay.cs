@@ -15,6 +15,9 @@ namespace NimbusChat.WetterChatApp.Models
         public string Icon { get; set; }
 
         public string IconUrl { get; set; }
+
+        // Wetterbeschreibung (z.B. "clear sky", "light rain") für das animierte Icon.
+        public string Condition { get; set; }
     }
 
 }

@@ -11,6 +11,7 @@ using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
+using System.Windows.Threading;
 
 namespace NimbusChat
 {
@@ -199,6 +200,8 @@ namespace NimbusChat
             }
         }
 
+        private readonly DispatcherTimer _connectionCheckTimer;
+
         public DashboardWindow(User currentUser)
         {
             InitializeComponent();
@@ -210,11 +213,32 @@ namespace NimbusChat
             RefreshDashboard();
 
             Loaded += DashboardWindow_Loaded;
+
+            _connectionCheckTimer = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromSeconds(15)
+            };
+            _connectionCheckTimer.Tick += async (s, e) => await CheckConnectionAsync();
+            _connectionCheckTimer.Start();
         }
 
         private async void DashboardWindow_Loaded(object sender, RoutedEventArgs e)
         {
             await LoadFavoriteCityWeatherAsync();
+            await CheckConnectionAsync();
+        }
+
+        private async Task CheckConnectionAsync()
+        {
+            try
+            {
+                await _apiClient.GetHealthAsync();
+                ConnectionDot.Fill = Brushes.LimeGreen;
+            }
+            catch
+            {
+                ConnectionDot.Fill = Brushes.Red;
+            }
         }
 
         // Fallback, solange der Nutzer noch keine Stadt im Profil gespeichert hat,
@@ -361,6 +385,8 @@ namespace NimbusChat
 
         protected override void OnClosing(CancelEventArgs e)
         {
+            _connectionCheckTimer?.Stop();
+
             // Fire-and-forget: das Fenster schließt sofort, ohne auf die
             // Netzwerkantwort zu warten (die App läuft ohnehin noch kurz weiter).
             _ = _apiClient.UpdateStatusAsync(_currentUser.Id, "Offline");
@@ -427,7 +453,7 @@ namespace NimbusChat
                 dynamic data = JsonConvert.DeserializeObject(json);
 
                 var today = DateTime.Now.Date;
-                var entries = new List<(DateTime Date, DateTime Time, double Temp, string Icon)>();
+                var entries = new List<(DateTime Date, DateTime Time, double Temp, string Icon, string Condition)>();
 
                 foreach (var item in data.list)
                 {
@@ -437,7 +463,7 @@ namespace NimbusChat
                     if (time.Date <= today)
                         continue;
 
-                    entries.Add((time.Date, time, (double)item.main.temp, item.weather[0].icon.ToString()));
+                    entries.Add((time.Date, time, (double)item.main.temp, item.weather[0].icon.ToString(), (string)item.weather[0].description));
                 }
 
                 var days = entries
@@ -457,7 +483,8 @@ namespace NimbusChat
                     {
                         Day = day.Key.ToString("ddd"),
                         Temperature = $"{representative.Temp:0}°",
-                        IconUrl = $"https://openweathermap.org/img/wn/{representative.Icon}@2x.png"
+                        IconUrl = $"https://openweathermap.org/img/wn/{representative.Icon}@2x.png",
+                        Condition = representative.Condition
                     });
                 }
             }

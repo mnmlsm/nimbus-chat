@@ -4,7 +4,7 @@
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:vm="clr-namespace:NimbusChat.ViewModels"
         Title="Weather"
-        Height="860"
+        Height="1000"
         Width="450"
         WindowStartupLocation="CenterOwner"
         ResizeMode="NoResize"
