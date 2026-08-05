@@ -1,5 +1,4 @@
-﻿using NimbusChat.Views;
-using NimbusChat.WetterChatApp.ViewModels;
+﻿using NimbusChat.WetterChatApp.ViewModels;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -23,7 +22,7 @@ namespace NimbusChat
 
         private void OpenRegister_Click(object sender, RoutedEventArgs e)
         {
-            var register = new RegisterView();
+            var register = new RegisterWindow();
             register.Show();
             Close();
         }
@@ -61,5 +60,6 @@ namespace NimbusChat
                 EyeIcon.Kind = MaterialDesignThemes.Wpf.PackIconKind.EyeOutline;
             }
         }
+
     }
 }

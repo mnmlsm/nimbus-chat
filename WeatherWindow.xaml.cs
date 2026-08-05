@@ -12,13 +12,6 @@ namespace NimbusChat
         {
             InitializeComponent();
 
-            ViewModel.PropertyChanged += (s, e) =>
-            {
-                if (e.PropertyName == nameof(WeatherViewModel.DialogResultValue))
-                {
-                    DialogResult = ViewModel.DialogResultValue;
-                }
-            };
         }
     }
 }

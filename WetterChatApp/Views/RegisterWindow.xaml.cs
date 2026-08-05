@@ -1,11 +1,11 @@
 ﻿using System.Windows;
 using NimbusChat.WetterChatApp.ViewModels;
 
-namespace NimbusChat.Views
+namespace NimbusChat
 {
-    public partial class RegisterView : Window
+    public partial class RegisterWindow : Window
     {
-        public RegisterView()
+        public RegisterWindow()
         {
             InitializeComponent();
             DataContext = new RegisterViewModel();

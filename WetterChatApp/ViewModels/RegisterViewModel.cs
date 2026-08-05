@@ -88,7 +88,7 @@ namespace NimbusChat.WetterChatApp.ViewModels
 
             var registerWindow = Application.Current.Windows
                 .OfType<Window>()
-                .FirstOrDefault(w => w is Views.RegisterView);
+                .FirstOrDefault(w => w is RegisterWindow);
 
             registerWindow?.Close();
         }

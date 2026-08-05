@@ -198,14 +198,16 @@
     </Compile>
     <Compile Include="WetterChatApp\Infrastructure\BaseViewModel.cs" />
     <Compile Include="WetterChatApp\Infrastructure\RelayCommand.cs" />
+    <Compile Include="WetterChatApp\Models\ChatMessage.cs" />
+    <Compile Include="WetterChatApp\Models\ForecastDay.cs" />
     <Compile Include="WetterChatApp\Models\Message.cs" />
     <Compile Include="WetterChatApp\Models\User.cs" />
     <Compile Include="WetterChatApp\Models\WeatherData.cs" />
     <Compile Include="WetterChatApp\Services\INavigationServices.cs" />
     <Compile Include="WetterChatApp\ViewModels\LoginViewModel.cs" />
     <Compile Include="WetterChatApp\ViewModels\RegisterViewModel.cs" />
-    <Compile Include="WetterChatApp\Views\RegisterView.xaml.cs">
-      <DependentUpon>RegisterView.xaml</DependentUpon>
+    <Compile Include="WetterChatApp\Views\RegisterWindow.xaml.cs">
+      <DependentUpon>RegisterWindow.xaml</DependentUpon>
     </Compile>
     <Page Include="DashboardWindow.xaml">
       <SubType>Designer</SubType>
@@ -238,7 +240,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="WetterChatApp\Views\RegisterView.xaml">
+    <Page Include="WetterChatApp\Views\RegisterWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Styles\Theme.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -10,10 +10,12 @@ namespace NimbusChat.ViewModels
     public class WeatherViewModel : BaseViewModel
     {
         private string _city;
-        private string _weatherResult;
+        private string _cityName;
         private string _temperature;
-        private string _condition;
-        private bool? _dialogResult;
+        private string _description;
+        private string _humidity;
+        private string _wind;
+        private string _feelsLike;
 
         public string City
         {
@@ -25,12 +27,12 @@ namespace NimbusChat.ViewModels
             }
         }
 
-        public string WeatherResult
+        public string CityName
         {
-            get => _weatherResult;
+            get => _cityName;
             set
             {
-                _weatherResult = value;
+                _cityName = value;
                 OnPropertyChanged();
             }
         }
@@ -45,22 +47,42 @@ namespace NimbusChat.ViewModels
             }
         }
 
-        public string Condition
+        public string Description
         {
-            get => _condition;
+            get => _description;
             set
             {
-                _condition = value;
+                _description = value;
                 OnPropertyChanged();
             }
         }
 
-        public bool? DialogResultValue
+        public string Humidity
         {
-            get => _dialogResult;
+            get => _humidity;
             set
             {
-                _dialogResult = value;
+                _humidity = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public string Wind
+        {
+            get => _wind;
+            set
+            {
+                _wind = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public string FeelsLike
+        {
+            get => _feelsLike;
+            set
+            {
+                _feelsLike = value;
                 OnPropertyChanged();
             }
         }
@@ -75,38 +97,30 @@ namespace NimbusChat.ViewModels
         private async Task Search()
         {
             if (string.IsNullOrWhiteSpace(City))
-            {
-                WeatherResult = "Enter a city";
                 return;
-            }
 
             try
             {
                 using (var client = new HttpClient())
                 {
                     var url =
-                        $"https://api.openweathermap.org/data/2.5/weather?q={City}&appid=87f7befd922e98326b86d972952a799c&units=metric";
+                        $"https://api.openweathermap.org/data/2.5/weather?q={Uri.EscapeDataString(City)}&appid=9a88681c950ff48215f6b23a7b43f21a&units=metric";
 
                     var response = await client.GetStringAsync(url);
 
-                    dynamic data = JsonConvert.DeserializeObject(response);
+                    dynamic weather = JsonConvert.DeserializeObject(response);
 
-                    // Werte aus dem JSON holen (OpenWeather-Struktur)
-                    double temp = data.main.temp;
-                    int humidity = data.main.humidity;
-                    string description = data.weather[0].description;
-
-                    // UI aktualisieren
-                    Temperature = $"{temp}°C";
-                    Condition = description;
-                    WeatherResult = $"{City}: {temp}°C, {description}";
-
-                    DialogResultValue = true;
+                    CityName = weather.name;
+                    Temperature = $"{weather.main.temp:0}°C";
+                    Description = weather.weather[0].description.ToString();
+                    Humidity = $"{weather.main.humidity}%";
+                    Wind = $"{weather.wind.speed:0.#} m/s";
+                    FeelsLike = $"{weather.main.feels_like:0}°C";
                 }
             }
             catch (Exception ex)
             {
-                WeatherResult = ex.Message;
+                Description = ex.Message;
             }
         }
     }

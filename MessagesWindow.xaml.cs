@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Threading;
 
 namespace NimbusChat
@@ -63,9 +65,16 @@ namespace NimbusChat
 
             foreach (var message in messages)
             {
-                var prefix = message.SenderId == _currentUserId ? "Me" : "Them";
-                ChatList.Items.Add($"{prefix}: {message.Content}");
+                ChatList.Items.Add(new ChatMessage
+                {
+                    Content = message.Content,
+                    IsMine = message.SenderId == _currentUserId,
+                    Time = message.CreatedAt.ToString("HH:mm")
+                });
             }
+
+            if (ChatList.Items.Count > 0)
+                ChatList.ScrollIntoView(ChatList.Items[ChatList.Items.Count - 1]);
         }
 
         private void PollTimer_Tick(object sender, EventArgs e)
@@ -101,6 +110,32 @@ namespace NimbusChat
             if (UsersList.SelectedItem is User user)
             {
                 _selectedUserId = user.Id;
+
+                ChatHeader.Text = user.Username;
+                ChatStatus.Text = user.Status;
+
+                AvatarLetter.Text = user.Initial;
+                AvatarBorder.Background = user.AvatarBrush;
+
+                switch (user.Status)
+                {
+                    case "Online":
+                        ChatStatus.Foreground = Brushes.LimeGreen;
+                        break;
+
+                    case "Busy":
+                        ChatStatus.Foreground = Brushes.IndianRed;
+                        break;
+
+                    case "Away":
+                        ChatStatus.Foreground = Brushes.Gold;
+                        break;
+
+                    default:
+                        ChatStatus.Foreground = Brushes.Gray;
+                        break;
+                }
+
                 LoadPrivateMessages();
             }
         }
@@ -112,14 +147,42 @@ namespace NimbusChat
             if (string.IsNullOrWhiteSpace(search))
             {
                 DisplayUsers(_allUsers);
-                return;
+            }
+            else
+            {
+                var filteredUsers = _allUsers.Where(user =>
+                    user.Username.ToLower().Contains(search) ||
+                    user.Email.ToLower().Contains(search));
+
+                DisplayUsers(filteredUsers);
             }
 
-            var filteredUsers = _allUsers.Where(user =>
-                user.Username.ToLower().Contains(search) ||
-                user.Email.ToLower().Contains(search));
+            SearchPlaceholder.Visibility = string.IsNullOrEmpty(SearchBox.Text)
+                ? Visibility.Visible
+                : Visibility.Hidden;
+        }
 
-            DisplayUsers(filteredUsers);
+        private void MessageInput_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                Send_Click(sender, new RoutedEventArgs());
+                e.Handled = true;
+            }
+        }
+
+        private void SearchBox_GotFocus(object sender, RoutedEventArgs e)
+        {
+            SearchPlaceholder.Visibility = string.IsNullOrEmpty(SearchBox.Text)
+                ? Visibility.Collapsed
+                : Visibility.Hidden;
+        }
+
+        private void SearchBox_LostFocus(object sender, RoutedEventArgs e)
+        {
+            SearchPlaceholder.Visibility = string.IsNullOrEmpty(SearchBox.Text)
+                ? Visibility.Visible
+                : Visibility.Hidden;
         }
 
         private void MessageInput_TextChanged(object sender, TextChangedEventArgs e)
