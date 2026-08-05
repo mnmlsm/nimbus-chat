@@ -187,8 +187,6 @@
       <DependentUpon>ProfileWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="WetterChatApp\Config\ClientConfig.cs" />
-    <Compile Include="WetterChatApp\Repositories\MessageRepository.cs" />
-    <Compile Include="WetterChatApp\Repositories\WeatherDataRepository.cs" />
     <Compile Include="WetterChatApp\Services\ApiClient.cs" />
     <Compile Include="WetterChatApp\Services\AuthService.cs" />
     <Compile Include="WetterChatApp\Services\MessageService.cs" />
@@ -198,13 +196,11 @@
     <Compile Include="WeatherWindow.xaml.cs">
       <DependentUpon>WeatherWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="WetterChatApp\Data\DatabaseInitializer.cs" />
     <Compile Include="WetterChatApp\Infrastructure\BaseViewModel.cs" />
     <Compile Include="WetterChatApp\Infrastructure\RelayCommand.cs" />
     <Compile Include="WetterChatApp\Models\Message.cs" />
     <Compile Include="WetterChatApp\Models\User.cs" />
     <Compile Include="WetterChatApp\Models\WeatherData.cs" />
-    <Compile Include="WetterChatApp\Repositories\UserRepository.cs" />
     <Compile Include="WetterChatApp\Services\INavigationServices.cs" />
     <Compile Include="WetterChatApp\ViewModels\LoginViewModel.cs" />
     <Compile Include="WetterChatApp\ViewModels\RegisterViewModel.cs" />

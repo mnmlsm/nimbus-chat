@@ -4,15 +4,11 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using Newtonsoft.Json;
 using NimbusChat.WetterChatApp.Infrastructure;
-using NimbusChat.WetterChatApp.Models;
-using NimbusChat.WetterChatApp.Repositories;
 
 namespace NimbusChat.ViewModels
 {
     public class WeatherViewModel : BaseViewModel
     {
-        private readonly WeatherDataRepository _weatherRepository;
-
         private string _city;
         private string _weatherResult;
         private string _temperature;
@@ -73,7 +69,6 @@ namespace NimbusChat.ViewModels
 
         public WeatherViewModel()
         {
-            _weatherRepository = new WeatherDataRepository();
             SearchCommand = new RelayCommand(async _ => await Search());
         }
 
@@ -105,19 +100,6 @@ namespace NimbusChat.ViewModels
                     Temperature = $"{temp}°C";
                     Condition = description;
                     WeatherResult = $"{City}: {temp}°C, {description}";
-
-                    // WeatherData Objekt für die DB bauen
-                    var weatherData = new WeatherData
-                    {
-                        City = City,
-                        Temperature = temp,
-                        Humidity = humidity,
-                        Description = description,
-                        CreatedAt = DateTime.UtcNow.ToString("o") // ISO 8601
-                    };
-
-                    // In SQLite speichern
-                    _weatherRepository.Create(weatherData);
 
                     DialogResultValue = true;
                 }

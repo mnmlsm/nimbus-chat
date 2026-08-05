@@ -8,4 +8,9 @@
         public string Status { get; set; } = default!;
         public string FavoriteCity { get; set; } = default!;
     }
-}   
+
+    public class UpdateStatusDto
+    {
+        public string Status { get; set; } = default!;
+    }
+}

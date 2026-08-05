@@ -1,5 +1,4 @@
-﻿using NimbusChat.WetterChatApp.Repositories;
-using NimbusChat.WetterChatApp.Services;
+﻿using NimbusChat.WetterChatApp.Services;
 using System;
 using System.Threading.Tasks;
 using System.Windows;
@@ -9,7 +8,7 @@ namespace NimbusChat
 {
     public partial class MessagesWindow : Window
     {
-        private readonly MessageService _messageService = new MessageService(new UserRepository(), new MessageRepository());
+        private readonly MessageService _messageService = new MessageService();
         private readonly int _currentUserId;
         private int _lastMessageId = 0;
         private readonly DispatcherTimer _pollTimer;

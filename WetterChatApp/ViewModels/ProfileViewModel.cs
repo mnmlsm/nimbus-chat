@@ -1,13 +1,12 @@
-﻿using System.Windows.Input;
+using System.Windows.Input;
 using NimbusChat.WetterChatApp.Infrastructure;
-using NimbusChat.WetterChatApp.Models;
-using NimbusChat.WetterChatApp.Repositories;
+using NimbusChat.WetterChatApp.Services;
 
 namespace NimbusChat.WetterChatApp.ViewModels
 {
     public class ProfileViewModel : BaseViewModel
     {
-        private readonly UserRepository _userRepository;
+        private readonly ApiClient _apiClient;
 
         private int _userId;
         private string _username;
@@ -63,7 +62,7 @@ namespace NimbusChat.WetterChatApp.ViewModels
 
         public ProfileViewModel(int userId)
         {
-            _userRepository = new UserRepository();
+            _apiClient = new ApiClient();
             UserId = userId;
 
             SaveProfileCommand = new RelayCommand(_ => ExecuteSaveProfile(), _ => CanSaveProfile());
@@ -76,7 +75,7 @@ namespace NimbusChat.WetterChatApp.ViewModels
             ErrorMessage = string.Empty;
             SuccessMessage = string.Empty;
 
-            var user = _userRepository.GetById(UserId);
+            var user = _apiClient.GetUserAsync(UserId).GetAwaiter().GetResult();
             if (user == null)
             {
                 ErrorMessage = "User profile could not be loaded.";
@@ -114,7 +113,7 @@ namespace NimbusChat.WetterChatApp.ViewModels
                 return;
             }
 
-            var user = _userRepository.GetById(UserId);
+            var user = _apiClient.GetUserAsync(UserId).GetAwaiter().GetResult();
             if (user == null)
             {
                 ErrorMessage = "User not found.";
@@ -126,7 +125,7 @@ namespace NimbusChat.WetterChatApp.ViewModels
             user.Status = Status;
             user.FavoriteCity = FavoriteCity;
 
-            var updated = _userRepository.Update(user);
+            var updated = _apiClient.UpdateUserAsync(user).GetAwaiter().GetResult();
 
             if (!updated)
             {

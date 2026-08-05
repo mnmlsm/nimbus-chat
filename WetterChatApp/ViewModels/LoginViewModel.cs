@@ -2,8 +2,6 @@
 using System.Windows;
 using System.Windows.Input;
 using NimbusChat.WetterChatApp.Infrastructure;
-using NimbusChat.WetterChatApp.Data;
-using NimbusChat.WetterChatApp.Repositories;
 using NimbusChat.WetterChatApp.Services;
 using NimbusChat.WetterChatApp.Models;
 
@@ -39,9 +37,6 @@ namespace NimbusChat.WetterChatApp.ViewModels
 
         public LoginViewModel()
         {
-            // DB vorbereiten
-            DatabaseInitializer.Initialize();
-
             _authService = new AuthService();
             LoginCommand = new RelayCommand(_ => ExecuteLogin(), _ => CanExecuteLogin());
         }

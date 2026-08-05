@@ -1,7 +1,5 @@
-﻿using NimbusChat.WetterChatApp.Infrastructure;
-using NimbusChat.WetterChatApp.Models;
-using NimbusChat.WetterChatApp.Repositories;
-using NimbusChat.WetterChatApp.Services; // für AuthService
+using NimbusChat.WetterChatApp.Infrastructure;
+using NimbusChat.WetterChatApp.Services;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
@@ -10,7 +8,6 @@ namespace NimbusChat.WetterChatApp.ViewModels
 {
     public class RegisterViewModel : BaseViewModel
     {
-        private readonly UserRepository _userRepository;
         private readonly AuthService _authService;
 
         private string _email;
@@ -39,8 +36,7 @@ namespace NimbusChat.WetterChatApp.ViewModels
 
         public RegisterViewModel()
         {
-            _userRepository = new UserRepository();
-            _authService = new AuthService(); // nutzt SHA-256-Hashing
+            _authService = new AuthService();
             RegisterCommand = new RelayCommand(_ => ExecuteRegister(), _ => CanRegister());
         }
 
@@ -54,29 +50,11 @@ namespace NimbusChat.WetterChatApp.ViewModels
         {
             ErrorMessage = "";
 
-            var existingUser = _userRepository.GetByEmail(Email);
-
-            if (existingUser != null)
-            {
-                ErrorMessage = "User already exists";
-                return;
-            }
-
-            // Passwort hashen statt Klartext speichern
-            var hashedPassword = _authService.HashPassword(Password);
-
-            var user = new User
-            {
-                Username = Email,
-                Email = Email,
-                PasswordHash = hashedPassword
-            };
-
-            var success = _userRepository.Create(user);
+            var success = _authService.Register(Email, Password);
 
             if (!success)
             {
-                ErrorMessage = "Registration failed.";
+                ErrorMessage = "User already exists or registration failed.";
                 return;
             }
 

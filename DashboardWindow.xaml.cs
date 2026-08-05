@@ -2,14 +2,14 @@
 using System.Runtime.CompilerServices;
 using System.Windows;
 using NimbusChat.WetterChatApp.Models;
-using NimbusChat.WetterChatApp.Repositories;
+using NimbusChat.WetterChatApp.Services;
 
 namespace NimbusChat
 {
     public partial class DashboardWindow : Window, INotifyPropertyChanged
     {
         private readonly User _currentUser;
-        private readonly UserRepository _userRepository = new UserRepository();
+        private readonly ApiClient _apiClient = new ApiClient();
 
         private string _weatherCity = "Leipzig";
         public string WeatherCity
@@ -92,7 +92,7 @@ namespace NimbusChat
 
             if (profileWindow.ShowDialog() == true)
             {
-                var updatedUser = _userRepository.GetById(_currentUser.Id);
+                var updatedUser = _apiClient.GetUserAsync(_currentUser.Id).GetAwaiter().GetResult();
 
                 if (updatedUser != null)
                 {
@@ -134,7 +134,7 @@ namespace NimbusChat
 
         private void Logout_Click(object sender, RoutedEventArgs e)
         {
-            _userRepository.UpdateStatus(_currentUser.Id, "Offline");
+            _apiClient.UpdateStatusAsync(_currentUser.Id, "Offline").GetAwaiter().GetResult();
 
             var login = new MainWindow();
             login.Show();
@@ -144,7 +144,7 @@ namespace NimbusChat
 
         protected override void OnClosing(CancelEventArgs e)
         {
-            _userRepository.UpdateStatus(_currentUser.Id, "Offline");
+            _apiClient.UpdateStatusAsync(_currentUser.Id, "Offline").GetAwaiter().GetResult();
             base.OnClosing(e);
         }
 
