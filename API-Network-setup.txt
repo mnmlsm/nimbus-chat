@@ -102,7 +102,7 @@ The API connects to MySQL locally via a connection string, e.g. in appsettings.j
 
 json
 "ConnectionStrings": {
-  "DefaultConnection": "Server=127.0.0.1;Port=3306;Database=nimbuschat;Uid=root;Pwd=NimbusChatPW;"
+  "NimbusChatDatabase": "Server=127.0.0.1;Port=3306;Database=nimbuschat;Uid=root;Pwd=<see nimbus-chat.Api\appsettings.Local.json - gitignored, not committed>;"
 }
 Key points:
 

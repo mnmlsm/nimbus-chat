@@ -12,10 +12,25 @@ namespace NimbusChat.WetterChatApp.Services
     {
         // Ein HttpClient wird für die gesamte App-Laufzeit geteilt, statt bei
         // jedem "new ApiClient()" einen neuen TCP/TLS-Handshake aufzubauen.
-        private static readonly HttpClient _httpClient = new HttpClient
+        private static readonly HttpClient _httpClient = CreateHttpClient();
+
+        private static HttpClient CreateHttpClient()
         {
-            BaseAddress = new Uri(ClientConfig.Load().ApiBaseUrl)
-        };
+            var config = ClientConfig.Load();
+
+            var client = new HttpClient
+            {
+                BaseAddress = new Uri(config.ApiBaseUrl)
+            };
+
+            // Shared, weak API-key gate on the API side - see
+            // nimbus-chat.Api\Program.cs. Set once here so it's attached to
+            // every request automatically.
+            if (!string.IsNullOrWhiteSpace(config.ApiKey))
+                client.DefaultRequestHeaders.Add("X-Api-Key", config.ApiKey);
+
+            return client;
+        }
 
         public async Task<string> GetHealthAsync()
         {
