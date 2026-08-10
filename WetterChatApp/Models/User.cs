@@ -7,6 +7,8 @@ using System.Windows.Media;
 
 namespace NimbusChat.WetterChatApp.Models
 {
+    // Client-side shape of a user account, plus UI helpers for the avatar
+    // color/initial and a status-icon string representation.
     public class User
     {
         public Brush AvatarBrush

@@ -1,4 +1,6 @@
-﻿<Window x:Class="NimbusChat.DashboardWindow"
+﻿<!-- Main dashboard layout after login: greeting, weather summary tile,
+     forecast strip, and navigation cards for chat/weather/profile. -->
+<Window x:Class="NimbusChat.DashboardWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"

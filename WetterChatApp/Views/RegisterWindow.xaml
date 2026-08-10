@@ -1,4 +1,6 @@
-﻿<Window x:Class="NimbusChat.RegisterWindow"
+﻿<!-- Registration screen layout: username/email/password/confirm fields, a
+     register button, and a link back to login. -->
+<Window x:Class="NimbusChat.RegisterWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"

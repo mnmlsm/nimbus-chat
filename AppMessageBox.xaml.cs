@@ -2,6 +2,8 @@ using System.Windows;
 
 namespace NimbusChat
 {
+    // Custom, app-styled replacement for the default WPF MessageBox, used
+    // everywhere the app needs to show an info/success/error dialog.
     public enum AppMessageBoxIcon
     {
         Info,

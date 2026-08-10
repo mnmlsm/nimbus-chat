@@ -6,6 +6,7 @@ using NimbusChat.WetterChatApp.Services;
 
 namespace NimbusChat.ViewModels
 {
+    // Backing view model for the standalone weather search dialog.
     public class WeatherViewModel : BaseViewModel
     {
         private readonly ApiClient _apiClient = new ApiClient();
@@ -102,7 +103,7 @@ namespace NimbusChat.ViewModels
 
             try
             {
-                // Über die API, damit der Abruf in der Datenbank landet.
+                // Goes through the API so the lookup also gets recorded in the database.
                 var weather = await _apiClient.GetWeatherAsync(City);
 
                 CityName = weather.City;

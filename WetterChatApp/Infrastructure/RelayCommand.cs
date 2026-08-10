@@ -7,6 +7,8 @@ using System.Windows.Input;
 
 namespace NimbusChat.WetterChatApp.Infrastructure
 {
+    // Generic ICommand implementation so view models can bind buttons/actions
+    // to a plain delegate instead of writing a new command class each time.
     public class RelayCommand : ICommand
     {
         private readonly Action<object> _execute;

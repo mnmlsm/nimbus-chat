@@ -8,6 +8,8 @@ using System.Windows.Input;
 
 namespace NimbusChat.WetterChatApp.ViewModels
 {
+    // Backing view model for the registration screen: validates input, calls
+    // the register API, and returns to the login window on success.
     public class RegisterViewModel : BaseViewModel
     {
         private readonly AuthService _authService;
@@ -93,7 +95,6 @@ namespace NimbusChat.WetterChatApp.ViewModels
 
             AppMessageBox.Show("Registration successful!", "Success", AppMessageBoxIcon.Success);
 
-            // zurück zum Login/MainWindow
             var login = new MainWindow();
             login.Show();
 

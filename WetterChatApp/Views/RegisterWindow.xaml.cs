@@ -3,6 +3,8 @@ using NimbusChat.WetterChatApp.ViewModels;
 
 namespace NimbusChat
 {
+    // Registration screen: wires the password fields to RegisterViewModel and
+    // provides the way back to the login window.
     public partial class RegisterWindow : Window
     {
         public RegisterWindow()

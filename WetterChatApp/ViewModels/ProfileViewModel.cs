@@ -5,6 +5,8 @@ using NimbusChat.WetterChatApp.Services;
 
 namespace NimbusChat.WetterChatApp.ViewModels
 {
+    // Backing view model for the profile dialog: loads the current user on
+    // open and validates/saves edits back through the API.
     public class ProfileViewModel : BaseViewModel
     {
         private readonly ApiClient _apiClient;

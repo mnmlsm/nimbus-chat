@@ -1,4 +1,6 @@
-﻿<Window x:Class="NimbusChat.MessagesWindow"
+﻿<!-- Chat window layout: contact/search list on the left (with the pinned
+     Global Chat entry), message thread and input box on the right. -->
+<Window x:Class="NimbusChat.MessagesWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"

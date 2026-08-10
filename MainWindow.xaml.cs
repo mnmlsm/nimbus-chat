@@ -8,6 +8,9 @@ using System.Windows.Threading;
 
 namespace NimbusChat
 {
+    // Login screen and app entry window: shows a live server-connection
+    // indicator, handles the password show/hide toggle, and hands off to
+    // RegisterWindow or the dashboard.
     public partial class MainWindow : Window
     {
         private readonly ApiClient _apiClient = new ApiClient();

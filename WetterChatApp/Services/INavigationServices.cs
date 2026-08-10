@@ -7,6 +7,8 @@ using System.Windows;
 
 namespace NimbusChat.WetterChatApp.Services
 {
+    // Abstraction for showing/closing windows, intended to keep view models
+    // decoupled from concrete Window types.
     public interface INavigationServices
     {
         void ShowWindow(Window window);

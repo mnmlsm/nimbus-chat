@@ -5,6 +5,7 @@ using NimbusChat.WetterChatApp.Services;
 
 namespace NimbusChat.WetterChatApp.ViewModels
 {
+    // Simple API-health-check view model. Not currently wired up to any view.
     public class MessageViewModel : BaseViewModel
     {
         private readonly ApiClient _apiClient;
@@ -23,20 +24,20 @@ namespace NimbusChat.WetterChatApp.ViewModels
         public MessageViewModel()
         {
             _apiClient = new ApiClient();
-            ApiStatus = "Noch nicht geprüft";
+            ApiStatus = "Not checked yet";
         }
 
         public async Task CheckApiAsync()
         {
             try
             {
-                ApiStatus = "Prüfe API...";
+                ApiStatus = "Checking API...";
                 var result = await _apiClient.GetHealthAsync();
                 ApiStatus = $"API: {result}";
             }
             catch (Exception ex)
             {
-                ApiStatus = $"Fehler: {ex.Message}";
+                ApiStatus = $"Error: {ex.Message}";
             }
         }
     }

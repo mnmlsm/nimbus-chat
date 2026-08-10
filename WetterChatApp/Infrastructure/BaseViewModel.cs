@@ -8,6 +8,8 @@ using System.Runtime.CompilerServices;
 
 namespace NimbusChat.WetterChatApp.Infrastructure
 {
+    // Shared base class for all view models: implements INotifyPropertyChanged
+    // once so individual view models only need to call SetProperty.
     public abstract class BaseViewModel : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;

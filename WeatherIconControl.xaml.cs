@@ -3,6 +3,8 @@ using System.Windows.Controls;
 
 namespace NimbusChat
 {
+    // Code-behind for the animated weather icon: maps a weather condition
+    // string (e.g. "clear sky", "light rain") to the matching visual.
     public partial class WeatherIconControl : UserControl
     {
         public static readonly DependencyProperty ConditionProperty =
@@ -52,7 +54,7 @@ namespace NimbusChat
             }
             else
             {
-                // cloud, mist, fog, haze und Fallback
+                // cloud, mist, fog, haze, and fallback
                 CloudyVisual.Visibility = Visibility.Visible;
             }
         }

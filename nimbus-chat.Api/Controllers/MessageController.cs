@@ -7,6 +7,8 @@ using NimbusChat.Api.Models;
 
 namespace NimbusChat.Api.Controllers
 {
+    // Chat endpoints for both the global chat (backed by a hidden system
+    // user) and private 1:1 conversations between two users.
     [ApiController]
     [Route("api/[controller]")]
     public class MessagesController : ControllerBase
@@ -20,7 +22,7 @@ namespace NimbusChat.Api.Controllers
             _configuration = configuration;
         }
 
-        // Globaler Chatverlauf; ?since=<lastId> liefert nur neuere Nachrichten (Polling).
+        // Global chat history; ?since=<lastId> returns only newer messages (polling).
         [HttpGet]
         public IActionResult Get([FromQuery] int since = 0)
         {
@@ -59,7 +61,7 @@ ORDER BY m.Id ASC";
             return Ok(messages);
         }
 
-        // Privater Chatverlauf zwischen zwei Nutzern.
+        // Private chat history between two users.
         [HttpGet("between")]
         public IActionResult GetBetween([FromQuery] int user1, [FromQuery] int user2)
         {

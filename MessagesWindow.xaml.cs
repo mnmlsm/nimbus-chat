@@ -12,6 +12,9 @@ using System.Threading.Tasks;
 
 namespace NimbusChat
 {
+    // Code-behind for the chat window: lists contacts plus a pinned Global
+    // Chat entry, polls for new messages, and sends/loads both global and
+    // private conversations.
     public partial class MessagesWindow : Window
     {
         private readonly MessageService _messageService = new MessageService();
@@ -19,8 +22,8 @@ namespace NimbusChat
         private readonly int _currentUserId;
         private readonly DispatcherTimer _pollTimer;
 
-        // Sentinel-Id für den gepinnten "Global Chat"-Eintrag; kollidiert nie mit
-        // einer echten Users.Id, da AUTO_INCREMENT bei 1 beginnt.
+        // Sentinel id for the pinned "Global Chat" entry; never collides with a
+        // real Users.Id since AUTO_INCREMENT starts at 1.
         private const int GlobalChatId = -1;
 
         private List<User> _allUsers = new List<User>();
@@ -60,7 +63,7 @@ namespace NimbusChat
         {
             UsersList.Items.Clear();
 
-            // Immer angepinnt oben, für jeden Nutzer erreichbar.
+            // Always pinned at the top, reachable for every user.
             UsersList.Items.Add(CreateGlobalChatEntry());
 
             foreach (var user in users)

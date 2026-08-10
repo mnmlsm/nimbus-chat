@@ -2,6 +2,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace nimbus_chat.Api.Controllers
 {
+    // Leftover scaffolding from the default ASP.NET Core Web API template.
+    // Returns random placeholder data and is not used by the app - the real
+    // weather logic lives in WeatherController.
     [ApiController]
     [Route("[controller]")]
     public class WeatherForecastController : ControllerBase

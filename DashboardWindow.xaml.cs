@@ -11,6 +11,9 @@ using System.Windows.Threading;
 
 namespace NimbusChat
 {
+    // Code-behind for the main dashboard: loads the user's weather/forecast,
+    // keeps a periodic server-connection check running, and opens the
+    // chat/weather/profile sub-windows.
     public partial class DashboardWindow : Window, INotifyPropertyChanged
     {
         private readonly User _currentUser;
@@ -239,8 +242,8 @@ namespace NimbusChat
             }
         }
 
-        // Fallback, solange der Nutzer noch keine Stadt im Profil gespeichert hat,
-        // damit Wetter und Forecast auf dem Dashboard nie leer bleiben.
+        // Fallback for as long as the user hasn't saved a city in their profile
+        // yet, so weather and forecast on the dashboard never stay empty.
         private const string DefaultCity = "Berlin";
 
         private async Task LoadFavoriteCityWeatherAsync()
@@ -259,8 +262,8 @@ namespace NimbusChat
 
             try
             {
-                // Die API ruft OpenWeatherMap auf und schreibt den Abruf in die
-                // Datenbank; hier kommt nur noch das fertige Ergebnis an.
+                // The API calls OpenWeatherMap and writes the lookup to the
+                // database; only the finished result arrives here.
                 var data = await _apiClient.GetWeatherAsync(cityName, _currentUser.Id);
 
                 WeatherCity = cityName;
@@ -371,8 +374,8 @@ namespace NimbusChat
         {
             _connectionCheckTimer?.Stop();
 
-            // Fire-and-forget: das Fenster schließt sofort, ohne auf die
-            // Netzwerkantwort zu warten (die App läuft ohnehin noch kurz weiter).
+            // Fire-and-forget: the window closes immediately without waiting for
+            // the network response (the app keeps running for a moment anyway).
             _ = _apiClient.UpdateStatusAsync(_currentUser.Id, "Offline");
             base.OnClosing(e);
         }
@@ -427,7 +430,7 @@ namespace NimbusChat
         {
             Forecast.Clear();
 
-            // Gruppierung auf einen Eintrag pro Tag passiert serverseitig.
+            // Grouping down to one entry per day happens server-side.
             foreach (var day in await _apiClient.GetForecastAsync(city))
                 Forecast.Add(day);
         }

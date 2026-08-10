@@ -9,6 +9,8 @@ using NimbusChat.WetterChatApp.Models;
 
 namespace NimbusChat.WetterChatApp.ViewModels
 {
+    // Backing view model for the login screen: validates input, calls the
+    // login API, and opens the dashboard on success.
     public class LoginViewModel : BaseViewModel
     {
         private readonly AuthService _authService;
@@ -70,10 +72,8 @@ namespace NimbusChat.WetterChatApp.ViewModels
                 return;
             }
 
-            // Der Login-Endpunkt setzt den Status serverseitig bereits auf Online,
-            // user.Status kommt hier also schon korrekt gesetzt zurück.
-
-            // Dashboard mit aktuellem User öffnen
+            // The login endpoint already sets the status to Online server-side,
+            // so user.Status comes back with the correct value here.
             var dashboard = new DashboardWindow(user);
             dashboard.Show();
 

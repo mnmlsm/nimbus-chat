@@ -3,6 +3,8 @@ using NimbusChat.WetterChatApp.ViewModels;
 
 namespace NimbusChat
 {
+    // Profile editing dialog: lets the user update their username, email,
+    // and favorite city, then reports success back to the dashboard.
     public partial class ProfileWindow : Window
     {
         public ProfileWindow(int userId)

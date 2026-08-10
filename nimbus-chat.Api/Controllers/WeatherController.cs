@@ -5,6 +5,8 @@ using NimbusChat.Api.Models;
 
 namespace NimbusChat.Api.Controllers
 {
+    // Weather endpoints: proxies OpenWeatherMap so the API key never reaches
+    // the client, and persists every current-weather lookup to WeatherData.
     [ApiController]
     [Route("api/weather")]
     public class WeatherController : ControllerBase
@@ -18,8 +20,8 @@ namespace NimbusChat.Api.Controllers
             _httpClientFactory = httpClientFactory;
         }
 
-        // Aktuelles Wetter holen UND speichern. Jeder Abruf legt eine Zeile in
-        // WeatherData an, damit der Verlauf vollständig in der DB landet.
+        // Fetch AND store the current weather. Every lookup inserts a row into
+        // WeatherData, so the full history ends up in the DB.
         [HttpGet]
         public async Task<IActionResult> Get([FromQuery] string city, [FromQuery] int userId = 0)
         {
@@ -64,8 +66,8 @@ namespace NimbusChat.Api.Controllers
             }
         }
 
-        // 5-Tage-Vorhersage. Wird bewusst nicht gespeichert, sondern nur
-        // durchgereicht, damit der OpenWeatherMap-Key serverseitig bleibt.
+        // 5-day forecast. Deliberately not stored, just passed through, so the
+        // OpenWeatherMap key stays server-side.
         [HttpGet("forecast")]
         public async Task<IActionResult> GetForecast([FromQuery] string city)
         {
@@ -94,7 +96,7 @@ namespace NimbusChat.Api.Controllers
                 {
                     var time = DateTime.Parse(item.GetProperty("dt_txt").GetString()!);
 
-                    // Nur zukünftige Tage, nicht den heutigen.
+                    // Only future days, not today.
                     if (time.Date <= today)
                         continue;
 
@@ -116,9 +118,8 @@ namespace NimbusChat.Api.Controllers
 
                 foreach (var day in days)
                 {
-                    // Den Eintrag nehmen, der am nächsten an 12 Uhr mittags liegt,
-                    // damit Icon/Temperatur den Tag realistisch abbilden (statt
-                    // z.B. eines nächtlichen 3-Uhr-Werts).
+                    // Pick the entry closest to noon, so the icon/temperature
+                    // represent the day realistically (instead of, say, a 3am reading).
                     var noon = day.Key.AddHours(12);
                     var representative = day.OrderBy(e => Math.Abs((e.Time - noon).TotalMinutes)).First();
 
@@ -135,7 +136,7 @@ namespace NimbusChat.Api.Controllers
             }
         }
 
-        // Gespeicherter Verlauf, optional nach Stadt gefiltert.
+        // Stored history, optionally filtered by city.
         [HttpGet("history")]
         public IActionResult GetHistory([FromQuery] string? city = null, [FromQuery] int limit = 20)
         {
@@ -207,7 +208,7 @@ SELECT LAST_INSERT_ID();";
             return Convert.ToInt32(command.ExecuteScalar());
         }
 
-        // Liefert null, wenn OpenWeatherMap die Stadt nicht kennt (404).
+        // Returns null when OpenWeatherMap doesn't recognize the city (404).
         private async Task<JsonDocument?> FetchOpenWeatherAsync(string endpoint, string city)
         {
             var apiKey = _configuration["OpenWeather:ApiKey"];

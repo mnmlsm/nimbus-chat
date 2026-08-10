@@ -1,4 +1,6 @@
-﻿<Application
+﻿<!-- App entry point: sets MainWindow (login screen) as the startup window and
+     loads the shared Material Design theme resources. -->
+<Application
     x:Class="NimbusChat.App"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"

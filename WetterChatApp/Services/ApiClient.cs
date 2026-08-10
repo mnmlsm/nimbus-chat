@@ -8,10 +8,12 @@ using NimbusChat.WetterChatApp.Models;
 
 namespace NimbusChat.WetterChatApp.Services
 {
+    // Thin HTTP wrapper around every server endpoint (auth, users, weather,
+    // messages). This is the only place in the client that talks to the API.
     public class ApiClient
     {
-        // Ein HttpClient wird für die gesamte App-Laufzeit geteilt, statt bei
-        // jedem "new ApiClient()" einen neuen TCP/TLS-Handshake aufzubauen.
+        // A single HttpClient is shared for the app's whole lifetime instead of
+        // opening a new TCP/TLS handshake on every "new ApiClient()".
         private static readonly HttpClient _httpClient = CreateHttpClient();
 
         private static HttpClient CreateHttpClient()
@@ -96,8 +98,8 @@ namespace NimbusChat.WetterChatApp.Services
             return response.IsSuccessStatusCode;
         }
 
-        // Die API holt das Wetter von OpenWeatherMap und legt jeden Abruf in
-        // der Tabelle WeatherData ab; der Client sieht nur noch das Ergebnis.
+        // The API fetches weather from OpenWeatherMap and logs every lookup to
+        // the WeatherData table; the client only ever sees the result.
         public async Task<WeatherData> GetWeatherAsync(string city, int userId = 0)
         {
             var response = await _httpClient

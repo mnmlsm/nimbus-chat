@@ -8,6 +8,8 @@ using NimbusChat.Api.Models;
 
 namespace NimbusChat.Api.Controllers
 {
+    // Login and registration endpoints: hashes/verifies passwords and issues
+    // no session token - the client just holds onto the returned user object.
     [ApiController]
     [Route("api/auth")]
     public class AuthController : ControllerBase
@@ -51,8 +53,8 @@ namespace NimbusChat.Api.Controllers
                 favoriteCity = reader.IsDBNull(reader.GetOrdinal("FavoriteCity")) ? string.Empty : reader.GetString("FavoriteCity");
             }
 
-            // Bei jedem erfolgreichen Login wird der Status auf Online zurückgesetzt,
-            // unabhängig vom vorherigen Wert (z.B. Busy/Away/Offline aus der letzten Sitzung).
+            // Every successful login resets the status to Online, regardless of
+            // its previous value (e.g. Busy/Away/Offline left over from the last session).
             const string updateSql = "UPDATE Users SET Status = 'Online' WHERE Id = @Id;";
             using var updateCommand = new MySqlCommand(updateSql, connection);
             updateCommand.Parameters.AddWithValue("@Id", id);

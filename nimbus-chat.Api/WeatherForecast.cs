@@ -1,5 +1,7 @@
 namespace nimbus_chat.Api
 {
+    // Model for the default template's WeatherForecastController; not used by
+    // the actual app.
     public class WeatherForecast
     {
         public DateOnly Date { get; set; }

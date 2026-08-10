@@ -2,6 +2,8 @@ using NimbusChat.Api.Data;
 
 namespace nimbus_chat.Api
 {
+    // API entry point: builds the ASP.NET Core host, initializes the
+    // database, and wires up the shared-key gate in front of all endpoints.
     public class Program
     {
         public static void Main(string[] args)
@@ -23,8 +25,8 @@ namespace nimbus_chat.Api
 
             var app = builder.Build();
 
-            // Datenbank und Tabellen anlegen, falls noch nicht vorhanden.
-            // Dadurch startet die App auch nach einem kompletten DB-Reset.
+            // Create the database and tables if they don't exist yet, so the
+            // app still starts cleanly after a full DB reset.
             try
             {
                 DatabaseInitializer.Initialize(

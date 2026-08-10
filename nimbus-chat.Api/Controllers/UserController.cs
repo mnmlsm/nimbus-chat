@@ -7,13 +7,15 @@ using NimbusChat.Api.Models;
 
 namespace NimbusChat.Api.Controllers
 {
+    // CRUD endpoints for user accounts: listing, fetching by id, updating
+    // profile fields, and updating just the online/away/busy status.
     [ApiController]
     [Route("api/[controller]")]
     public class UsersController : ControllerBase
     {
-        // Muss mit MessagesController.GlobalChatEmail übereinstimmen: der System-User
-        // fürs globale Chat-Postfach soll nicht als normaler Kontakt auftauchen,
-        // die Oberfläche zeigt "Global Chat" bereits als eigenen, gepinnten Eintrag.
+        // Must match MessagesController.GlobalChatEmail: the system user behind
+        // the global chat mailbox should not show up as a normal contact, since
+        // the UI already shows "Global Chat" as its own pinned entry.
         private const string GlobalChatEmail = "global@nimbuschat.local";
 
         private readonly IConfiguration _configuration;

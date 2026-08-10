@@ -2,9 +2,10 @@ using MySql.Data.MySqlClient;
 
 namespace NimbusChat.Api.Data
 {
-    // Legt Datenbank und Tabellen beim Start der API an, falls sie fehlen.
-    // Vorher lag das im WPF-Client; seit der Client nur noch über die API
-    // spricht, gehört es auf die Seite, die die MySQL-Verbindung besitzt.
+    // Creates the database and tables when the API starts, if they don't
+    // already exist. This used to live in the WPF client; now that the client
+    // only ever talks through the API, it belongs on the side that owns the
+    // MySQL connection.
     public static class DatabaseInitializer
     {
         public static void Initialize(string connectionString)
@@ -63,8 +64,8 @@ CREATE TABLE IF NOT EXISTS WeatherData
             if (string.IsNullOrWhiteSpace(databaseName))
                 throw new InvalidOperationException("Connection string 'NimbusChatDatabase' has no Database set.");
 
-            // Ohne Datenbank verbinden, sonst schlägt das Öffnen fehl, solange
-            // die Datenbank noch nicht existiert.
+            // Connect without a database selected, otherwise opening the
+            // connection fails as long as the database doesn't exist yet.
             builder.Database = string.Empty;
 
             using var connection = new MySqlConnection(builder.ConnectionString);

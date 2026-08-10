@@ -1,5 +1,7 @@
 namespace NimbusChat.Api.Models
 {
+    // Response shapes for WeatherController: a stored current-weather reading
+    // and a single day of the forecast.
     public class WeatherDto
     {
         public int Id { get; set; }

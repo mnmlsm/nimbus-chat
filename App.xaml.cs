@@ -4,6 +4,9 @@ using System.Windows.Threading;
 
 namespace NimbusChat
 {
+    // Application entry point. Wires up global exception handlers so an
+    // unexpected error shows a readable message box instead of crashing
+    // silently or dumping a raw .NET error dialog.
     public partial class App : Application
     {
         protected override void OnStartup(StartupEventArgs e)

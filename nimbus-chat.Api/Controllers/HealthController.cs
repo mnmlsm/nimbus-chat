@@ -6,6 +6,8 @@ using MySql.Data.MySqlClient; // MySQL ADO.NET Provider
 
 namespace NimbusChat.Api.Controllers
 {
+    // Liveness/health endpoint: confirms the API can actually open a
+    // connection to the database, not just that the process is running.
     [ApiController]
     [Route("api/[controller]")]
     public class HealthController : ControllerBase

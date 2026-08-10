@@ -3,6 +3,8 @@ using NimbusChat.WetterChatApp.Models;
 
 namespace NimbusChat.WetterChatApp.Services
 {
+    // Small facade over ApiClient for login/register calls, used by the
+    // login and register view models.
     public class AuthService
     {
         private readonly ApiClient _apiClient;
