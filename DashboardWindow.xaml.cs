@@ -19,6 +19,8 @@ namespace NimbusChat
         private readonly User _currentUser;
         private readonly ApiClient _apiClient = new ApiClient();
 
+
+
         public ObservableCollection<ForecastDay> Forecast
         {
             get;
@@ -433,6 +435,16 @@ namespace NimbusChat
             // Grouping down to one entry per day happens server-side.
             foreach (var day in await _apiClient.GetForecastAsync(city))
                 Forecast.Add(day);
+        }
+
+        private void Settings_Click(object sender, RoutedEventArgs e)
+        {
+            var settingsWindow = new SettingsWindow
+            {
+                Owner = this
+            };
+
+            settingsWindow.ShowDialog();
         }
     }
 }

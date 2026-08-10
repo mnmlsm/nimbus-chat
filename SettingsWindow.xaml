@@ -1,0 +1,83 @@
+﻿<Window x:Class="NimbusChat.SettingsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Settings"
+        Width="520"
+        Height="430"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize"
+        Background="{DynamicResource WindowBackground}">
+
+    <Border Margin="20"
+            Padding="28"
+            CornerRadius="24"
+            Background="{DynamicResource CardBackground}">
+
+        <StackPanel>
+
+            <TextBlock Text="Settings"
+                       FontSize="28"
+                       FontWeight="Bold"
+                       Foreground="{DynamicResource PrimaryTextBrush}"/>
+
+            <TextBlock Text="Customize your NimbusChat experience."
+                       Margin="0,6,0,30"
+                       FontSize="14"
+                       Foreground="{DynamicResource SecondaryTextBrush}"/>
+
+            <!-- Theme -->
+
+            <TextBlock Text="Appearance"
+                       FontSize="16"
+                       FontWeight="SemiBold"
+                       Foreground="{DynamicResource PrimaryTextBrush}"/>
+
+            <TextBlock Text="Choose how NimbusChat looks."
+                       Margin="0,4,0,12"
+                       FontSize="13"
+                       Foreground="{DynamicResource SecondaryTextBrush}"/>
+
+            <ComboBox x:Name="ThemeComboBox"
+                      Height="48"
+                      SelectedIndex="0"
+                      SelectionChanged="ThemeComboBox_SelectionChanged"
+                      Background="{DynamicResource InputBackgroundBrush}"
+                      Foreground="{DynamicResource PrimaryTextBrush}">
+
+                <ComboBoxItem Content="Light"/>
+                <ComboBoxItem Content="Dark"/>
+
+            </ComboBox>
+
+            <Separator Margin="0,28"/>
+
+            <!-- About -->
+
+            <TextBlock Text="Application"
+                       FontSize="16"
+                       FontWeight="SemiBold"
+                       Foreground="{DynamicResource PrimaryTextBrush}"/>
+
+            <TextBlock Text="NimbusChat"
+                       Margin="0,8,0,0"
+                       FontSize="15"
+                       Foreground="{DynamicResource PrimaryTextBrush}"/>
+
+            <TextBlock Text="Weather &amp; Messenger"
+                       Margin="0,3,0,0"
+                       FontSize="13"
+                       Foreground="{DynamicResource SecondaryTextBrush}"/>
+
+            <Button Content="Close"
+                    Width="110"
+                    Height="42"
+                    HorizontalAlignment="Right"
+                    Margin="0,28,0,0"
+                    Click="Close_Click"
+                    Style="{StaticResource PrimaryButton}"/>
+
+        </StackPanel>
+
+    </Border>
+
+</Window>

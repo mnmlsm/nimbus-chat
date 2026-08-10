@@ -382,7 +382,8 @@
                             Click="OpenProfile_Click"/>
 
                     <Button Style="{StaticResource SidebarButton}"
-                            Content="⚙     Settings"/>
+                            Content="⚙     Settings"
+                            Click="Settings_Click"/>
 
                 </StackPanel>
 
