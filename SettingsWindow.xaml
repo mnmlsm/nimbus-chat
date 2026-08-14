@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Settings"
         Width="520"
-        Height="430"
+        Height="560"
         WindowStartupLocation="CenterOwner"
         ResizeMode="NoResize"
         Background="{DynamicResource WindowBackground}">
@@ -15,24 +15,31 @@
 
         <StackPanel>
 
-            <TextBlock Text="Settings"
+            <!-- ================= TITLE ================= -->
+
+            <TextBlock x:Name="SettingsTitle"
+                       Text="Settings"
                        FontSize="28"
                        FontWeight="Bold"
                        Foreground="{DynamicResource PrimaryTextBrush}"/>
 
-            <TextBlock Text="Customize your NimbusChat experience."
+            <TextBlock x:Name="SettingsDescription"
+                       Text="Customize your NimbusChat experience."
                        Margin="0,6,0,30"
                        FontSize="14"
                        Foreground="{DynamicResource SecondaryTextBrush}"/>
 
-            <!-- Theme -->
 
-            <TextBlock Text="Appearance"
+            <!-- ================= APPEARANCE ================= -->
+
+            <TextBlock x:Name="AppearanceTitle"
+                       Text="Appearance"
                        FontSize="16"
                        FontWeight="SemiBold"
                        Foreground="{DynamicResource PrimaryTextBrush}"/>
 
-            <TextBlock Text="Choose how NimbusChat looks."
+            <TextBlock x:Name="AppearanceDescription"
+                       Text="Choose how NimbusChat looks."
                        Margin="0,4,0,12"
                        FontSize="13"
                        Foreground="{DynamicResource SecondaryTextBrush}"/>
@@ -49,11 +56,42 @@
 
             </ComboBox>
 
+
+            <!-- ================= LANGUAGE ================= -->
+
+            <TextBlock x:Name="LanguageTitle"
+                       Text="Language"
+                       Margin="0,24,0,0"
+                       FontSize="16"
+                       FontWeight="SemiBold"
+                       Foreground="{DynamicResource PrimaryTextBrush}"/>
+
+            <TextBlock x:Name="LanguageDescription"
+                       Text="Choose the language of NimbusChat."
+                       Margin="0,4,0,12"
+                       FontSize="13"
+                       Foreground="{DynamicResource SecondaryTextBrush}"/>
+
+            <ComboBox x:Name="LanguageComboBox"
+                      Height="48"
+                      SelectedIndex="0"
+                      SelectionChanged="LanguageComboBox_SelectionChanged"
+                      Background="{DynamicResource InputBackgroundBrush}"
+                      Foreground="{DynamicResource PrimaryTextBrush}">
+
+                <ComboBoxItem Content="English"/>
+                <ComboBoxItem Content="Deutsch"/>
+                <ComboBoxItem Content="Русский"/>
+
+            </ComboBox>
+
+
+            <!-- ================= APPLICATION ================= -->
+
             <Separator Margin="0,28"/>
 
-            <!-- About -->
-
-            <TextBlock Text="Application"
+            <TextBlock x:Name="ApplicationTitle"
+                       Text="Application"
                        FontSize="16"
                        FontWeight="SemiBold"
                        Foreground="{DynamicResource PrimaryTextBrush}"/>
@@ -63,12 +101,17 @@
                        FontSize="15"
                        Foreground="{DynamicResource PrimaryTextBrush}"/>
 
-            <TextBlock Text="Weather &amp; Messenger"
+            <TextBlock x:Name="ApplicationDescription"
+                       Text="Weather &amp; Messenger"
                        Margin="0,3,0,0"
                        FontSize="13"
                        Foreground="{DynamicResource SecondaryTextBrush}"/>
 
-            <Button Content="Close"
+
+            <!-- ================= CLOSE ================= -->
+
+            <Button x:Name="CloseButton"
+                    Content="Close"
                     Width="110"
                     Height="42"
                     HorizontalAlignment="Right"

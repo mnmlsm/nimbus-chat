@@ -67,32 +67,36 @@
                 </Border>
 
                 <!-- Title -->
-                <TextBlock
-                    Text="Weather Search"
-                    Style="{StaticResource TitleText}"
-                    Margin="0,18,0,0"/>
+                <TextBlock 
+    x:Name="WeatherSearchTitle"
+    Text="Weather Search"
+    Style="{StaticResource TitleText}"
+    Margin="0,18,0,0"/>
 
                 <!-- Subtitle -->
-                <TextBlock
-                    Text="Search weather anywhere"
-                    Style="{StaticResource SubtitleText}"
-                    Margin="0,0,0,25"/>
+                <TextBlock 
+    x:Name="SearchWeatherAnywhereText"
+    Text="Search weather anywhere"
+    Style="{StaticResource SubtitleText}"
+    Margin="0,0,0,25"/>
 
                 <!-- Search -->
-                <TextBlock
-                    Text="CITY"
-                    Foreground="{StaticResource SecondaryTextBrush}"
-                    FontWeight="SemiBold"
-                    FontSize="12"
-                    Margin="4,0,0,8"/>
+                <TextBlock 
+    x:Name="CityLabelText"
+    Text="CITY"
+    Foreground="{StaticResource SecondaryTextBrush}"
+    FontWeight="SemiBold"
+    FontSize="12"
+    Margin="4,0,0,8"/>
 
                 <TextBox
                     Style="{StaticResource RoundedTextBox}"
                     Text="{Binding City, UpdateSourceTrigger=PropertyChanged}"/>
 
-                <Button
-                    Style="{StaticResource PrimaryButton}"
-                    Content="Search Weather"
+                <Button 
+    Style="{StaticResource PrimaryButton}" 
+    Content="Search Weather"
+    x:Name="SearchWeatherButton"
                     Margin="0,22,0,22"
                     Command="{Binding SearchCommand}"/>
 
@@ -154,9 +158,10 @@
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
 
-                                <TextBlock Grid.Row="0"
-                       Text="💧 Humidity"
-                       Foreground="White"/>
+                                <TextBlock Grid.Row="0" 
+           x:Name="HumidityText"
+           Text="💧 Humidity" 
+           Foreground="White"/>
 
                                 <TextBlock Grid.Row="0"
                        Grid.Column="1"
@@ -164,10 +169,11 @@
                        HorizontalAlignment="Right"
                        Foreground="{StaticResource PrimaryBrush}"/>
 
-                                <TextBlock Grid.Row="1"
-                       Text="💨 Wind"
-                       Foreground="White"
-                       Margin="0,10,0,0"/>
+                                <TextBlock Grid.Row="1" 
+           x:Name="WindText"
+           Text="💨 Wind" 
+           Foreground="White"
+           Margin="0,10,0,0"/>
 
                                 <TextBlock Grid.Row="1"
                        Grid.Column="1"
@@ -176,10 +182,11 @@
                        HorizontalAlignment="Right"
                        Foreground="{StaticResource PrimaryBrush}"/>
 
-                                <TextBlock Grid.Row="2"
-                       Text="🌡 Feels Like"
-                       Foreground="White"
-                       Margin="0,10,0,0"/>
+                                <TextBlock Grid.Row="2" 
+           x:Name="FeelsLikeText"
+           Text="🌡 Feels Like" 
+           Foreground="White"
+           Margin="0,10,0,0"/>
 
                                 <TextBlock Grid.Row="2"
                        Grid.Column="1"
@@ -196,11 +203,12 @@
 
                 </Border>
 
-                <Button
-                    Style="{StaticResource PrimaryButton}"
-                    Content="Use for Dashboard"
-                    Margin="0,18,0,0"
-                    Click="UseForDashboard_Click"/>
+                <Button 
+    x:Name="UseForDashboardButton"
+    Style="{StaticResource PrimaryButton}" 
+    Content="Use for Dashboard"
+    Margin="0,18,0,0" 
+    Click="UseForDashboard_Click"/>
 
             </StackPanel>
 

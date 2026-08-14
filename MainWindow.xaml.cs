@@ -38,13 +38,14 @@ namespace NimbusChat
             try
             {
                 await _apiClient.GetHealthAsync();
+
                 ConnectionDot.Fill = Brushes.LimeGreen;
-                ConnectionText.Text = "SERVER · CONNECTED";
+                ConnectionText.Text = LanguageManager.Get("WeatherConnected");
             }
             catch
             {
                 ConnectionDot.Fill = Brushes.Red;
-                ConnectionText.Text = "SERVER · NOT CONNECTED";
+                ConnectionText.Text = LanguageManager.Get("WeatherNotConnected");
             }
         }
 

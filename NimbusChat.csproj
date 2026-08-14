@@ -183,6 +183,7 @@
     <Compile Include="AppMessageBox.xaml.cs">
       <DependentUpon>AppMessageBox.xaml</DependentUpon>
     </Compile>
+    <Compile Include="LanguageManager.cs" />
     <Compile Include="SettingsWindow.xaml.cs">
       <DependentUpon>SettingsWindow.xaml</DependentUpon>
     </Compile>

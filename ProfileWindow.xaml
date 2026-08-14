@@ -59,16 +59,19 @@
 
                 </Border>
 
-                <TextBlock Text="Edit Profile"
+                <TextBlock x:Name="EditProfileTitle"
+                           Text="Edit Profile"
                            Style="{StaticResource TitleText}"
                            Margin="0,18,0,0"/>
 
-                <TextBlock Text="Update your account details"
+                <TextBlock x:Name="UpdateAccountDetailsText"
+                           Text="Update your account details"
                            Style="{StaticResource SubtitleText}"
                            Margin="0,0,0,25"/>
 
                 <!-- Username -->
-                <TextBlock Text="USERNAME"
+                <TextBlock x:Name="UsernameLabel"
+                           Text="USERNAME"
                            Foreground="{StaticResource SecondaryTextBrush}"
                            FontWeight="SemiBold"
                            FontSize="12"
@@ -80,11 +83,12 @@
                          Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}"/>
 
                 <!-- Email -->
-                <TextBlock Text="EMAIL"
-                           Foreground="{StaticResource SecondaryTextBrush}"
-                           FontWeight="SemiBold"
-                           FontSize="12"
-                           Margin="4,0,0,8"/>
+                <TextBlock x:Name="EmailLabel"
+                         Text="EMAIL"
+                         Foreground="{StaticResource SecondaryTextBrush}"
+                         FontWeight="SemiBold"
+                         FontSize="12"
+                         Margin="4,0,0,8"/>
 
                 <TextBox x:Name="EmailBox"
                          Style="{StaticResource RoundedTextBox}"
@@ -92,28 +96,44 @@
                          Text="{Binding Email, UpdateSourceTrigger=PropertyChanged}"/>
 
                 <!-- Status -->
-                <TextBlock Text="STATUS"
-                           Foreground="{StaticResource SecondaryTextBrush}"
-                           FontWeight="SemiBold"
-                           FontSize="12"
-                           Margin="4,0,0,8"/>
+                <TextBlock x:Name="StatusLabel"
+                         Text="STATUS"
+                         Foreground="{StaticResource SecondaryTextBrush}"
+                         FontWeight="SemiBold"
+                         FontSize="12"
+                         Margin="4,0,0,8"/>
 
-                <ComboBox Style="{StaticResource RoundedComboBox}"
-                          Margin="0,0,0,16"
-                          SelectedValue="{Binding Status, UpdateSourceTrigger=PropertyChanged}"
-                          SelectedValuePath="Content">
-                    <ComboBoxItem Content="Online"/>
-                    <ComboBoxItem Content="Away"/>
-                    <ComboBoxItem Content="Busy"/>
-                    <ComboBoxItem Content="Offline"/>
+                <ComboBox x:Name="StatusComboBox"
+          Style="{StaticResource RoundedComboBox}"
+          Margin="0,0,0,16"
+          SelectedValue="{Binding Status, UpdateSourceTrigger=PropertyChanged}"
+          SelectedValuePath="Tag">
+
+                    <ComboBoxItem x:Name="OnlineStatusItem"
+                  Content="Online"
+                  Tag="Online"/>
+
+                    <ComboBoxItem x:Name="AwayStatusItem"
+                  Content="Away"
+                  Tag="Away"/>
+
+                    <ComboBoxItem x:Name="BusyStatusItem"
+                  Content="Busy"
+                  Tag="Busy"/>
+
+                    <ComboBoxItem x:Name="OfflineStatusItem"
+                  Content="Offline"
+                  Tag="Offline"/>
+
                 </ComboBox>
 
                 <!-- Favorite City -->
-                <TextBlock Text="FAVORITE CITY"
-                           Foreground="{StaticResource SecondaryTextBrush}"
-                           FontWeight="SemiBold"
-                           FontSize="12"
-                           Margin="4,0,0,8"/>
+                <TextBlock x:Name="FavoriteCityLabel"
+                         Text="FAVORITE CITY"
+                         Foreground="{StaticResource SecondaryTextBrush}"
+                         FontWeight="SemiBold"
+                         FontSize="12"
+                         Margin="4,0,0,8"/>
 
                 <TextBox x:Name="CityBox"
                          Style="{StaticResource RoundedTextBox}"
@@ -134,9 +154,10 @@
                            Margin="0,0,0,8"/>
 
                 <!-- Save -->
-                <Button Style="{StaticResource PrimaryButton}"
-                        Content="Save Changes"
-                        Click="Save_Click"/>
+                <Button x:Name="SaveChangesButton"
+                          Style="{StaticResource PrimaryButton}"
+                          Content="Save Changes"
+                          Click="Save_Click"/>
 
             </StackPanel>
 

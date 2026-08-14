@@ -4,6 +4,21 @@
 
     <!-- ================= COLORS ================= -->
 
+    <SolidColorBrush x:Key="PageBackground" Color="#EEF5FC"/>
+
+    <LinearGradientBrush x:Key="HeroGradient"
+                     StartPoint="0,0"
+                     EndPoint="1,1">
+        <GradientStop Color="#4468A9" Offset="0"/>
+        <GradientStop Color="#7899C8" Offset="0.55"/>
+        <GradientStop Color="#B8CBE0" Offset="1"/>
+    </LinearGradientBrush>
+
+    <SolidColorBrush x:Key="SidebarBackgroundBrush"
+                 Color="#142946"/>
+    
+    
+
     <SolidColorBrush x:Key="WindowBackground"
                      Color="#F4F7FB"/>
 
@@ -28,6 +43,17 @@
     <SolidColorBrush x:Key="InputBorderBrush"
                      Color="#D5DEEA"/>
 
+
+
+    <!-- ================= DASHBOARD ================= -->
+
+    <SolidColorBrush x:Key="DashboardSecondaryTextBrush" Color="#8FA0BC"/>
+    <SolidColorBrush x:Key="DashboardMutedTextBrush" Color="#6884AA"/>
+
+    <SolidColorBrush x:Key="DashboardCardHoverBrush" Color="#E5EEF9"/>
+    <SolidColorBrush x:Key="DashboardActionBrush" Color="#162A49"/>
+
+    <SolidColorBrush x:Key="DashboardNotificationBrush" Color="#EFFFFFFF"/>
 
     <!-- ================= FONT ================= -->
 

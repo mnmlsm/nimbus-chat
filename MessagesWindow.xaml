@@ -33,12 +33,14 @@
                 <StackPanel Margin="25">
 
                     <TextBlock
-                        Text="Messages"
-                        Style="{StaticResource TitleText}"/>
+    x:Name="MessagesTitleText"
+    Text="Messages"
+    Style="{StaticResource TitleText}"/>
 
                     <TextBlock
-                        Text="Your conversations"
-                        Style="{StaticResource SubtitleText}"/>
+    x:Name="YourConversationsText"
+    Text="Your conversations"
+    Style="{StaticResource SubtitleText}"/>
 
                 </StackPanel>
 
@@ -158,7 +160,7 @@
                         Foreground="White"/>
 
                                     <TextBlock
-                        Text="{Binding Status}"
+                        Text="{Binding DisplayStatus}"
                         FontSize="12"
                         Foreground="#AEB9CA"/>
 

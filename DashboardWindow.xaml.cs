@@ -117,15 +117,15 @@ namespace NimbusChat
                 int hour = DateTime.Now.Hour;
 
                 if (hour >= 5 && hour < 12)
-                    return $"Good Morning, {_currentUser.Username}!";
+                    return $"{LanguageManager.Get("GoodMorning")}, {_currentUser.Username}!";
 
                 if (hour >= 12 && hour < 17)
-                    return $"Good Afternoon, {_currentUser.Username}!";
+                    return $"{LanguageManager.Get("GoodAfternoon")}, {_currentUser.Username}!";
 
                 if (hour >= 17 && hour < 22)
-                    return $"Good Evening, {_currentUser.Username}!";
+                    return $"{LanguageManager.Get("GoodEvening")}, {_currentUser.Username}!";
 
-                return $"Good Night, {_currentUser.Username}!";
+                return $"{LanguageManager.Get("GoodNight")}, {_currentUser.Username}!";
             }
         }
 
@@ -213,6 +213,10 @@ namespace NimbusChat
 
             RefreshDashboard();
 
+            UpdateLanguage();
+
+            LanguageManager.LanguageChanged += LanguageManager_LanguageChanged;
+
             Loaded += DashboardWindow_Loaded;
 
             _connectionCheckTimer = new DispatcherTimer
@@ -223,6 +227,144 @@ namespace NimbusChat
             _connectionCheckTimer.Start();
         }
 
+        private async void LanguageManager_LanguageChanged(
+    object sender,
+    EventArgs e)
+        {
+            UpdateLanguage();
+
+            var city = string.IsNullOrWhiteSpace(_currentUser.FavoriteCity)
+                ? DefaultCity
+                : _currentUser.FavoriteCity;
+
+            try
+            {
+                await LoadForecastAsync(city);
+            }
+            catch
+            {
+                // Keep the current forecast if refreshing the language fails.
+            }
+        }
+
+        private void UpdateLanguage()
+        {
+            if (WeatherCity == "Select your city." ||
+    WeatherCity == "Select your city" ||
+    WeatherCity == "Wähle deine Stadt." ||
+    WeatherCity == "Выберите город.")
+            {
+                WeatherCity = LanguageManager.Get("SelectCity");
+            }
+
+            OpenWeatherText.Content =
+    LanguageManager.Get("Open") + " →";
+
+            OpenMessagesText.Content =
+                LanguageManager.Get("Open") + " →";
+
+            OpenProfileText.Content =
+                LanguageManager.Get("Open") + " →";
+
+            YourProfileText.Text =
+    LanguageManager.Get("YourProfile");
+
+            WeatherDashboardText.Text =
+                LanguageManager.Get("WeatherDashboard");
+
+            EmailLabelText.Text =
+                LanguageManager.Get("Email");
+
+            ViewForecastText.Text =
+    LanguageManager.Get("ViewForecast");
+
+            OpenChatsText.Text =
+                LanguageManager.Get("OpenChats");
+
+            EditAccountText.Text =
+                LanguageManager.Get("EditAccount");
+
+            WeatherCardTitleText.Text =
+    LanguageManager.Get("Weather");
+
+            MessagesCardTitleText.Text =
+                LanguageManager.Get("Messages");
+
+            ProfileCardTitleText.Text =
+                LanguageManager.Get("Profile");
+
+            YourProfileText.Text =
+    LanguageManager.Get("YourProfile");
+
+            WeatherDashboardText.Text =
+                LanguageManager.Get("WeatherDashboard");
+
+            EmailLabelText.Text =
+                LanguageManager.Get("Email");
+
+            ViewForecastText.Text =
+                LanguageManager.Get("ViewForecast");
+
+            OpenChatsText.Text =
+                LanguageManager.Get("OpenChats");
+
+            EditAccountText.Text =
+                LanguageManager.Get("EditAccount");
+
+            MenuText.Text =
+                LanguageManager.Get("Menu");
+
+            ConnectionText.Text =
+                LanguageManager.Get("WeatherConnected");
+
+            DashboardButton.Content =
+                "⌂     " + LanguageManager.Get("Dashboard");
+
+            WeatherButton.Content =
+                "☁     " + LanguageManager.Get("Weather");
+
+            MessagesButton.Content =
+                "✉     " + LanguageManager.Get("Messages");
+
+            ProfileButton.Content =
+                "♙     " + LanguageManager.Get("Profile");
+
+            SettingsButton.Content =
+                "⚙     " + LanguageManager.Get("Settings");
+            
+
+            LocationTitleText.Text =
+                LanguageManager.Get("Location");
+
+            FavoriteCityTitleText.Text =
+                LanguageManager.Get("FavoriteCity");
+
+            SavedToProfileText.Text =
+                LanguageManager.Get("SavedToProfile");
+
+            OnPropertyChanged(nameof(WelcomeText));
+
+            CurrentWeatherTitleText.Text =
+                LanguageManager.Get("CurrentWeather");
+
+            ConditionTitleText.Text =
+                LanguageManager.Get("Condition");
+
+            WeatherRightNowText.Text =
+                LanguageManager.Get("WeatherRightNow");
+
+            LogoutButton.Content =
+                LanguageManager.Get("Logout");
+
+        }
+
+        protected override void OnClosed(EventArgs e)
+        {
+            LanguageManager.LanguageChanged -=
+                LanguageManager_LanguageChanged;
+
+            base.OnClosed(e);
+        }
         private async void DashboardWindow_Loaded(object sender, RoutedEventArgs e)
         {
             await LoadFavoriteCityWeatherAsync();
@@ -283,12 +425,14 @@ namespace NimbusChat
             {
                 AppMessageBox.Show("Weather data could not be loaded.", "Weather Error", AppMessageBoxIcon.Error, this);
 
+                WeatherCity = LanguageManager.Get("SelectCity");
                 WeatherTemperature = "-";
-                WeatherCondition = "Weather unavailable";
+                WeatherCondition = LanguageManager.Get("NoWeatherData");
                 WeatherHumidity = "-";
                 WeatherWind = "-";
 
                 UpdateWeatherVisual();
+                return;
             }
         }
 
@@ -445,6 +589,9 @@ namespace NimbusChat
             };
 
             settingsWindow.ShowDialog();
+
+
         }
+
     }
 }
