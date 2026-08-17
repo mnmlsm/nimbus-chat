@@ -39,7 +39,7 @@
                 Value="Bold"/>
 
         <Setter Property="Foreground"
-                Value="White"/>
+        Value="{DynamicResource PrimaryTextBrush}"/>
 
         <Setter Property="HorizontalAlignment"
                 Value="Center"/>
@@ -165,10 +165,18 @@
         <Setter Property="Padding" Value="16,0"/>
         <Setter Property="FontSize" Value="15"/>
         <Setter Property="Foreground" Value="White"/>
-        <Setter Property="Background" Value="{StaticResource InputBackgroundBrush}"/>
-        <Setter Property="BorderBrush" Value="{StaticResource InputBorderBrush}"/>
+        <Setter Property="Foreground"
+        Value="{DynamicResource PrimaryTextBrush}"/>
+
+        <Setter Property="Background"
+        Value="{DynamicResource InputBackgroundBrush}"/>
+
+        <Setter Property="BorderBrush"
+        Value="{DynamicResource InputBorderBrush}"/>
+
+        <Setter Property="CaretBrush"
+        Value="{DynamicResource PrimaryTextBrush}"/>
         <Setter Property="BorderThickness" Value="1.5"/>
-        <Setter Property="CaretBrush" Value="White"/>
         <Setter Property="VerticalContentAlignment"
         Value="Center"/>
 
@@ -226,9 +234,14 @@
         <Setter Property="Height" Value="56"/>
         <Setter Property="Padding" Value="16,0"/>
         <Setter Property="FontSize" Value="15"/>
-        <Setter Property="Foreground" Value="White"/>
-        <Setter Property="Background" Value="{StaticResource InputBackgroundBrush}"/>
-        <Setter Property="BorderBrush" Value="{StaticResource InputBorderBrush}"/>
+        <Setter Property="Foreground"
+        Value="{DynamicResource PrimaryTextBrush}"/>
+
+        <Setter Property="Background"
+        Value="{DynamicResource InputBackgroundBrush}"/>
+
+        <Setter Property="BorderBrush"
+        Value="{DynamicResource InputBorderBrush}"/>
         <Setter Property="BorderThickness" Value="1.5"/>
 
         <Setter Property="Template">
@@ -281,9 +294,14 @@
 
         <Setter Property="Height" Value="56"/>
         <Setter Property="FontSize" Value="15"/>
-        <Setter Property="Foreground" Value="White"/>
-        <Setter Property="Background" Value="{StaticResource InputBackgroundBrush}"/>
-        <Setter Property="BorderBrush" Value="{StaticResource InputBorderBrush}"/>
+        <Setter Property="Foreground"
+        Value="{DynamicResource PrimaryTextBrush}"/>
+
+        <Setter Property="Background"
+        Value="{DynamicResource InputBackgroundBrush}"/>
+
+        <Setter Property="BorderBrush"
+        Value="{DynamicResource InputBorderBrush}"/>
         <Setter Property="BorderThickness" Value="1.5"/>
         <Setter Property="VerticalContentAlignment" Value="Center"/>
 
@@ -386,7 +404,7 @@
                         <Trigger Property="IsHighlighted" Value="True">
                             <Setter TargetName="border"
                                     Property="Background"
-                                    Value="{StaticResource InputBackgroundBrush}"/>
+                                    Value="{DynamicResource InputBackgroundBrush}"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
 

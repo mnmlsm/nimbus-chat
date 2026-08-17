@@ -13,9 +13,12 @@ namespace NimbusChat
                 var currentTheme = Application.Current.Resources.MergedDictionaries
                     .FirstOrDefault(d =>
                         d.Source != null &&
-                        d.Source.OriginalString.Contains("Theme.xaml"));
+                        (
+                            d.Source.OriginalString.EndsWith("DarkTheme.xaml") ||
+                            d.Source.OriginalString.EndsWith("LightTheme.xaml")
+                        ));
 
-                return currentTheme?.Source?.OriginalString.Contains("DarkTheme") == true;
+                return currentTheme?.Source?.OriginalString.EndsWith("DarkTheme.xaml") == true;
             }
         }
 
@@ -51,7 +54,10 @@ namespace NimbusChat
             var oldTheme = app.Resources.MergedDictionaries
                 .FirstOrDefault(d =>
                     d.Source != null &&
-                    d.Source.OriginalString.Contains("Theme.xaml"));
+                    (
+                        d.Source.OriginalString.EndsWith("DarkTheme.xaml") ||
+                        d.Source.OriginalString.EndsWith("LightTheme.xaml")
+                    ));
 
             if (oldTheme != null)
             {

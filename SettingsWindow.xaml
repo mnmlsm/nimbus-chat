@@ -15,7 +15,7 @@
 
         <StackPanel>
 
-            <!-- ================= TITLE ================= -->
+            <!-- TITLE -->
 
             <TextBlock x:Name="SettingsTitle"
                        Text="Settings"
@@ -24,100 +24,101 @@
                        Foreground="{DynamicResource PrimaryTextBrush}"/>
 
             <TextBlock x:Name="SettingsDescription"
-                       Text="Customize your NimbusChat experience."
-                       Margin="0,6,0,30"
+                       Text="Customize your experience."
+                       Margin="0,6,0,28"
                        FontSize="14"
+                       TextWrapping="Wrap"
                        Foreground="{DynamicResource SecondaryTextBrush}"/>
 
 
-            <!-- ================= APPEARANCE ================= -->
+            <!-- APPEARANCE -->
 
             <TextBlock x:Name="AppearanceTitle"
                        Text="Appearance"
-                       FontSize="16"
+                       FontSize="17"
                        FontWeight="SemiBold"
                        Foreground="{DynamicResource PrimaryTextBrush}"/>
 
             <TextBlock x:Name="AppearanceDescription"
                        Text="Choose how NimbusChat looks."
-                       Margin="0,4,0,12"
+                       Margin="0,4,0,10"
                        FontSize="13"
+                       TextWrapping="Wrap"
                        Foreground="{DynamicResource SecondaryTextBrush}"/>
 
             <ComboBox x:Name="ThemeComboBox"
                       Height="48"
                       SelectedIndex="0"
                       SelectionChanged="ThemeComboBox_SelectionChanged"
-                      Background="{DynamicResource InputBackgroundBrush}"
-                      Foreground="{DynamicResource PrimaryTextBrush}">
+                      Style="{StaticResource RoundedComboBox}">
 
-                <ComboBoxItem Content="Light"/>
-                <ComboBoxItem Content="Dark"/>
+                <ComboBoxItem x:Name="LightThemeItem"
+                              Content="Light"/>
+
+                <ComboBoxItem x:Name="DarkThemeItem"
+                              Content="Dark"/>
 
             </ComboBox>
 
 
-            <!-- ================= LANGUAGE ================= -->
+            <!-- LANGUAGE -->
 
             <TextBlock x:Name="LanguageTitle"
                        Text="Language"
-                       Margin="0,24,0,0"
-                       FontSize="16"
+                       Margin="0,22,0,0"
+                       FontSize="17"
                        FontWeight="SemiBold"
                        Foreground="{DynamicResource PrimaryTextBrush}"/>
 
             <TextBlock x:Name="LanguageDescription"
-                       Text="Choose the language of NimbusChat."
-                       Margin="0,4,0,12"
+                       Text="Choose the language."
+                       Margin="0,4,0,10"
                        FontSize="13"
+                       TextWrapping="Wrap"
                        Foreground="{DynamicResource SecondaryTextBrush}"/>
 
             <ComboBox x:Name="LanguageComboBox"
                       Height="48"
                       SelectedIndex="0"
                       SelectionChanged="LanguageComboBox_SelectionChanged"
-                      Background="{DynamicResource InputBackgroundBrush}"
-                      Foreground="{DynamicResource PrimaryTextBrush}">
+                      Style="{StaticResource RoundedComboBox}">
 
-                <ComboBoxItem Content="English"/>
-                <ComboBoxItem Content="Deutsch"/>
-                <ComboBoxItem Content="Русский"/>
+                <ComboBoxItem x:Name="EnglishLanguageItem"
+                              Content="English"
+                              Tag="en"/>
+
+                <ComboBoxItem x:Name="GermanLanguageItem"
+                              Content="Deutsch"
+                              Tag="de"/>
+
+                <ComboBoxItem x:Name="RussianLanguageItem"
+                              Content="Русский"
+                              Tag="ru"/>
 
             </ComboBox>
 
 
-            <!-- ================= APPLICATION ================= -->
+            <!-- APPLICATION -->
 
-            <Separator Margin="0,28"/>
-
+            <Separator Margin="0,24,0,20"
+                       Background="{DynamicResource SecondaryTextBrush}"/>
             <TextBlock x:Name="ApplicationTitle"
                        Text="Application"
-                       FontSize="16"
+                       FontSize="17"
                        FontWeight="SemiBold"
                        Foreground="{DynamicResource PrimaryTextBrush}"/>
 
-            <TextBlock Text="NimbusChat"
-                       Margin="0,8,0,0"
+            <TextBlock x:Name="ApplicationName"
+                       Text="NimbusChat"
+                       Margin="0,7,0,0"
                        FontSize="15"
                        Foreground="{DynamicResource PrimaryTextBrush}"/>
 
             <TextBlock x:Name="ApplicationDescription"
                        Text="Weather &amp; Messenger"
                        Margin="0,3,0,0"
-                       FontSize="13"
+                       FontSize="6"
                        Foreground="{DynamicResource SecondaryTextBrush}"/>
-
-
-            <!-- ================= CLOSE ================= -->
-
-            <Button x:Name="CloseButton"
-                    Content="Close"
-                    Width="110"
-                    Height="42"
-                    HorizontalAlignment="Right"
-                    Margin="0,28,0,0"
-                    Click="Close_Click"
-                    Style="{StaticResource PrimaryButton}"/>
 
         </StackPanel>
 

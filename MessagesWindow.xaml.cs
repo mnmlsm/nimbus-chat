@@ -318,5 +318,7 @@ namespace NimbusChat
        LanguageManager_LanguageChanged;
             base.OnClosed(e);
         }
+
+
     }
 }

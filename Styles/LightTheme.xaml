@@ -77,7 +77,7 @@
                 Value="Bold"/>
 
         <Setter Property="Foreground"
-                Value="{StaticResource PrimaryTextBrush}"/>
+                Value="{DynamicResource PrimaryTextBrush}"/>
 
         <Setter Property="HorizontalAlignment"
                 Value="Center"/>
@@ -212,7 +212,7 @@
                 Value="15"/>
 
         <Setter Property="Foreground"
-                Value="{StaticResource PrimaryTextBrush}"/>
+                Value="{DynamicResource PrimaryTextBrush}"/>
 
         <Setter Property="Background"
                 Value="{StaticResource InputBackgroundBrush}"/>
@@ -224,7 +224,7 @@
                 Value="1.5"/>
 
         <Setter Property="CaretBrush"
-                Value="{StaticResource PrimaryTextBrush}"/>
+                Value="{DynamicResource PrimaryTextBrush}"/>
 
         <Setter Property="VerticalContentAlignment"
                 Value="Center"/>
@@ -291,7 +291,7 @@
                 Value="15"/>
 
         <Setter Property="Foreground"
-                Value="{StaticResource PrimaryTextBrush}"/>
+                Value="{DynamicResource PrimaryTextBrush}"/>
 
         <Setter Property="Background"
                 Value="{StaticResource InputBackgroundBrush}"/>
@@ -358,7 +358,7 @@
                 Value="15"/>
 
         <Setter Property="Foreground"
-                Value="{StaticResource PrimaryTextBrush}"/>
+                Value="{DynamicResource PrimaryTextBrush}"/>
 
         <Setter Property="Background"
                 Value="{StaticResource InputBackgroundBrush}"/>
@@ -400,7 +400,7 @@
                                             CornerRadius="12">
 
                                         <Path Data="M0,0 L4,4 L8,0 Z"
-                                              Fill="{StaticResource SecondaryTextBrush}"
+                                              Fill="{DynamicResource SecondaryTextBrush}"
                                               HorizontalAlignment="Right"
                                               VerticalAlignment="Center"
                                               Margin="0,0,18,0"/>
@@ -428,8 +428,8 @@
                                Focusable="False"
                                PopupAnimation="Slide">
 
-                            <Border Background="{StaticResource CardBackground}"
-                                    BorderBrush="{StaticResource InputBorderBrush}"
+                            <Border Background="{DynamicResource CardBackground}"
+        BorderBrush="{DynamicResource InputBorderBrush}"
                                     BorderThickness="1.5"
                                     CornerRadius="12"
                                     MinWidth="{Binding ActualWidth,
@@ -461,7 +461,7 @@
     <Style TargetType="ComboBoxItem">
 
         <Setter Property="Foreground"
-                Value="{StaticResource PrimaryTextBrush}"/>
+                Value="{DynamicResource PrimaryTextBrush}"/>
 
         <Setter Property="Background"
                 Value="Transparent"/>

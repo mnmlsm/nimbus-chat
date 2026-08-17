@@ -101,7 +101,7 @@
             Value="SemiBold"/>
 
         <Setter Property="Foreground"
-            Value="{StaticResource PrimaryTextBrush}"/>
+            Value="{DynamicResource PrimaryTextBrush}"/>
 
         <Setter Property="Background"
             Value="{StaticResource PrimaryBrush}"/>
@@ -389,7 +389,8 @@
 
     <Style TargetType="ComboBoxItem">
 
-        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="Foreground"
+        Value="{DynamicResource PrimaryTextBrush}"/>
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="Padding" Value="16,12"/>
 

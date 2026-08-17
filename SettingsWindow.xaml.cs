@@ -81,8 +81,20 @@ namespace NimbusChat
             ApplicationDescription.Text =
                 LanguageManager.Get("WeatherMessenger");
 
-            CloseButton.Content =
-                LanguageManager.Get("Close");
+            LightThemeItem.Content =
+        LanguageManager.Get("Light");
+
+            DarkThemeItem.Content =
+                LanguageManager.Get("Dark");
+
+            EnglishLanguageItem.Content =
+                LanguageManager.Get("English");
+
+            GermanLanguageItem.Content =
+                LanguageManager.Get("German");
+
+            RussianLanguageItem.Content =
+                LanguageManager.Get("Russian");
         }
 
         private void Close_Click(

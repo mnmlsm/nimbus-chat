@@ -1489,7 +1489,10 @@
                     Text="Edit account"
                     FontSize="13"
                     Foreground="{DynamicResource SecondaryTextBrush}"
-                    HorizontalAlignment="Center"
+                     HorizontalAlignment="Center"
+                    TextAlignment="Center"
+                    TextWrapping="Wrap"
+                    Width="260"
                     Margin="0,6,0,0"/>
 
                                 </StackPanel>
@@ -1571,7 +1574,7 @@
                 Text="{Binding UserStatus}"
                 FontSize="16"
                 FontWeight="SemiBold"
-                Foreground="{Binding StatusBrush}"
+                Foreground="{DynamicResource DashboardSecondaryTextBrush}"
                 Margin="0,6,0,18"/>
 
                                     <TextBlock

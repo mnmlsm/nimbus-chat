@@ -105,6 +105,7 @@ namespace NimbusChat
         private static readonly Dictionary<string, string> English =
             new Dictionary<string, string>
             {
+
                 { "EditProfile", "Edit Profile" },
                 { "UpdateAccountDetails", "Update your account details" },
                 { "Username", "USERNAME" },

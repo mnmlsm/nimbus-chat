@@ -198,6 +198,8 @@
       <DependentUpon>ProfileWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="WetterChatApp\Config\ClientConfig.cs" />
+    <Compile Include="WetterChatApp\Converters\StatusTranslationConverter.cs" />
+    <Compile Include="WetterChatApp\Converters\UsernameTranslationConverter.cs" />
     <Compile Include="WetterChatApp\Services\ApiClient.cs" />
     <Compile Include="WetterChatApp\Services\AuthService.cs" />
     <Compile Include="WetterChatApp\Services\MessageService.cs" />
