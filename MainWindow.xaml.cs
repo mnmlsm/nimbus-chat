@@ -1,16 +1,52 @@
-﻿using NimbusChat.Views;
+using NimbusChat.WetterChatApp.Services;
 using NimbusChat.WetterChatApp.ViewModels;
+using System;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
+using System.Windows.Threading;
 
 namespace NimbusChat
 {
+    // Login screen and app entry window: shows a live server-connection
+    // indicator, handles the password show/hide toggle, and hands off to
+    // RegisterWindow or the dashboard.
     public partial class MainWindow : Window
     {
+        private readonly ApiClient _apiClient = new ApiClient();
+        private readonly DispatcherTimer _connectionCheckTimer;
+
         public MainWindow()
         {
             InitializeComponent();
             DataContext = new LoginViewModel();
+
+            Loaded += async (s, e) => await CheckConnectionAsync();
+
+            _connectionCheckTimer = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromSeconds(15)
+            };
+            _connectionCheckTimer.Tick += async (s, e) => await CheckConnectionAsync();
+            _connectionCheckTimer.Start();
+
+            Closed += (s, e) => _connectionCheckTimer.Stop();
+        }
+
+        private async System.Threading.Tasks.Task CheckConnectionAsync()
+        {
+            try
+            {
+                await _apiClient.GetHealthAsync();
+
+                ConnectionDot.Fill = Brushes.LimeGreen;
+                ConnectionText.Text = LanguageManager.Get("WeatherConnected");
+            }
+            catch
+            {
+                ConnectionDot.Fill = Brushes.Red;
+                ConnectionText.Text = LanguageManager.Get("WeatherNotConnected");
+            }
         }
 
         private void PasswordBox_PasswordChanged(object sender, RoutedEventArgs e)
@@ -23,7 +59,7 @@ namespace NimbusChat
 
         private void OpenRegister_Click(object sender, RoutedEventArgs e)
         {
-            var register = new RegisterView();
+            var register = new RegisterWindow();
             register.Show();
             Close();
         }
@@ -61,5 +97,6 @@ namespace NimbusChat
                 EyeIcon.Kind = MaterialDesignThemes.Wpf.PackIconKind.EyeOutline;
             }
         }
+
     }
 }

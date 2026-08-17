@@ -3,11 +3,47 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media;
 
 namespace NimbusChat.WetterChatApp.Models
 {
+    // Client-side shape of a user account, plus UI helpers for the avatar
+    // color/initial and a status-icon string representation.
     public class User
     {
+        public Brush AvatarBrush
+        {
+            get
+            {
+                string[] colors =
+                {
+                    "#42A5F5", // Blue
+                    "#66BB6A", // Green
+                    "#AB47BC", // Purple
+                    "#FF7043", // Orange
+                    "#26C6DA", // Cyan
+                    "#EC407A", // Pink
+                    "#FFA726", // Amber
+                    "#7E57C2"  // Deep Purple
+                };
+
+                int index = Math.Abs(Username.GetHashCode()) % colors.Length;
+
+                return (Brush)new BrushConverter().ConvertFromString(colors[index]);
+            }
+        }
+
+        public string Initial
+        {
+            get
+            {
+                if (string.IsNullOrWhiteSpace(Username))
+                    return "?";
+
+                return Username.Substring(0, 1).ToUpper();
+            }
+        }
+
         public int Id
         {
             get; set;
@@ -35,10 +71,34 @@ namespace NimbusChat.WetterChatApp.Models
         public string Status 
         { 
             get; set; 
-        }       
-        public string FavoriteCity 
-        { 
-            get; set; 
+        }
+
+        public string DisplayStatus
+        {
+            get
+            {
+                switch (Status)
+                {
+                    case "Online":
+                        return LanguageManager.Get("Online");
+
+                    case "Busy":
+                        return LanguageManager.Get("Busy");
+
+                    case "Away":
+                        return LanguageManager.Get("Away");
+
+                    case "Everyone":
+                        return LanguageManager.Get("Everyone");
+
+                    default:
+                        return Status;
+                }
+            }
+        }
+        public string FavoriteCity
+        {
+            get; set;
         }
 
         public override string ToString()
@@ -57,5 +117,4 @@ namespace NimbusChat.WetterChatApp.Models
             return $"{icon} {Username}";
         }
     }
-
 }

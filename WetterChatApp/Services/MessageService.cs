@@ -1,67 +1,43 @@
-﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using NimbusChat.WetterChatApp.Models;
-using NimbusChat.WetterChatApp.Repositories;
 
 namespace NimbusChat.WetterChatApp.Services
 {
+    // Small facade over ApiClient for global and private chat messages, used
+    // by MessagesWindow.
     public class MessageService
     {
-        private readonly MessageRepository _messageRepository;
+        private readonly ApiClient _apiClient;
 
         public MessageService()
         {
-            _messageRepository = new MessageRepository();
+            _apiClient = new ApiClient();
         }
 
-        /// <summary>
-        /// 1:1-Nachricht (wird für Global-Chat mit ReceiverId = 0 verwendet).
-        /// </summary>
-        public bool SendMessage(int senderId, int receiverId, string content)
+        public Task<List<(Message Message, string DisplayName)>> GetAllGlobalMessagesAsync()
         {
-            if (senderId <= 0 || receiverId < 0)
-                return false;
-
-            if (string.IsNullOrWhiteSpace(content))
-                return false;
-
-            var message = new Message
-            {
-                SenderId = senderId,
-                ReceiverId = receiverId,
-                Content = content,
-                CreatedAt = DateTime.UtcNow
-            };
-
-            return _messageRepository.Create(message);
+            return _apiClient.GetGlobalMessagesAsync(0);
         }
 
-        /// <summary>
-        /// Globaler Chat: Nachricht an alle (ReceiverId = 0).
-        /// </summary>
-        public bool SendGlobalMessage(int senderId, string content)
+        public Task<List<(Message Message, string DisplayName)>> GetNewGlobalMessagesSinceAsync(int lastMessageId)
         {
-            // ReceiverId = 0 kennzeichnet globalen Chat
-            return SendMessage(senderId, 0, content);
+            return _apiClient.GetGlobalMessagesAsync(lastMessageId);
         }
 
-        /// <summary>
-        /// Globaler Chat: alle Nachrichten mit Username/Email.
-        /// </summary>
-        public List<(Message Message, string DisplayName)> GetAllGlobalMessages()
+        public Task<bool> SendGlobalMessageAsync(int senderId, string content)
         {
-            return _messageRepository.GetAllWithUser();
+            return _apiClient.SendGlobalMessageAsync(senderId, content);
         }
 
-        /// <summary>
-        /// Globaler Chat: neue Nachrichten seit einer bestimmten Id.
-        /// </summary>
-        public List<(Message Message, string DisplayName)> GetNewGlobalMessagesSince(int lastMessageId)
+        public Task<List<Message>> GetMessagesBetweenAsync(int userId1, int userId2)
         {
-            if (lastMessageId < 0)
-                lastMessageId = 0;
+            return _apiClient.GetMessagesBetweenAsync(userId1, userId2);
+        }
 
-            return _messageRepository.GetNewGlobalSince(lastMessageId);
+        public Task<bool> SendPrivateMessageAsync(int senderId, int receiverId, string content)
+        {
+            return _apiClient.SendPrivateMessageAsync(senderId, receiverId, content);
         }
 
         /// <summary>

@@ -1,18 +1,19 @@
-﻿using System.Linq;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using NimbusChat.WetterChatApp.Infrastructure;
-using NimbusChat.WetterChatApp.Data;
-using NimbusChat.WetterChatApp.Repositories;
 using NimbusChat.WetterChatApp.Services;
 using NimbusChat.WetterChatApp.Models;
 
 namespace NimbusChat.WetterChatApp.ViewModels
 {
+    // Backing view model for the login screen: validates input, calls the
+    // login API, and opens the dashboard on success.
     public class LoginViewModel : BaseViewModel
     {
         private readonly AuthService _authService;
-        private readonly UserRepository _userRepository;
 
         private string _email;
         private string _password;
@@ -40,12 +41,8 @@ namespace NimbusChat.WetterChatApp.ViewModels
 
         public LoginViewModel()
         {
-            // DB vorbereiten
-            DatabaseInitializer.Initialize();
-
             _authService = new AuthService();
-            _userRepository = new UserRepository();
-            LoginCommand = new RelayCommand(_ => ExecuteLogin(), _ => CanExecuteLogin());
+            LoginCommand = new RelayCommand(async _ => await ExecuteLoginAsync(), _ => CanExecuteLogin());
         }
 
         private bool CanExecuteLogin()
@@ -54,12 +51,20 @@ namespace NimbusChat.WetterChatApp.ViewModels
                    !string.IsNullOrWhiteSpace(Password);
         }
 
-        private void ExecuteLogin()
+        private async Task ExecuteLoginAsync()
         {
             ErrorMessage = string.Empty;
 
-            // Einfach synchroner Call auf AuthService
-            var user = _authService.Login(Email, Password);
+            User user;
+            try
+            {
+                user = await _authService.LoginAsync(Email, Password);
+            }
+            catch (Exception)
+            {
+                ErrorMessage = "The server cannot be reached right now. Please try again later.";
+                return;
+            }
 
             if (user == null)
             {
@@ -67,9 +72,8 @@ namespace NimbusChat.WetterChatApp.ViewModels
                 return;
             }
 
-            _userRepository.UpdateStatus(user.Id, "Online");
-
-            // Dashboard mit aktuellem User öffnen
+            // The login endpoint already sets the status to Online server-side,
+            // so user.Status comes back with the correct value here.
             var dashboard = new DashboardWindow(user);
             dashboard.Show();
 

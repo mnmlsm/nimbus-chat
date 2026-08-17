@@ -1,0 +1,63 @@
+<!-- Layout for the custom message box dialog: icon, title, message text, and
+     a single OK button, styled to match the rest of the app. -->
+<Window x:Class="NimbusChat.AppMessageBox"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        Title="NimbusChat"
+        Width="380"
+        SizeToContent="Height"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize"
+        Background="{StaticResource WindowBackground}"
+        ShowInTaskbar="False">
+
+    <Border Padding="30"
+            Background="{StaticResource CardBackground}"
+            CornerRadius="20">
+
+        <Border.Effect>
+            <DropShadowEffect BlurRadius="24"
+                              ShadowDepth="0"
+                              Opacity="0.30"/>
+        </Border.Effect>
+
+        <StackPanel>
+
+            <Border Width="56"
+                    Height="56"
+                    CornerRadius="28"
+                    Background="#24344E"
+                    HorizontalAlignment="Center">
+
+                <materialDesign:PackIcon x:Name="IconElement"
+                    Kind="InformationOutline"
+                    Width="28"
+                    Height="28"
+                    Foreground="{StaticResource PrimaryBrush}"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"/>
+
+            </Border>
+
+            <TextBlock x:Name="TitleBlock"
+                       Style="{StaticResource TitleText}"
+                       FontSize="20"
+                       Margin="0,16,0,6"/>
+
+            <TextBlock x:Name="MessageBlock"
+                       Foreground="{StaticResource SecondaryTextBrush}"
+                       FontSize="14"
+                       TextWrapping="Wrap"
+                       TextAlignment="Center"
+                       Margin="0,0,0,20"/>
+
+            <Button Style="{StaticResource PrimaryButton}"
+                    Content="OK"
+                    Click="Ok_Click"/>
+
+        </StackPanel>
+
+    </Border>
+
+</Window>

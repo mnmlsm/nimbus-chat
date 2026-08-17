@@ -1,11 +1,13 @@
 ﻿using System.Windows;
 using NimbusChat.WetterChatApp.ViewModels;
 
-namespace NimbusChat.Views
+namespace NimbusChat
 {
-    public partial class RegisterView : Window
+    // Registration screen: wires the password fields to RegisterViewModel and
+    // provides the way back to the login window.
+    public partial class RegisterWindow : Window
     {
-        public RegisterView()
+        public RegisterWindow()
         {
             InitializeComponent();
             DataContext = new RegisterViewModel();

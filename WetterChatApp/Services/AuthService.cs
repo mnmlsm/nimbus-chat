@@ -1,45 +1,27 @@
-﻿using NimbusChat.WetterChatApp.Models;
-using NimbusChat.WetterChatApp.Repositories;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+using NimbusChat.WetterChatApp.Models;
 
 namespace NimbusChat.WetterChatApp.Services
 {
+    // Small facade over ApiClient for login/register calls, used by the
+    // login and register view models.
     public class AuthService
     {
-        private readonly UserRepository _userRepository;
+        private readonly ApiClient _apiClient;
 
         public AuthService()
         {
-            _userRepository = new UserRepository();
+            _apiClient = new ApiClient();
         }
 
         public Task<User> LoginAsync(string email, string password)
         {
-            var user = _userRepository.GetByEmail(email);
-
-            if (user == null)
-                return Task.FromResult<User>(null);
-
-            if (user.PasswordHash != password)
-                return Task.FromResult<User>(null);
-
-            return Task.FromResult(user);
+            return _apiClient.LoginAsync(email, password);
         }
 
-        public User Login(string email, string password)
+        public Task<bool> RegisterAsync(string username, string email, string password)
         {
-            var user = _userRepository.GetByEmail(email);
-            if (user == null)
-                return null;
-
-            if (user.PasswordHash != password)
-                return null;
-
-            return user;
+            return _apiClient.RegisterAsync(username, email, password);
         }
     }
 }

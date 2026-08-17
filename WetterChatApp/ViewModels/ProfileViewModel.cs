@@ -1,13 +1,15 @@
-﻿using System.Windows.Input;
+using System.Threading.Tasks;
+using System.Windows.Input;
 using NimbusChat.WetterChatApp.Infrastructure;
-using NimbusChat.WetterChatApp.Models;
-using NimbusChat.WetterChatApp.Repositories;
+using NimbusChat.WetterChatApp.Services;
 
 namespace NimbusChat.WetterChatApp.ViewModels
 {
+    // Backing view model for the profile dialog: loads the current user on
+    // open and validates/saves edits back through the API.
     public class ProfileViewModel : BaseViewModel
     {
-        private readonly UserRepository _userRepository;
+        private readonly ApiClient _apiClient;
 
         private int _userId;
         private string _username;
@@ -63,20 +65,20 @@ namespace NimbusChat.WetterChatApp.ViewModels
 
         public ProfileViewModel(int userId)
         {
-            _userRepository = new UserRepository();
+            _apiClient = new ApiClient();
             UserId = userId;
 
-            SaveProfileCommand = new RelayCommand(_ => ExecuteSaveProfile(), _ => CanSaveProfile());
+            SaveProfileCommand = new RelayCommand(async _ => await SaveProfileAsync(), _ => CanSaveProfile());
 
-            LoadProfile();
+            _ = LoadProfileAsync();
         }
 
-        private void LoadProfile()
+        private async Task LoadProfileAsync()
         {
             ErrorMessage = string.Empty;
             SuccessMessage = string.Empty;
 
-            var user = _userRepository.GetById(UserId);
+            var user = await _apiClient.GetUserAsync(UserId);
             if (user == null)
             {
                 ErrorMessage = "User profile could not be loaded.";
@@ -103,7 +105,7 @@ namespace NimbusChat.WetterChatApp.ViewModels
             return true;
         }
 
-        private void ExecuteSaveProfile()
+        public async Task SaveProfileAsync()
         {
             ErrorMessage = string.Empty;
             SuccessMessage = string.Empty;
@@ -114,7 +116,7 @@ namespace NimbusChat.WetterChatApp.ViewModels
                 return;
             }
 
-            var user = _userRepository.GetById(UserId);
+            var user = await _apiClient.GetUserAsync(UserId);
             if (user == null)
             {
                 ErrorMessage = "User not found.";
@@ -126,7 +128,7 @@ namespace NimbusChat.WetterChatApp.ViewModels
             user.Status = Status;
             user.FavoriteCity = FavoriteCity;
 
-            var updated = _userRepository.Update(user);
+            var updated = await _apiClient.UpdateUserAsync(user);
 
             if (!updated)
             {

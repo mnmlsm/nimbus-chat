@@ -2,18 +2,19 @@
 
 namespace NimbusChat.WetterChatApp.Models
 {
+    // Client-side shape of a chat message, covering both global and private
+    // conversations.
     public class Message
     {
         public int Id { get; set; } = 0;
 
         public int SenderId { get; set; } = 0;
 
-        // Für globalen Chat wird ReceiverId aktuell nicht verwendet (kann 0 sein)
+        // Unused for global chat messages (can be 0).
         public int ReceiverId { get; set; } = 0;
 
         public string Content { get; set; } = string.Empty;
 
-        // In SQLite liegt CreatedAt als TEXT "yyyy-MM-dd HH:mm:ss"
         public DateTime CreatedAt { get; set; }
     }
 }

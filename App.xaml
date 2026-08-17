@@ -1,20 +1,17 @@
-﻿<Application x:Class="NimbusChat.App"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             StartupUri="MainWindow.xaml">
+﻿<!-- App entry point: sets MainWindow (login screen) as the startup window and
+     loads the shared Material Design theme resources. -->
+<Application
+    x:Class="NimbusChat.App"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    StartupUri="MainWindow.xaml">
 
     <Application.Resources>
 
         <ResourceDictionary>
-
             <ResourceDictionary.MergedDictionaries>
-
-                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Light.xaml"/>
-
-                <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Primary/MaterialDesignColor.Blue.xaml"/>
-
+                <ResourceDictionary Source="Styles/DarkTheme.xaml"/>
             </ResourceDictionary.MergedDictionaries>
-
         </ResourceDictionary>
 
     </Application.Resources>

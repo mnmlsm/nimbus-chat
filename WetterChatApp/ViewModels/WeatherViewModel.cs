@@ -1,23 +1,23 @@
-﻿using System;
-using System.Net.Http;
+using System;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using Newtonsoft.Json;
 using NimbusChat.WetterChatApp.Infrastructure;
-using NimbusChat.WetterChatApp.Models;
-using NimbusChat.WetterChatApp.Repositories;
+using NimbusChat.WetterChatApp.Services;
 
 namespace NimbusChat.ViewModels
 {
+    // Backing view model for the standalone weather search dialog.
     public class WeatherViewModel : BaseViewModel
     {
-        private readonly WeatherDataRepository _weatherRepository;
+        private readonly ApiClient _apiClient = new ApiClient();
 
         private string _city;
-        private string _weatherResult;
+        private string _cityName;
         private string _temperature;
-        private string _condition;
-        private bool? _dialogResult;
+        private string _description;
+        private string _humidity;
+        private string _wind;
+        private string _feelsLike;
 
         public string City
         {
@@ -29,12 +29,12 @@ namespace NimbusChat.ViewModels
             }
         }
 
-        public string WeatherResult
+        public string CityName
         {
-            get => _weatherResult;
+            get => _cityName;
             set
             {
-                _weatherResult = value;
+                _cityName = value;
                 OnPropertyChanged();
             }
         }
@@ -49,22 +49,42 @@ namespace NimbusChat.ViewModels
             }
         }
 
-        public string Condition
+        public string Description
         {
-            get => _condition;
+            get => _description;
             set
             {
-                _condition = value;
+                _description = value;
                 OnPropertyChanged();
             }
         }
 
-        public bool? DialogResultValue
+        public string Humidity
         {
-            get => _dialogResult;
+            get => _humidity;
             set
             {
-                _dialogResult = value;
+                _humidity = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public string Wind
+        {
+            get => _wind;
+            set
+            {
+                _wind = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public string FeelsLike
+        {
+            get => _feelsLike;
+            set
+            {
+                _feelsLike = value;
                 OnPropertyChanged();
             }
         }
@@ -73,58 +93,29 @@ namespace NimbusChat.ViewModels
 
         public WeatherViewModel()
         {
-            _weatherRepository = new WeatherDataRepository();
             SearchCommand = new RelayCommand(async _ => await Search());
         }
 
         private async Task Search()
         {
             if (string.IsNullOrWhiteSpace(City))
-            {
-                WeatherResult = "Enter a city";
                 return;
-            }
 
             try
             {
-                using (var client = new HttpClient())
-                {
-                    var url =
-                        $"https://api.openweathermap.org/data/2.5/weather?q={City}&appid=87f7befd922e98326b86d972952a799c&units=metric";
+                // Goes through the API so the lookup also gets recorded in the database.
+                var weather = await _apiClient.GetWeatherAsync(City);
 
-                    var response = await client.GetStringAsync(url);
-
-                    dynamic data = JsonConvert.DeserializeObject(response);
-
-                    // Werte aus dem JSON holen (OpenWeather-Struktur)
-                    double temp = data.main.temp;
-                    int humidity = data.main.humidity;
-                    string description = data.weather[0].description;
-
-                    // UI aktualisieren
-                    Temperature = $"{temp}°C";
-                    Condition = description;
-                    WeatherResult = $"{City}: {temp}°C, {description}";
-
-                    // WeatherData Objekt für die DB bauen
-                    var weatherData = new WeatherData
-                    {
-                        City = City,
-                        Temperature = temp,
-                        Humidity = humidity,
-                        Description = description,
-                        CreatedAt = DateTime.UtcNow.ToString("o") // ISO 8601
-                    };
-
-                    // In SQLite speichern
-                    _weatherRepository.Create(weatherData);
-
-                    DialogResultValue = true;
-                }
+                CityName = weather.City;
+                Temperature = $"{weather.Temperature:0}°C";
+                Description = weather.Description;
+                Humidity = $"{weather.Humidity}%";
+                Wind = $"{weather.WindSpeed:0.#} m/s";
+                FeelsLike = $"{weather.FeelsLike:0}°C";
             }
             catch (Exception ex)
             {
-                WeatherResult = ex.Message;
+                Description = ex.Message;
             }
         }
     }
