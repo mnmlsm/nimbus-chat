@@ -121,7 +121,7 @@ namespace NimbusChat
                 {
                     Content = message.Content,
                     IsMine = message.SenderId == _currentUserId,
-                    Time = message.CreatedAt.ToString("HH:mm")
+                    Time = FormatMessageTime(message.CreatedAt)
                 });
             }
 
@@ -143,7 +143,7 @@ namespace NimbusChat
                 {
                     Content = message.Content,
                     IsMine = isMine,
-                    Time = message.CreatedAt.ToString("HH:mm"),
+                    Time = FormatMessageTime(message.CreatedAt),
                     SenderName = isMine ? null : displayName
                 });
             }
@@ -319,6 +319,10 @@ namespace NimbusChat
             base.OnClosed(e);
         }
 
-
+        private static string FormatMessageTime(DateTime createdAt)
+        {
+            var utc = DateTime.SpecifyKind(createdAt, DateTimeKind.Utc);
+            return utc.ToLocalTime().ToString("HH:mm");
+        }
     }
 }

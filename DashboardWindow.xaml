@@ -1375,7 +1375,7 @@
                                     <TextBlock
                     x:Name="ViewForecastText"
                     Text="View forecast"
-                    FontSize="13"
+                    FontSize="8"
                     Foreground="{DynamicResource SecondaryTextBrush}"
                     HorizontalAlignment="Center"
                     Margin="0,6,0,0"/>
@@ -1431,7 +1431,7 @@
 
                                     <TextBlock x:Name="OpenChatsText"
                     Text="Open chats"
-                    FontSize="13"
+                    FontSize="8"
                     Foreground="{DynamicResource SecondaryTextBrush}"
                     HorizontalAlignment="Center"
                     Margin="0,6,0,0"/>
@@ -1487,7 +1487,7 @@
 
                                     <TextBlock x:Name="EditAccountText"
                     Text="Edit account"
-                    FontSize="13"
+                    FontSize="8"
                     Foreground="{DynamicResource SecondaryTextBrush}"
                      HorizontalAlignment="Center"
                     TextAlignment="Center"
