@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NimbusChat", "NimbusChat.cs
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "nimbus-chat.Api", "nimbus-chat.Api\nimbus-chat.Api.csproj", "{46FF3A3B-382E-4BF6-88BA-3A97F3AFD485}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "nimbus-chat.Tests", "nimbus-chat.Tests\nimbus-chat.Tests.csproj", "{1AF8D4F1-6519-4DD7-9290-94A1D99987CC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -41,6 +43,18 @@ Global
 		{46FF3A3B-382E-4BF6-88BA-3A97F3AFD485}.Release|x64.Build.0 = Release|Any CPU
 		{46FF3A3B-382E-4BF6-88BA-3A97F3AFD485}.Release|x86.ActiveCfg = Release|Any CPU
 		{46FF3A3B-382E-4BF6-88BA-3A97F3AFD485}.Release|x86.Build.0 = Release|Any CPU
+		{1AF8D4F1-6519-4DD7-9290-94A1D99987CC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1AF8D4F1-6519-4DD7-9290-94A1D99987CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1AF8D4F1-6519-4DD7-9290-94A1D99987CC}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{1AF8D4F1-6519-4DD7-9290-94A1D99987CC}.Debug|x64.Build.0 = Debug|Any CPU
+		{1AF8D4F1-6519-4DD7-9290-94A1D99987CC}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{1AF8D4F1-6519-4DD7-9290-94A1D99987CC}.Debug|x86.Build.0 = Debug|Any CPU
+		{1AF8D4F1-6519-4DD7-9290-94A1D99987CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1AF8D4F1-6519-4DD7-9290-94A1D99987CC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1AF8D4F1-6519-4DD7-9290-94A1D99987CC}.Release|x64.ActiveCfg = Release|Any CPU
+		{1AF8D4F1-6519-4DD7-9290-94A1D99987CC}.Release|x64.Build.0 = Release|Any CPU
+		{1AF8D4F1-6519-4DD7-9290-94A1D99987CC}.Release|x86.ActiveCfg = Release|Any CPU
+		{1AF8D4F1-6519-4DD7-9290-94A1D99987CC}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

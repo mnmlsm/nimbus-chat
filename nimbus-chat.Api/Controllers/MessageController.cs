@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using MySql.Data.MySqlClient;
+using NimbusChat.Api.Messaging;
 using NimbusChat.Api.Models;
 
 namespace NimbusChat.Api.Controllers
@@ -111,9 +112,9 @@ ORDER BY Id ASC";
             using var connection = new MySqlConnection(connectionString);
             connection.Open();
 
-            var receiverId = dto.ReceiverId.HasValue && dto.ReceiverId.Value > 0
-                ? dto.ReceiverId.Value
-                : GetOrCreateGlobalChatUserId(connection);
+            var receiverId = MessageRouting.IsGlobal(dto.ReceiverId)
+                ? GetOrCreateGlobalChatUserId(connection)
+                : dto.ReceiverId!.Value;
 
             var sql = @"INSERT INTO Messages (SenderId, ReceiverId, Content, CreatedAt)
                         VALUES (@SenderId, @ReceiverId, @Content, @CreatedAt);";
