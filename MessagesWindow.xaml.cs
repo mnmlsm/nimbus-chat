@@ -35,6 +35,11 @@ namespace NimbusChat
 
             _currentUserId = currentUserId;
 
+            LanguageManager.LanguageChanged +=
+        LanguageManager_LanguageChanged;
+
+            UpdateLanguage();
+
             Loaded += async (s, e) => await LoadUsersAsync();
 
             _pollTimer = new DispatcherTimer
@@ -46,6 +51,35 @@ namespace NimbusChat
             _pollTimer.Start();
         }
 
+        private void LanguageManager_LanguageChanged(
+    object sender,
+    EventArgs e)
+        {
+            UpdateLanguage();
+
+            DisplayUsers(_allUsers);
+        }
+
+        private void UpdateLanguage()
+        {
+            Title =
+                LanguageManager.Get("MessagesTitle");
+
+            MessagesTitleText.Text =
+                LanguageManager.Get("MessagesTitle");
+
+            YourConversationsText.Text =
+                LanguageManager.Get("YourConversations");
+
+            SearchPlaceholder.Text =
+                LanguageManager.Get("Search");
+
+            if (_selectedUserId == 0)
+            {
+                ChatHeader.Text =
+                    LanguageManager.Get("SelectChat");
+            }
+        }
         private async Task LoadUsersAsync()
         {
             _allUsers = await _apiClient.GetAllUsersAsync();
@@ -87,7 +121,7 @@ namespace NimbusChat
                 {
                     Content = message.Content,
                     IsMine = message.SenderId == _currentUserId,
-                    Time = message.CreatedAt.ToString("HH:mm")
+                    Time = FormatMessageTime(message.CreatedAt)
                 });
             }
 
@@ -109,7 +143,7 @@ namespace NimbusChat
                 {
                     Content = message.Content,
                     IsMine = isMine,
-                    Time = message.CreatedAt.ToString("HH:mm"),
+                    Time = FormatMessageTime(message.CreatedAt),
                     SenderName = isMine ? null : displayName
                 });
             }
@@ -158,10 +192,34 @@ namespace NimbusChat
             }
             else
             {
-                AppMessageBox.Show("Message could not be sent.", "Error", AppMessageBoxIcon.Error, this);
+                AppMessageBox.Show(
+     LanguageManager.Get("MessageSendError"),
+     LanguageManager.Get("Error"),
+     AppMessageBoxIcon.Error,
+     this);
             }
         }
 
+        private string TranslateStatus(string status)
+        {
+            if (string.IsNullOrWhiteSpace(status))
+                return string.Empty;
+
+            switch (status)
+            {
+                case "Online":
+                    return LanguageManager.Get("Online");
+
+                case "Busy":
+                    return LanguageManager.Get("Busy");
+
+                case "Away":
+                    return LanguageManager.Get("Away");
+
+                default:
+                    return status;
+            }
+        }
         private async void UsersList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (UsersList.SelectedItem is User user)
@@ -256,7 +314,15 @@ namespace NimbusChat
         protected override void OnClosed(EventArgs e)
         {
             _pollTimer?.Stop();
+            LanguageManager.LanguageChanged -=
+       LanguageManager_LanguageChanged;
             base.OnClosed(e);
+        }
+
+        private static string FormatMessageTime(DateTime createdAt)
+        {
+            var utc = DateTime.SpecifyKind(createdAt, DateTimeKind.Utc);
+            return utc.ToLocalTime().ToString("HH:mm");
         }
     }
 }

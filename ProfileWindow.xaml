@@ -1,144 +1,182 @@
-<!-- Profile dialog layout: avatar, editable username/email/favorite city
-     fields, and a save button. -->
 <Window x:Class="NimbusChat.ProfileWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         Title="Profile"
-        Height="780"
-        Width="480"
+        Height="800"
+        Width="520"
         WindowStartupLocation="CenterOwner"
         ResizeMode="NoResize"
         Background="{StaticResource WindowBackground}">
 
     <Grid>
 
-        <Ellipse Width="420"
-                 Height="420"
-                 Fill="#18FFFFFF"
-                 HorizontalAlignment="Right"
-                 VerticalAlignment="Top"
-                 Margin="120,-150,0,0"/>
-
-        <Ellipse Width="220"
-                 Height="220"
-                 Fill="#14FFFFFF"
-                 HorizontalAlignment="Left"
-                 VerticalAlignment="Bottom"
-                 Margin="-70,0,0,-60"/>
-
-        <Border Width="360"
-                Padding="35"
-                Background="{StaticResource CardBackground}"
+        <!-- Main card -->
+        <Border Width="420"
+                Padding="32"
+                Background="{DynamicResource CardBackground}"
                 CornerRadius="24"
                 HorizontalAlignment="Center"
-                VerticalAlignment="Center">
+                VerticalAlignment="Center"
+                Margin="20">
 
             <Border.Effect>
                 <DropShadowEffect BlurRadius="30"
                                   ShadowDepth="0"
-                                  Opacity="0.30"/>
+                                  Opacity="0.25"/>
             </Border.Effect>
 
-            <StackPanel>
+            <ScrollViewer VerticalScrollBarVisibility="Auto"
+                          HorizontalScrollBarVisibility="Disabled">
 
-                <!-- Logo -->
-                <Border Width="80"
-                        Height="80"
-                        CornerRadius="40"
-                        Background="#24344E"
-                        HorizontalAlignment="Center">
+                <StackPanel>
 
-                    <materialDesign:PackIcon
-                        Kind="AccountCircleOutline"
-                        Width="42"
-                        Height="42"
-                        Foreground="{StaticResource PrimaryBrush}"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"/>
+                    <!-- Avatar -->
+                    <Border Width="76"
+                            Height="76"
+                            CornerRadius="38"
+                            Background="{DynamicResource PrimaryBrush}"
+                            HorizontalAlignment="Center">
 
-                </Border>
+                        <materialDesign:PackIcon
+                            Kind="AccountCircleOutline"
+                            Width="42"
+                            Height="42"
+                            Foreground="White"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"/>
 
-                <TextBlock Text="Edit Profile"
-                           Style="{StaticResource TitleText}"
-                           Margin="0,18,0,0"/>
+                    </Border>
 
-                <TextBlock Text="Update your account details"
-                           Style="{StaticResource SubtitleText}"
-                           Margin="0,0,0,25"/>
 
-                <!-- Username -->
-                <TextBlock Text="USERNAME"
-                           Foreground="{StaticResource SecondaryTextBrush}"
-                           FontWeight="SemiBold"
-                           FontSize="12"
-                           Margin="4,0,0,8"/>
+                    <!-- Title -->
+                    <TextBlock x:Name="EditProfileTitle"
+           Text="Edit Profile"
+           Style="{StaticResource TitleText}"
+           FontSize="26"
+           TextWrapping="NoWrap"
+           HorizontalAlignment="Center"
+           TextAlignment="Center"
+           Margin="0,18,0,0"/>
 
-                <TextBox x:Name="UsernameBox"
-                         Style="{StaticResource RoundedTextBox}"
-                         Margin="0,0,0,16"
-                         Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}"/>
 
-                <!-- Email -->
-                <TextBlock Text="EMAIL"
-                           Foreground="{StaticResource SecondaryTextBrush}"
-                           FontWeight="SemiBold"
-                           FontSize="12"
-                           Margin="4,0,0,8"/>
+                    <!-- Subtitle -->
+                    <TextBlock x:Name="UpdateAccountDetailsText"
+                               Text="Update your account details"
+                               FontSize="15"
+                               Foreground="{DynamicResource DashboardSecondaryTextBrush}"
+                               TextWrapping="Wrap"
+                               TextAlignment="Center"
+                               HorizontalAlignment="Center"
+                               Margin="0,0,0,28"/>
 
-                <TextBox x:Name="EmailBox"
-                         Style="{StaticResource RoundedTextBox}"
-                         Margin="0,0,0,16"
-                         Text="{Binding Email, UpdateSourceTrigger=PropertyChanged}"/>
 
-                <!-- Status -->
-                <TextBlock Text="STATUS"
-                           Foreground="{StaticResource SecondaryTextBrush}"
-                           FontWeight="SemiBold"
-                           FontSize="12"
-                           Margin="4,0,0,8"/>
+                    <!-- USERNAME -->
+                    <TextBlock x:Name="UsernameLabel"
+                               Text="USERNAME"
+                               Foreground="{DynamicResource SecondaryTextBrush}"
+                               FontWeight="SemiBold"
+                               FontSize="12"
+                               Margin="4,0,0,8"/>
 
-                <ComboBox Style="{StaticResource RoundedComboBox}"
-                          Margin="0,0,0,16"
-                          SelectedValue="{Binding Status, UpdateSourceTrigger=PropertyChanged}"
-                          SelectedValuePath="Content">
-                    <ComboBoxItem Content="Online"/>
-                    <ComboBoxItem Content="Away"/>
-                    <ComboBoxItem Content="Busy"/>
-                    <ComboBoxItem Content="Offline"/>
-                </ComboBox>
+                    <TextBox x:Name="UsernameBox" 
+                             Style="{StaticResource RoundedTextBox}" 
+                             Margin="0,0,0,16"
+                             Height="48"
+                             Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}"/>
 
-                <!-- Favorite City -->
-                <TextBlock Text="FAVORITE CITY"
-                           Foreground="{StaticResource SecondaryTextBrush}"
-                           FontWeight="SemiBold"
-                           FontSize="12"
-                           Margin="4,0,0,8"/>
 
-                <TextBox x:Name="CityBox"
-                         Style="{StaticResource RoundedTextBox}"
-                         Margin="0,0,0,20"
-                         Text="{Binding FavoriteCity, UpdateSourceTrigger=PropertyChanged}"/>
+                    <!-- EMAIL -->
+                    <TextBlock x:Name="EmailLabel"
+                               Text="EMAIL"
+                               Foreground="{DynamicResource SecondaryTextBrush}"
+                               FontWeight="SemiBold"
+                               FontSize="12"
+                               Margin="4,0,0,8"/>
 
-                <!-- Messages -->
-                <TextBlock Text="{Binding ErrorMessage}"
-                           Foreground="#FF6B6B"
-                           FontSize="13"
-                           TextWrapping="Wrap"
-                           Margin="0,0,0,8"/>
+                    <TextBox x:Name="EmailBox"
+                             Style="{StaticResource RoundedTextBox}"
+                             Height="48"
+                             Margin="0,0,0,16"
+                             Text="{Binding Email, UpdateSourceTrigger=PropertyChanged}"/>
 
-                <TextBlock Text="{Binding SuccessMessage}"
-                           Foreground="#4ADE80"
-                           FontSize="13"
-                           TextWrapping="Wrap"
-                           Margin="0,0,0,8"/>
 
-                <!-- Save -->
-                <Button Style="{StaticResource PrimaryButton}"
-                        Content="Save Changes"
-                        Click="Save_Click"/>
+                    <!-- STATUS -->
+                    <TextBlock x:Name="StatusLabel"
+                               Text="STATUS"
+                               Foreground="{DynamicResource SecondaryTextBrush}"
+                               FontWeight="SemiBold"
+                               FontSize="12"
+                               Margin="4,0,0,8"/>
 
-            </StackPanel>
+                    <ComboBox x:Name="StatusComboBox"
+                              Style="{StaticResource RoundedComboBox}"
+                              Height="48"
+                              Margin="0,0,0,16"
+                              SelectedValue="{Binding Status, UpdateSourceTrigger=PropertyChanged}"
+                              SelectedValuePath="Tag">
+
+                        <ComboBoxItem x:Name="OnlineStatusItem"
+                                      Content="Online"
+                                      Tag="Online"/>
+
+                        <ComboBoxItem x:Name="AwayStatusItem"
+                                      Content="Away"
+                                      Tag="Away"/>
+
+                        <ComboBoxItem x:Name="BusyStatusItem"
+                                      Content="Busy"
+                                      Tag="Busy"/>
+
+                        <ComboBoxItem x:Name="OfflineStatusItem"
+                                      Content="Offline"
+                                      Tag="Offline"/>
+
+                    </ComboBox>
+
+
+                    <!-- FAVORITE CITY -->
+                    <TextBlock x:Name="FavoriteCityLabel"
+                               Text="FAVORITE CITY"
+                               Foreground="{DynamicResource SecondaryTextBrush}"
+                               FontWeight="SemiBold"
+                               FontSize="12"
+                               Margin="4,0,0,8"/>
+
+                    <TextBox x:Name="CityBox"
+                             Style="{StaticResource RoundedTextBox}"
+                             Height="48"
+                             Margin="0,0,0,14"
+                             Text="{Binding FavoriteCity, UpdateSourceTrigger=PropertyChanged}"/>
+
+
+                    <!-- Error -->
+                    <TextBlock Text="{Binding ErrorMessage}"
+                               Foreground="#FF6B6B"
+                               FontSize="13"
+                               TextWrapping="Wrap"
+                               Margin="2,0,2,8"/>
+
+
+                    <!-- Success -->
+                    <TextBlock Text="{Binding SuccessMessage}"
+                               Foreground="#4ADE80"
+                               FontSize="13"
+                               TextWrapping="Wrap"
+                               Margin="2,0,2,8"/>
+
+
+                    <!-- Save -->
+                    <Button x:Name="SaveChangesButton"
+                            Style="{StaticResource PrimaryButton}"
+                            Content="Save Changes"
+                            Height="48"
+                            Margin="0,4,0,0"
+                            Click="Save_Click"/>
+
+                </StackPanel>
+
+            </ScrollViewer>
 
         </Border>
 

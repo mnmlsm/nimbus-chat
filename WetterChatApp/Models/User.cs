@@ -71,7 +71,31 @@ namespace NimbusChat.WetterChatApp.Models
         public string Status 
         { 
             get; set; 
-        }       
+        }
+
+        public string DisplayStatus
+        {
+            get
+            {
+                switch (Status)
+                {
+                    case "Online":
+                        return LanguageManager.Get("Online");
+
+                    case "Busy":
+                        return LanguageManager.Get("Busy");
+
+                    case "Away":
+                        return LanguageManager.Get("Away");
+
+                    case "Everyone":
+                        return LanguageManager.Get("Everyone");
+
+                    default:
+                        return Status;
+                }
+            }
+        }
         public string FavoriteCity
         {
             get; set;

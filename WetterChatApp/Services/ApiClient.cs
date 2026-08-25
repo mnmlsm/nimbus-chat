@@ -115,17 +115,21 @@ namespace NimbusChat.WetterChatApp.Services
             var response = await _httpClient
                 .GetAsync($"/api/weather/forecast?city={Uri.EscapeDataString(city)}")
                 .ConfigureAwait(false);
+
             response.EnsureSuccessStatusCode();
 
-            var items = await response.Content.ReadFromJsonAsync<List<ForecastDayResponse>>().ConfigureAwait(false)
-                        ?? new List<ForecastDayResponse>();
+            var items = await response.Content
+                .ReadFromJsonAsync<List<ForecastDayResponse>>()
+                .ConfigureAwait(false)
+                ?? new List<ForecastDayResponse>();
+
             var result = new List<ForecastDay>();
 
             foreach (var item in items)
             {
                 result.Add(new ForecastDay
                 {
-                    Day = item.Date.ToString("ddd"),
+                    Day = LanguageManager.GetDayName(item.Date),
                     Temperature = $"{item.Temperature:0}°",
                     Icon = item.Icon,
                     IconUrl = $"https://openweathermap.org/img/wn/{item.Icon}@2x.png",

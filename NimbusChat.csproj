@@ -183,6 +183,11 @@
     <Compile Include="AppMessageBox.xaml.cs">
       <DependentUpon>AppMessageBox.xaml</DependentUpon>
     </Compile>
+    <Compile Include="LanguageManager.cs" />
+    <Compile Include="SettingsWindow.xaml.cs">
+      <DependentUpon>SettingsWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ThemeManager.cs" />
     <Compile Include="WeatherIconControl.xaml.cs">
       <DependentUpon>WeatherIconControl.xaml</DependentUpon>
     </Compile>
@@ -193,6 +198,8 @@
       <DependentUpon>ProfileWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="WetterChatApp\Config\ClientConfig.cs" />
+    <Compile Include="WetterChatApp\Converters\StatusTranslationConverter.cs" />
+    <Compile Include="WetterChatApp\Converters\UsernameTranslationConverter.cs" />
     <Compile Include="WetterChatApp\Services\ApiClient.cs" />
     <Compile Include="WetterChatApp\Services\AuthService.cs" />
     <Compile Include="WetterChatApp\Services\MessageService.cs" />
@@ -216,6 +223,18 @@
       <DependentUpon>RegisterWindow.xaml</DependentUpon>
     </Compile>
     <Page Include="AppMessageBox.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SettingsWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Styles\DarkTheme.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Styles\LightTheme.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
