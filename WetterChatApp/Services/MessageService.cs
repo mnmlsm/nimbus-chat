@@ -39,26 +39,5 @@ namespace NimbusChat.WetterChatApp.Services
         {
             return _apiClient.SendPrivateMessageAsync(senderId, receiverId, content);
         }
-
-        /// <summary>
-        /// Private Chat: Nachrichten zwischen zwei Benutzern.
-        /// </summary>
-        public List<Message> GetPrivateMessages(int userId1, int userId2)
-        {
-            return _messageRepository.GetMessagesBetween(userId1, userId2);
-        }
-
-        /// <summary>
-        /// Private Chat: Nachricht senden.
-        /// </summary>
-        public bool SendPrivateMessage(int senderId, int receiverId, string content)
-        {
-            return SendMessage(senderId, receiverId, content);
-        }
-
-        public List<Message> GetMessagesBetween(int userId1, int userId2)
-        {
-            return _messageRepository.GetMessagesBetween(userId1, userId2);
-        }
     }
 }
