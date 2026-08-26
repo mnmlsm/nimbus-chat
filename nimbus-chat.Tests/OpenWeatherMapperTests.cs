@@ -133,9 +133,9 @@ namespace NimbusChat.Api.Tests
         [Fact]
         public void MapForecast_ReturnsEmptyList_WhenOnlyTodayIsAvailable()
         {
-            var json = ForecastJson(("2026-08-20 12:00:00", 20.0, "01d", "heute"));
+            var json = ForecastJson(("2026-08-20 12:00:00", 20.0, "01d", "heute"));                 // here we have only today
 
-            Assert.Empty(OpenWeatherMapper.MapForecast(Parse(json), new DateTime(2026, 8, 20)));
+            Assert.Empty(OpenWeatherMapper.MapForecast(Parse(json), new DateTime(2026, 8, 20)));    // and today is the current day, so it should be skipped
         }
 
         // The controller passes DateTime.Now (with a time component), so the

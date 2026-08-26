@@ -16,8 +16,8 @@ namespace NimbusChat.Api.Tests
 
         private static HttpContext ContextWith(string? headerValue)
         {
-            var context = new DefaultHttpContext();
-            context.Response.Body = new MemoryStream();
+            var context = new DefaultHttpContext();         // fake request/response context for testing
+            context.Response.Body = new MemoryStream();    // capture response body for testing
 
             if (headerValue != null)
                 context.Request.Headers[ApiKeyMiddleware.HeaderName] = headerValue;
@@ -88,12 +88,12 @@ namespace NimbusChat.Api.Tests
         public async Task InvokeAsync_ShortCircuitsWith401_WhenHeaderIsMissing()
         {
             var nextWasCalled = false;
-            var middleware = new ApiKeyMiddleware(_ => { nextWasCalled = true; return Task.CompletedTask; }, ConfigWith(ValidKey));
+            var middleware = new ApiKeyMiddleware(_ => { nextWasCalled = true; return Task.CompletedTask; }, ConfigWith(ValidKey)); // fake next
             var context = ContextWith(null);
 
             await middleware.InvokeAsync(context);
 
-            Assert.False(nextWasCalled);
+            Assert.False(nextWasCalled); // next delegate should not be called
             Assert.Equal(StatusCodes.Status401Unauthorized, context.Response.StatusCode);
             Assert.Equal(ApiKeyMiddleware.RejectionMessage, await ReadBodyAsync(context));
         }
