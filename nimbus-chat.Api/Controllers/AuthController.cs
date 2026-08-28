@@ -1,10 +1,9 @@
 using System;
-using System.Security.Cryptography;
-using System.Text;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using MySql.Data.MySqlClient;
 using NimbusChat.Api.Models;
+using NimbusChat.Api.Security;
 
 namespace NimbusChat.Api.Controllers
 {
@@ -44,7 +43,7 @@ namespace NimbusChat.Api.Controllers
                     return Unauthorized("Invalid email or password.");
 
                 var storedHash = reader.GetString("PasswordHash");
-                if (!string.Equals(storedHash, HashPassword(dto.Password), StringComparison.Ordinal))
+                if (!PasswordHasher.Verify(dto.Password, storedHash))
                     return Unauthorized("Invalid email or password.");
 
                 id = reader.GetInt32("Id");
@@ -84,7 +83,7 @@ namespace NimbusChat.Api.Controllers
             using var command = new MySqlCommand(sql, connection);
             command.Parameters.AddWithValue("@Username", string.IsNullOrWhiteSpace(dto.Username) ? dto.Email : dto.Username);
             command.Parameters.AddWithValue("@Email", dto.Email);
-            command.Parameters.AddWithValue("@PasswordHash", HashPassword(dto.Password));
+            command.Parameters.AddWithValue("@PasswordHash", PasswordHasher.Hash(dto.Password));
 
             try
             {
@@ -96,19 +95,6 @@ namespace NimbusChat.Api.Controllers
             }
 
             return Ok();
-        }
-
-        private static string HashPassword(string password)
-        {
-            using var sha = SHA256.Create();
-            var bytes = Encoding.UTF8.GetBytes(password);
-            var hash = sha.ComputeHash(bytes);
-
-            var sb = new StringBuilder(hash.Length * 2);
-            foreach (var b in hash)
-                sb.Append(b.ToString("x2"));
-
-            return sb.ToString();
         }
     }
 }

@@ -425,3 +425,9 @@ FodyWeavers.xsd
 *.msm
 *.msp
 
+# Vom Finder angelegte Ansichtseinstellungen - rein lokal, gehoeren nicht ins Repo
+.DS_Store
+._*
+
+# Abgabe-Artefakte (lokal generiert, nicht versionieren)
+/abgabe/

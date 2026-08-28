@@ -1,4 +1,5 @@
 using NimbusChat.Api.Data;
+using NimbusChat.Api.Security;
 
 namespace nimbus_chat.Api
 {
@@ -45,25 +46,7 @@ namespace nimbus_chat.Api
                 app.UseSwaggerUI();
             }
 
-            // Lightweight shared-key gate in front of every endpoint. Not a
-            // real auth system - just keeps casual scraping/abuse off the
-            // publicly tunneled API. The client sends the same key back on
-            // every request (see ApiClient.cs).
-            var configuredApiKey = app.Configuration["Security:ApiKey"];
-            app.Use(async (context, next) =>
-            {
-                var providedKey = context.Request.Headers["X-Api-Key"].ToString();
-
-                if (string.IsNullOrEmpty(configuredApiKey) ||
-                    !string.Equals(providedKey, configuredApiKey, StringComparison.Ordinal))
-                {
-                    context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-                    await context.Response.WriteAsync("Missing or invalid API key.");
-                    return;
-                }
-
-                await next();
-            });
+            app.UseMiddleware<ApiKeyMiddleware>();
 
             app.UseAuthorization();
 

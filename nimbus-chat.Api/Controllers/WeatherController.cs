@@ -2,6 +2,7 @@ using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
 using MySql.Data.MySqlClient;
 using NimbusChat.Api.Models;
+using NimbusChat.Api.Weather;
 
 namespace NimbusChat.Api.Controllers
 {
@@ -43,23 +44,7 @@ namespace NimbusChat.Api.Controllers
 
             using (document)
             {
-                var root = document.RootElement;
-                var main = root.GetProperty("main");
-                var weather = root.GetProperty("weather")[0];
-
-                var dto = new WeatherDto
-                {
-                    UserId = userId > 0 ? userId : null,
-                    City = root.GetProperty("name").GetString() ?? city,
-                    Temperature = main.GetProperty("temp").GetDouble(),
-                    FeelsLike = main.GetProperty("feels_like").GetDouble(),
-                    Humidity = main.GetProperty("humidity").GetInt32(),
-                    WindSpeed = root.GetProperty("wind").GetProperty("speed").GetDouble(),
-                    Description = weather.GetProperty("description").GetString() ?? string.Empty,
-                    Icon = weather.GetProperty("icon").GetString() ?? string.Empty,
-                    CreatedAt = DateTime.UtcNow
-                };
-
+                var dto = OpenWeatherMapper.MapCurrent(document.RootElement, city, userId, DateTime.UtcNow);
                 dto.Id = Insert(dto);
 
                 return Ok(dto);
@@ -89,50 +74,7 @@ namespace NimbusChat.Api.Controllers
 
             using (document)
             {
-                var today = DateTime.Now.Date;
-                var entries = new List<(DateTime Time, double Temp, string Icon, string Condition)>();
-
-                foreach (var item in document.RootElement.GetProperty("list").EnumerateArray())
-                {
-                    var time = DateTime.Parse(item.GetProperty("dt_txt").GetString()!);
-
-                    // Only future days, not today.
-                    if (time.Date <= today)
-                        continue;
-
-                    var weather = item.GetProperty("weather")[0];
-
-                    entries.Add((
-                        time,
-                        item.GetProperty("main").GetProperty("temp").GetDouble(),
-                        weather.GetProperty("icon").GetString() ?? string.Empty,
-                        weather.GetProperty("description").GetString() ?? string.Empty));
-                }
-
-                var days = entries
-                    .GroupBy(e => e.Time.Date)
-                    .OrderBy(g => g.Key)
-                    .Take(5);
-
-                var result = new List<ForecastDayDto>();
-
-                foreach (var day in days)
-                {
-                    // Pick the entry closest to noon, so the icon/temperature
-                    // represent the day realistically (instead of, say, a 3am reading).
-                    var noon = day.Key.AddHours(12);
-                    var representative = day.OrderBy(e => Math.Abs((e.Time - noon).TotalMinutes)).First();
-
-                    result.Add(new ForecastDayDto
-                    {
-                        Date = day.Key,
-                        Temperature = representative.Temp,
-                        Icon = representative.Icon,
-                        Condition = representative.Condition
-                    });
-                }
-
-                return Ok(result);
+                return Ok(OpenWeatherMapper.MapForecast(document.RootElement, DateTime.Now));
             }
         }
 
